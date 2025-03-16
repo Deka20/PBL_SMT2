@@ -1,11 +1,13 @@
 TESTING testing
 awkoakoawkoawkawok
-<<<<<<< HEAD
-popop siroyooo
+popopopopopo
 =======
-test
+Kelompok 7 PBL
+Zidan Masadita Pramudia - 3312401083
+Rafi Akhbar Dirgahayuri - 33124010665
+Dewi Maharani Khairunisa - 3312401063
+Cahya Sifa Nazwa - 3312401080
 
->>>>>>> 5845b1350559ae7ab1a8129a949d852e903f3886
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
