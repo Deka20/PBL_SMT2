@@ -1,8 +1,10 @@
 <?php
 
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\ListBarangController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ListItemController;
+use App\Http\Controllers\ListBarangController;
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -29,4 +31,8 @@ Route::prefix('admin')->group(function () {
     });
 });
 
-Route::get('/listbarang/{id}/{nama}', [ListBarangController::class, 'tampilkan']);
+Route::get('/listitem/{id}/{tipe}', [ListItemController::class, 'tampilkan']);
+
+Route::get('/login', [LoginController::class, 'index'])->name('login');
+
+Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
