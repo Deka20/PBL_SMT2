@@ -39,3 +39,10 @@ Route::post('/login', [LoginController::class, 'authenticate'])->name('login.aut
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
+Route::get('/profile', function () {
+    return view('profile');
+});
+
+Route::get('/history', function () {
+    return view('riwayatPemesanan');
+});
