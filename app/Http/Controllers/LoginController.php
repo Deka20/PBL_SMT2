@@ -11,16 +11,5 @@ class LoginController extends Controller
         return view('login');
     }
 
-    public function authenticate(Request $request)
-    {
-        $username = $request->input('username');
-        $password = $request->input('password');
-
-        //contoh autentikasi sederhana
-        if ($username == 'admin' && $password === '123') {
-            return 'Login Berhasil!';
-        } else {
-            return 'Login Gagal!';
-        }
-    }
+    
 }
