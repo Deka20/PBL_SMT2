@@ -35,7 +35,7 @@ Route::get('/listitem/{id}/{tipe}', [ListItemController::class, 'tampilkan']);
 
 Route::get('/login', [LoginController::class, 'index'])->name('login');
 
-Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
+// Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
@@ -45,4 +45,12 @@ Route::get('/profile', function () {
 
 Route::get('/history', function () {
     return view('riwayatPemesanan');
+});
+
+Route::get('/login', function () {
+    return view('loginPage');
+});
+
+Route::get('/register', function () {
+    return view('registerPage');
 });
