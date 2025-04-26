@@ -16,8 +16,4 @@
         @yield('content')
     </div>
 </body>
-<<<<<<< HEAD
 </html>
-=======
-</html>
->>>>>>> 27662ef20b1125888f8b5701fdae2ea8bc14df76

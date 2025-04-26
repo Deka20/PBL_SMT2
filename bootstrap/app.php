@@ -16,3 +16,16 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withExceptions(function (Exceptions $exceptions) {
         //
     })->create();
+
+    // bootstrap/app.php
+
+$app->middleware([
+    // Middleware global
+]);
+
+$app->routeMiddleware([
+    'role' => App\Http\Middleware\CheckRole::class,
+    'auth' => App\Http\Middleware\Authenticate::class,
+    'admin' => \App\Http\Middleware\AdminMiddleware::class,
+    'guest' => App\Http\Middleware\RedirectIfAuthenticated::class,
+]);
