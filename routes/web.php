@@ -5,7 +5,10 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Middleware\AdminMiddleware;
-
+use App\Http\Controllers\ProfilController;
+use App\Http\Controllers\KeamananController;
+use App\Http\Controllers\RiwayatController;
+use App\Http\Controllers\PemesananController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -57,3 +60,8 @@ Route::middleware('auth')->group(function () {
     
     // Tambahkan route user lainnya di sini
 });
+
+Route::get('/profil', [ProfilController::class, 'profil'])->name('profil');
+Route::get('/keamanan', [KeamananController::class, 'keamanan'])->name('keamanan');
+Route::get('/riwayat', [RiwayatController::class, 'riwayat'])->name('riwayat');
+Route::get('/pemesanan', [PemesananController::class, 'pemesanan'])->name('pemesanan');
