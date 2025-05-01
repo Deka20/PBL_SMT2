@@ -1,11 +1,19 @@
 <?php
 
-
+<<<<<<< HEAD
 //use App\Http\Controllers\HomeController;
 //use App\Http\Controllers\ListBarangController;
 //use Illuminate\Support\Facades\Route;
 //use App\Http\Controllers\LoginController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
+=======
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ListItemController;
+use App\Http\Controllers\DashboardController;
+>>>>>>> 8badcec86ddcc238fb1eebffdf7f5b441be8c22d
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -18,90 +26,68 @@ use Illuminate\Support\Facades\Route;
     //return view('welcome');
 //});
 
-//Route::get('user/{id}', function ($id) {
-    //return 'User dengan ID' . $id;
-//});
+// 🔐 Auth Routes
+Route::middleware('guest')->group(function () {
+    // 📝 Pendaftaran
+    Route::controller(RegisterController::class)->group(function () {
+        Route::get('/daftar', 'showRegistrationForm')->name('auth.daftar');
+        Route::post('/daftar', 'register')->name('auth.daftar.submit');
+    });
 
-//Route::prefix('admin')->group(function () {
-    //Route::get('/dashboard', function () {
-        //return 'Admin Dashboard';
-    //});
-
-    //Route::get('/users', function () {
-        //return 'Admin Users';
-    //});
-//});
-
-//Route::get('/listbarang/{id}/{nama}', [ListBarangController::class, 'tampilkan']);
+    // 🔑 Login
+    Route::controller(LoginController::class)->group(function () {
+        Route::get('/masuk', 'showLoginForm')->name('login');
+        Route::post('/masuk', 'login');
+    });
+});
 
 //Route::get('/login', [LoginController::class, 'index']);
 
 //Route::get('/login', function () {
     //return view('auth.login'); // Sesuaikan dengan nama view login-mu
 //});
-//Route::get('/dashboard', function () {
-    //return view('admin.dashboard');
-//});
-
+Route::get('/dashboard', function () {
+    return view('admin.dashboard');
+});
+<<<<<<< HEAD
 //Route::get('/dashboard', [AdminController::class, 'dashboard']);
-//Route::get('/LandingPage', function () {
-       // return view('LandingPage');
-//});
+Route::get('/LandingPage', function () {
+    return view('LandingPage');
+=======
 
-//Route::get('user/{id}', function ($id) {
-    //return 'User dengan ID' . $id;
-//});
+Route::get('user/{id}', function ($id) {
+    return 'User dengan ID' . $id;
+});
 
-// Route::prefix('admin')->group(function () {
-//     Route::get('/dashboard', function () {
-//         return 'Admin Dashboard';
-//     });
+// 👤 User Authenticated Routes
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [LoginController::class, 'index'])
+        ->name('user.dashboard');
+    
+    // Tambahkan route user lainnya di sini
+});
 
-//     Route::get('/users', function () {
-//         return 'Admin Users';
-//     });
-// });
+Route::get('/listitem/{id}/{tipe}', [ListItemController::class, 'tampilkan']);
 
-//Route::get('/listitem/{id}/{tipe}', [ListItemController::class, 'tampilkan']);
-
-//Route::get('/login', [LoginController::class, 'index'])->name('login');
+Route::get('/login', [LoginController::class, 'index'])->name('login');
 
 // Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
 
-//Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
-//Route::get('/profile', function () {
-    //return view('profile');
-//});
-
-//Route::get('/history', function () {
-    //return view('riwayatPemesanan');
-//});
-
-//Route::get('/login', function () {
-    //return view('loginPage');
-//});
-
-//Route::get('/register', function () {
-    //return view('registerPage');
-//}); 
-
-Route::get('/admin/dashboard', function() {
-    return view('dashboard_admin');
+Route::get('/profile', function () {
+    return view('profile');
 });
 
-Route::get('/studio', function() {
-    return view('studio');
+Route::get('/history', function () {
+    return view('riwayatPemesanan');
 });
 
-Route::get('/pelanggan', function() {
-    return view('pelanggan');
+Route::get('/login', function () {
+    return view('loginPage');
 });
 
-Route::get('/pengaturan', function() {
-    return view('pengaturan');
-});
-
-Route::get('/ulasan', function(){
-    return view('ulasan');
+Route::get('/register', function () {
+    return view('registerPage');
+>>>>>>> 8badcec86ddcc238fb1eebffdf7f5b441be8c22d
 });
