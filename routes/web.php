@@ -1,26 +1,29 @@
 <?php
-
-<<<<<<< HEAD
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminController;
-=======
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\ListItemController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\DashboardController;
->>>>>>> 8badcec86ddcc238fb1eebffdf7f5b441be8c22d
+use App\Http\Middleware\AdminMiddleware;
+use App\Http\Controllers\ProfilController;
+use App\Http\Controllers\KeamananController;
+use App\Http\Controllers\RiwayatController;
+use App\Http\Controllers\PemesananController;
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider and all of them will
+| be assigned to the "web" middleware group. Make something great!
+|
+*/
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
-//Route::get('/', [HomeController::class, 'index']);
-//Route::get('contact', [HomeController::class, 'contact']);
-
-//Route::get('/welcome', function () {
-    //return view('welcome');
-//});
+// 🏠 Halaman Publik
+Route::get('/', function () {
+    return view('pages.home');
+})->name('pages.home');
 
 // 🔐 Auth Routes
 Route::middleware('guest')->group(function () {
@@ -37,22 +40,17 @@ Route::middleware('guest')->group(function () {
     });
 });
 
-//Route::get('/login', [LoginController::class, 'index']);
+// 🚪 Logout (harus auth)
+Route::post('/keluar', [LoginController::class, 'logout'])
+    ->middleware('auth')
+    ->name('logout');
 
-//Route::get('/login', function () {
-    //return view('auth.login'); // Sesuaikan dengan nama view login-mu
-//});
-Route::get('/dashboard', function () {
-    return view('admin.dashboard');
-});
-<<<<<<< HEAD
-//Route::get('/dashboard', [AdminController::class, 'dashboard']);
-Route::get('/LandingPage', function () {
-    return view('LandingPage');
-=======
-
-Route::get('user/{id}', function ($id) {
-    return 'User dengan ID' . $id;
+// 🏢 Admin Routes
+Route::prefix('admin')->middleware(['auth', AdminMiddleware::class])->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])
+        ->name('admin.dashboard');
+    
+    // Tambahkan route admin lainnya di sini
 });
 
 // 👤 User Authenticated Routes
@@ -63,27 +61,23 @@ Route::middleware('auth')->group(function () {
     // Tambahkan route user lainnya di sini
 });
 
-Route::get('/listitem/{id}/{tipe}', [ListItemController::class, 'tampilkan']);
+Route::get('/profil', [ProfilController::class, 'profil'])->name('profil');
+Route::get('/keamanan', [KeamananController::class, 'keamanan'])->name('keamanan');
+Route::get('/riwayat', [RiwayatController::class, 'riwayat'])->name('riwayat');
+Route::get('/pemesanan', [PemesananController::class, 'pemesanan'])->name('pemesanan');
 
-Route::get('/login', [LoginController::class, 'index'])->name('login');
+Route::get('pelanggan', function () {
+    return view('pelanggan');
+})->name('pelanggan');
 
-// Route::post('/login', [LoginController::class, 'authenticate'])->name('login.authenticate');
+Route::get('studio', function () {
+    return view('studio');
+})->name('studio');
 
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+Route::get('ulasan', function () {
+    return view('ulasan');
+})->name('ulasan');
 
-Route::get('/profile', function () {
-    return view('profile');
-});
-
-Route::get('/history', function () {
-    return view('riwayatPemesanan');
-});
-
-Route::get('/login', function () {
-    return view('loginPage');
-});
-
-Route::get('/register', function () {
-    return view('registerPage');
->>>>>>> 8badcec86ddcc238fb1eebffdf7f5b441be8c22d
-});
+Route::get('pengaturan', function () {
+    return view('pengaturan');
+})->name('pengaturan');
