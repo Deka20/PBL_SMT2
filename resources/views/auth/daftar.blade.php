@@ -27,32 +27,52 @@
             margin-bottom: 1rem;
         }
 
-        /* Menghilangkan placeholder default pada input date */
-        input[type="date"]::before {
-            content: attr(placeholder);
-            position: absolute;
-            color: #9CA3AF;
+        .date-input-container input[type="date"] {
+            position: relative;
+            color: #000;
+            padding-left: 3.5rem;
         }
 
-        input[type="date"]:focus::before,
-        input[type="date"]:valid::before {
-            display: none;
+        .date-input-container input[type="date"]:not(:focus):invalid {
+            color: transparent;
         }
 
-        /* Untuk browser WebKit (Chrome, Safari) */
-        input[type="date"]::-webkit-datetime-edit,
-        input[type="date"]::-webkit-inner-spin-button,
-        input[type="date"]::-webkit-clear-button {
-            display: none;
-        }
-
-        input[type="date"]::-webkit-calendar-picker-indicator {
+        .date-input-container input[type="date"]::-webkit-calendar-picker-indicator {
             position: absolute;
             right: 1rem;
-            opacity: 0;
+            opacity: 1;
+            cursor: pointer;
+            color: transparent;
+            background: none;
             width: 100%;
             height: 100%;
-            cursor: pointer;
+        }
+
+        .date-input-container input[type="date"]::-webkit-datetime-edit {
+            color: inherit;
+        }
+
+        .date-input-container input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+            display: inline-block;
+        }
+
+        .date-input-container .custom-placeholder {
+            position: absolute;
+            left: 3.5rem;
+            top: 0.75rem;
+            color: #9CA3AF;
+            pointer-events: none;
+            transition: all 0.2s ease-out;
+        }
+
+        .date-input-container input:focus~.custom-placeholder,
+        .date-input-container input:not(:placeholder-shown)~.custom-placeholder,
+        .date-input-container input.has-value~.custom-placeholder {
+            transform: translateY(-1.25rem) scale(0.9);
+            color: #ff3aef;
+            background: white;
+            padding: 0 0.25rem;
+            left: 3rem;
         }
     </style>
 </head>
@@ -105,25 +125,19 @@
             </div>
 
             <!-- Tanggal Lahir -->
-            <div class="input-container relative">
+            <div class="input-container date-input-container relative">
                 <input type="date" id="tgl_lahir" name="tgl_lahir"
-                    class="input input-bordered w-full rounded-3xl peer focus:outline-none focus:ring-2 focus:ring-pink-400 pl-12 text-center placeholder-shown:text-gray-400"
-                    value="{{ old('tgl_lahir') }}" required onfocus="this.classList.add('has-value')"
-                    onblur="if(!this.value)this.classList.remove('has-value')">
+                    class="input input-bordered w-full rounded-3xl focus:outline-none focus:ring-2 focus:ring-pink-400 pl-12"
+                    value="{{ old('tgl_lahir') }}" required onfocus="this.showPicker()"
+                    onchange="this.classList.add('has-value')">
 
                 <!-- Icon -->
                 <div class="absolute left-4 top-3 text-gray-500">
                     <i class="fas fa-calendar-day w-5 h-5"></i>
                 </div>
 
-                <!-- Label floating -->
-                <label for="tgl_lahir"
-                    class="absolute left-14 top-3 text-gray-500 transition-all duration-200 ease-out pointer-events-none
-               peer-focus:-translate-y-5 peer-focus:scale-90 peer-focus:text-pink-400
-               peer-[.has-value]:-translate-y-5 peer-[.has-value]:scale-90 peer-[.has-value]:text-primary
-               bg-white px-1">
-                    Tanggal Lahir
-                </label>
+                <!-- Placeholder custom -->
+                <span class="custom-placeholder">Tanggal Lahir</span>
 
                 @error('tgl_lahir')
                     <span class="error-message">{{ $message }}</span>
@@ -215,6 +229,24 @@
                 disini</a>
         </p>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dateInput = document.getElementById('tgl_lahir');
+
+            if (dateInput.value) {
+                dateInput.classList.add('has-value');
+            }
+
+            if (dateInput.value) {
+                const formattedDate = new Date(dateInput.value).toLocaleDateString('id-ID', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>
