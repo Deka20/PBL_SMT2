@@ -7,7 +7,7 @@ $jam = "15:00";
 $durasi = "1 jam";
 $jumlah_orang = "6 orang";
 $total_harga = "Rp 150.000";
-$status_pembayaran = "Selesai";
+$status_pembayaran = "Belum Lunas";
 ?>
 
 <!DOCTYPE html>
@@ -33,6 +33,7 @@ $status_pembayaran = "Selesai";
       align-items: center;
       padding: 16px 24px;
       z-index: 10;
+      box-shadow: none;
     }
 
     .back {
@@ -48,6 +49,10 @@ $status_pembayaran = "Selesai";
     .back svg {
       width: 14px;
       height: 14px;
+    }
+
+    .back span {
+      font-size: 14px;
     }
 
     .profile-icon {
@@ -90,15 +95,12 @@ $status_pembayaran = "Selesai";
     }
 
     .status {
+      background-color: #fddcdc;
+      color: #a33;
       font-weight: bold;
       padding: 4px 12px;
       border-radius: 6px;
       font-size: 14px;
-    }
-
-    .status-selesai {
-      background-color: #eee;
-      color: #666;
     }
 
     .studio-card {
@@ -173,44 +175,6 @@ $status_pembayaran = "Selesai";
       color: #333;
     }
 
-    .rating-section {
-      margin-top: 30px;
-    }
-
-    .rating-section h3 {
-      font-size: 16px;
-      margin-bottom: 8px;
-    }
-
-    .stars {
-      display: flex;
-      gap: 6px;
-      font-size: 20px;
-      color: #ccc;
-      cursor: pointer;
-    }
-
-    .stars .filled {
-      color: gold;
-    }
-
-    textarea {
-      width: 100%;
-      padding: 10px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-      font-size: 14px;
-      resize: vertical;
-      margin-top: 10px;
-    }
-
-    .btn-submit {
-      background-color: black;
-      color: white;
-      margin-top: 12px;
-      padding: 10px 16px;
-    }
-
     @media (max-width: 480px) {
       .title-bar {
         flex-direction: column;
@@ -251,7 +215,7 @@ $status_pembayaran = "Selesai";
 
     <div class="title-bar">
       <h2 class="title">Detail Reservasi <?php echo $booking_id; ?></h2>
-      <div class="status status-selesai"><?php echo $status_pembayaran; ?></div>
+      <div class="status"><?php echo $status_pembayaran; ?></div>
     </div>
 
     <div class="studio-card">
@@ -280,37 +244,12 @@ $status_pembayaran = "Selesai";
 
     <div class="divider"></div>
 
-    <!-- Rating dan Ulasan -->
-    <div class="rating-section">
-      <h3>Berikan Rating dan Ulasan</h3>
-      <div class="stars" id="starContainer">
-        <span data-value="1">★</span>
-        <span data-value="2">★</span>
-        <span data-value="3">★</span>
-        <span data-value="4">★</span>
-        <span data-value="5">★</span>
-      </div>
-      <textarea placeholder="Tulis ulasan Anda di sini..."></textarea>
-      <button class="btn btn-submit">Kirim Ulasan</button>
+    <div class="button-group">
+      <button class="btn btn-cancel">✖ Batalkan Reservasi</button>
+      <button class="btn btn-edit">✎ Ubah Reservasi</button>
     </div>
 
   </div>
 
-  <script>
-    const stars = document.querySelectorAll('#starContainer span');
-    stars.forEach(star => {
-      star.addEventListener('click', () => {
-        const value = star.getAttribute('data-value');
-        stars.forEach(s => {
-          s.classList.remove('filled');
-          if (s.getAttribute('data-value') <= value) {
-            s.classList.add('filled');
-          }
-        });
-      });
-    });
-  </script>
-
 </body>
 </html>
-``
