@@ -67,7 +67,8 @@
                         bg-white px-1">
                         Password
                     </label>
-                    <button type="button" class="absolute right-3 top-3 text-gray-500 hover:text-gray-700"
+                    <button type="button"
+                        class="absolute right-3 inset-y-0 flex items-center text-gray-500 hover:text-gray-700"
                         onclick="togglePasswordVisibility('password')" aria-label="Toggle password visibility">
                         <svg id="eye-icon-password" class="w-5 h-5" fill="none" viewBox="0 0 24 24"
                             stroke="currentColor">
@@ -80,6 +81,7 @@
                                 d="M4 14c-.5-.6-.9-1.3-1-2 0-1 4-6 9-6m7.6 3.8A5 5 0 0 1 21 12c0 1-3 6-9 6h-1m-6 1L19 5m-4 7a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
                         </svg>
                     </button>
+
                     @error('password')
                         <span class="label-text-alt text-error mt-1 block">{{ $message }}</span>
                     @enderror
@@ -88,17 +90,16 @@
 
             <!-- Remember Me & Forgot Password -->
             <div class="flex justify-between items-center">
-                <label class="label cursor-pointer gap-2 p-0">
-                    <input type="checkbox" name="remember"
-                        class="checkbox checkbox-sm rounded-full border-gray-600 checked:border-pink-500 [--chkbg:theme(colors.pink.500)]"
-                        {{ old('remember') ? 'checked' : '' }}>
+                <label class="label cursor-pointer flex items-center gap-2">
+                    <input type="checkbox" id="remember" name="remember"
+                        class="checkbox checkbox-secondary peer rounded-full" />
                     <span class="label-text">Ingat saya</span>
                 </label>
                 <a href="#" class="text-sm text-gray-800 hover:underline">Lupa Password?</a>
             </div>
 
             <!-- Submit Button -->
-            <button type="submit" class="btn btn-neutral w-full rounded-full">
+            <button type="submit" class="btn btn-neutral w-full rounded-md">
                 LOGIN
             </button>
         </form>

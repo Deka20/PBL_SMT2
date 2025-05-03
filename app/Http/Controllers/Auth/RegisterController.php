@@ -25,9 +25,9 @@ class RegisterController extends Controller
             'email'            => 'required|string|email|max:255|unique:users,email',
             'telepon'          => 'required|string|max:15',
             'password'         => 'required|string|min:8|confirmed',
+            'tgl_lahir'        => 'required|string|max:15',
         ]);
     
-        // Jika validasi gagal, kembalikan dengan pesan error dan input lama
         if ($validator->fails()) {
             return redirect()->back()
                 ->withErrors($validator)
@@ -42,6 +42,7 @@ class RegisterController extends Controller
             'telepon'        => $request->telepon,
             'password'       => Hash::make($request->password),
             'role'           => 'pelanggan',
+            'tgl_lahir'      => $request->tgl_lahir,
         ]);
     
 

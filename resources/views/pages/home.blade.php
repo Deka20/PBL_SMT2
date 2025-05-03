@@ -6,22 +6,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Potretine</title>
-    <!-- DaisyUI via CDN -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        .horizontal-modal {
+            min-width: 600px;
+            max-width: 800px;
+            padding: 0;
+        }
+    </style>
 </head>
 
 <body class="bg-white text-black">
     <x-menu></x-menu>
 
-    <section class="bg-center bg-no-repeat bg-[url('/images/hero.jpg')] bg-cover min-h-[700px] w-full">
+    <section class="bg-center bg-no-repeat bg-[url('/images/hero1.jpg')] bg-cover min-h-[700px] w-full" id="home">
     </section>
 
     <h1 class="mt-10 text-center text-3xl font-bold">Studio Kami</h1>
     <h2 class="text-center text-2xl">Pilih Studio Sesuai Keinginanmu</h2>
 
-    <div class="container mx-auto px-4 py-8">
+    <div class="container mx-auto px-4 py-8" id="studio">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             <!-- Card 1 -->
             <div class="card bg-[#fef6f6] shadow-sm hover:shadow-md cursor-pointer">
@@ -103,13 +109,11 @@
             </form>
 
             <div class="flex h-full">
-                <!-- Full-height image on left (50%) -->
                 <div class="w-1/2 h-full">
                     <img src="https://i.pinimg.com/736x/73/b6/d4/73b6d4e8548a248be9c5e0a615772e0b.jpg"
                         alt="Selfphoto Studio" class="w-full h-full object-cover">
                 </div>
 
-                <!-- Text content on right (50%) -->
                 <div class="w-1/2 p-6 flex flex-col h-full overflow-y-auto">
                     <h2 class="text-2xl font-bold mb-4">Selfphoto Studio</h2>
 
@@ -168,7 +172,6 @@
             </div>
         </div>
 
-        <!-- Click outside to close -->
         <form method="dialog" class="modal-backdrop">
             <button>close</button>
         </form>
@@ -254,8 +257,8 @@
         <h1 class="mt-10 text-center text-3xl font-bold">Ratings & Reviews</h1>
 
         <div class="max-w-3xl mx-auto space-y-4 mt-5">
-            <!-- Card 1: Rating Summary -->
-            <div class="bg-pink-100 rounded-box p-6">
+            <!-- Card 1: Rating -->
+            <div class="bg-[#fef6f6] rounded-box p-6">
                 <div class="flex flex-col md:flex-row gap-4">
                     <!-- Average Rating -->
                     <div class="text-center md:text-left md:w-1/3">
@@ -286,7 +289,7 @@
                         <p class="text-gray-600 mt-6">Dari 6 Ulasan</p>
                     </div>
 
-                    <!-- Rating Distribution -->
+                    <!-- Rating Progres -->
                     <div class="md:w-2/3">
                         <div class="space-y-2">
                             <!-- 5 Stars -->
@@ -344,7 +347,7 @@
             </div>
 
             <!-- Card 2: User Review -->
-            <div class="bg-pink-100 rounded-box p-6">
+            <div class="bg-[#fef6f6] rounded-box p-6">
                 <div class="flex justify-between items-start">
                     <div>
                         <div class="flex items-center mb-2">
@@ -378,25 +381,23 @@
         </div>
     </div>
 
-    <footer class="footer p-10 text-base-content w-full">
+    <footer class="footer p-10 text-base-content w-full" id="kontak">
         <div class="w-full mx-auto">
             <div class="flex flex-col md:flex-row justify-between items-center w-full">
-                <!-- Logo dan Brand (Kiri) -->
                 <div class="flex flex-col items-center md:items-start mb-6 md:mb-0 w-full md:w-1/4">
                     <div class="flex items-center space-x-4">
                         <div class="avatar">
-                            <div class="w-12 rounded-full ring ring-pink-300 ring-offset-2">
+                            <div class="w-12 rounded-full">
                                 <img src="images/logo.jpg" alt="Potretine Logo" />
                             </div>
                         </div>
                         <div>
-                            <h2 class="text-xl font-bold text-pink-600">Potretine</h2>
-                            <p class="text-sm text-gray-600">Studio Fotografi Profesional</p>
+                            <h2 class="text-xl font-bold text-pink-600">Potrétine</h2>
                         </div>
                     </div>
                 </div>
 
-                <!-- Menu dan Kontak (Tengah) -->
+                <!-- Menu dan Kontak -->
                 <div class="flex flex-col md:flex-row gap-8 md:gap-16 text-center w-full md:w-2/4 justify-center">
                     <!-- Navigasi Menu -->
                     <div class="w-full md:w-1/2">
@@ -446,23 +447,19 @@
                     </div>
                 </div>
 
-                <!-- Sosial Media (Kanan) -->
+                <!-- Sosial Media -->
                 <div class="flex flex-col items-center md:items-end w-full md:w-1/4">
                     <h3 class="text-lg font-semibold text-pink-600 mb-3">Sosial Media</h3>
                     <div class="flex gap-4">
-                        <!-- Instagram -->
                         <a href="#" class="text-pink-500 hover:text-pink-700 transition-colors">
                             <i class="fab fa-instagram text-2xl"></i>
                         </a>
-                        <!-- X (Twitter) -->
                         <a href="#" class="text-pink-500 hover:text-pink-700 transition-colors">
                             <i class="fab fa-twitter text-2xl"></i>
                         </a>
-                        <!-- Facebook -->
                         <a href="#" class="text-pink-500 hover:text-pink-700 transition-colors">
                             <i class="fab fa-facebook text-2xl"></i>
                         </a>
-                        <!-- TikTok -->
                         <a href="#" class="text-pink-500 hover:text-pink-700 transition-colors">
                             <i class="fab fa-tiktok text-2xl"></i>
                         </a>
@@ -470,11 +467,10 @@
                 </div>
             </div>
 
-            <!-- Garis Pemisah -->
             <hr class="border-t-2 border-pink-300 w-full max-w-5xl mx-auto mt-5 mb-5">
             <div class="text-center py-4 w-full">
                 <span class="text-sm text-gray-500">Copyright © 2025 <a href="#"
-                        class="text-pink-500 hover:underline">Potretine</a> - All Rights Reserved.</span>
+                        class="text-pink-500 hover:underline">Potrétine</a> - All Rights Reserved.</span>
             </div>
         </div>
     </footer>
