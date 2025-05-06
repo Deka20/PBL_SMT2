@@ -10,4 +10,23 @@ class DashboardController extends Controller
     {
         return view('dashboard.index'); 
     }
+
+    public function pelanggan()
+    {
+        return view('pelanggan');
+    }
+
+    public function pengaturan()
+    {
+        return view('pengaturan');
+    }
+
+    public function ulasan()
+    {
+        return view('ulasan');
+    }
+    public function studio()
+    {
+        return view('studio');
+    }
 }
