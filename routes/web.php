@@ -2,20 +2,24 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\ProfilController;
-use App\Http\Controllers\RiwayatController;
-use App\Http\Controllers\KeamananController;
+=======
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\ListItemController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\PemesananController;
-use App\Http\Controllers\ReservasiController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
+>>>>>>> 8badcec86ddcc238fb1eebffdf7f5b441be8c22d
 
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
-// Halaman Publik
-Route::get('/', function () {
-    return view('pages.home');
-})->name('pages.home');
+//Route::get('/', [HomeController::class, 'index']);
+//Route::get('contact', [HomeController::class, 'contact']);
+
+//Route::get('/welcome', function () {
+    //return view('welcome');
+//});
 
 // Auth Routes
 Route::middleware('guest')->group(function () {
@@ -32,16 +36,22 @@ Route::middleware('guest')->group(function () {
     });
 });
 
-// Logout
-Route::post('/keluar', [LoginController::class, 'logout'])
-    ->middleware('auth')
-    ->name('logout');
+//Route::get('/login', [LoginController::class, 'index']);
 
-// Admin Routes
-Route::prefix('admin')->middleware(['auth', AdminMiddleware::class])->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])
-        ->name('admin.dashboard');
-    
+//Route::get('/login', function () {
+    //return view('auth.login'); // Sesuaikan dengan nama view login-mu
+//});
+Route::get('/dashboard', function () {
+    return view('admin.dashboard');
+});
+<<<<<<< HEAD
+//Route::get('/dashboard', [AdminController::class, 'dashboard']);
+Route::get('/LandingPage', function () {
+    return view('LandingPage');
+=======
+
+Route::get('user/{id}', function ($id) {
+    return 'User dengan ID' . $id;
 });
 
 // User Authenticated Routes
@@ -55,8 +65,19 @@ Route::get('/keamanan', [KeamananController::class, 'keamanan'])->name('keamanan
 Route::get('/riwayat', [RiwayatController::class, 'riwayat'])->name('riwayat');
 Route::get('/pemesanan', [PemesananController::class, 'pemesanan'])->name('pemesanan');
 
-Route::get('/pelanggan', [DashboardController::class, 'pelanggan'])->name('pelanggan');
-Route::get('/pengaturan', [DashboardController::class, 'pengaturan'])->name('pengaturan');
-Route::get('/studio', [DashboardController::class, 'pelanggan'])->name('studio');
-Route::get('/ulasan', [DashboardController::class, 'ulasan'])->name('ulasan');
+Route::get('/profile', function () {
+    return view('profile');
+});
 
+Route::get('/history', function () {
+    return view('riwayatPemesanan');
+});
+
+Route::get('/login', function () {
+    return view('loginPage');
+});
+
+Route::get('/register', function () {
+    return view('registerPage');
+>>>>>>> 8badcec86ddcc238fb1eebffdf7f5b441be8c22d
+});

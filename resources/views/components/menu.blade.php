@@ -1,142 +1,331 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Daftar | Potretine</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdn.jsdelivr.net/npm/flowbite@3.1.2/dist/flowbite.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        .nav-link.active {
+            text-decoration: underline;
+            text-underline-offset: 4px;
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            text-decoration: underline;
+            text-underline-offset: 4px;
+        }
+
+        #mobile-menu {
+            transition: max-height 0.3s ease-in-out;
+            max-height: 0;
+            overflow: hidden;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            z-index: 40;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        #mobile-menu.show {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        section {
+            min-height: 100vh;
+            padding: 2rem;
+        }
+    </style>
 </head>
-<body>
-    
-    <nav class="bg-pink-100 fixed w-full z-20 top-0 start-0 border-b border-gray-200">
-        <div class="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-            <!-- Logo dan bagian kiri navbar -->
-            <a href="/" class="flex items-center space-x-3 rtl:space-x-reverse">
-                <img src="{{ asset('images/logo.jpg') }}" class="h-8 w-8 rounded-full object-cover" alt="Potretine Logo">
-                <span class="self-center text-2xl font-semibold whitespace-nowrap text-gray-800">Potretine</span>
+
+<body class="bg-white">
+    <!-- Desktop dan Mobile Navbar -->
+    <div class="navbar sticky top-0 z-50 bg-[#fef6f6] shadow-lg relative">
+        <!-- Logo - Left side -->
+        <div class="navbar-start">
+            <a href="#home" class="flex items-center space-x-3">
+                <img src="{{ asset('images/logo.jpg') }}" class="h-8 w-8 rounded-full object-cover"
+                    alt="Potretine Logo">
+                <span class="self-center text-2xl font-semibold whitespace-nowrap text-pink-600">Potrétine</span>
             </a>
-            
-            <div class="flex md:order-2 space-x-3 md:space-x-4 rtl:space-x-reverse">
-                <!-- Search Bar -->
-                <div class="relative hidden md:block mr-2">
-                    <input type="text" id="search-navbar" class="block w-full p-2 ps-10 text-sm text-gray-900 border border-transparent border-b-gray-400 rounded-lg bg-transparent focus:ring-pink-200 focus:border-pink-200" placeholder="Search...">
-                    <div class="absolute inset-y-0 end-2 flex items-center ps-3 pointer-events-none">
-                        <i class="fas fa-search text-gray-500"></i>
-                    </div>
-                </div>
-                
-                <!-- Bagian ini akan berubah berdasarkan status login -->
+        </div>
+
+        <!-- Desktop Navbar - Hidden on mobile -->
+        <div class="navbar-center hidden lg:flex">
+            <nav>
+                <ul class="flex space-x-6">
+                    <li><a href="#home" class="nav-link active" data-section="home">Beranda</a></li>
+                    <li><a href="#studio" class="nav-link" data-section="studio">Studio</a></li>
+                    <li><a href="#kontak" class="nav-link" data-section="kontak">Kontak</a></li>
+                </ul>
+            </nav>
+        </div>
+
+        <!-- Navbar Bagian Kanan -->
+        <div class="navbar-end">
+            <div class="hidden lg:flex items-center">
                 @auth
-                    <!-- Tampilan setelah login (Avatar) -->
-                    <div class="flex items-center space-x-4">
-                        <!-- Avatar dengan dropdown -->
-                        <div class="relative">
-                            <button id="dropdownUserAvatarButton" data-dropdown-toggle="dropdownAvatar" class="flex text-sm rounded-full focus:ring-4 focus:ring-gray-300" type="button">
-                                <img class="w-8 h-8 rounded-full" src="{{ Auth::user()->avatar ?? asset('images/default-avatar.jpg') }}" alt="{{ Auth::user()->name }}">
+                    <!-- Search Bar untuk user sudah login -->
+                    <div class="search-container mr-4">
+                        <div class="join w-full">
+                            <input type="text" placeholder="Cari studio..."
+                                class="input input-bordered w-full join-item focus:outline-none" />
+                            <button class="btn join-item !bg-pink-200 hover:bg-pink-300 border-pink-300">
+                                <i class="fas fa-search"></i>
                             </button>
-                            
-                            <!-- Dropdown menu -->
-                            <div id="dropdownAvatar" class="z-10 hidden bg-white divide-y divide-gray-100 rounded-lg shadow w-44 absolute right-0 mt-2">
-                                <div class="px-4 py-3 text-sm text-gray-900">
-                                    <div class="font-bold">{{ Auth::user()->nama_pengguna }}</div>
-                                    <div class="">{{ Auth::user()->email }}</div>
-                                </div>
-                                <ul class="py-2 text-sm text-gray-700">
-                                    <li>
-                                        <a href="" class="block px-4 py-2 hover:bg-gray-100">Profil Saya</a>
-                                    </li>
-                                    <li>
-                                        <a href="" class="block px-4 py-2 hover:bg-gray-100">Pengaturan</a>
-                                    </li>
-                                </ul>
-                                <div class="py-2">
-                                    <form method="POST" action="{{ route('logout') }}">
-                                        @csrf
-                                        <button type="submit" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Keluar</button>
-                                    </form>
-                                </div>
-                            </div>
                         </div>
                     </div>
+
+                    <!-- User Dropdown Menu -->
+                    <div class="dropdown dropdown-end">
+                        <label tabindex="0" class="btn btn-ghost btn-circle avatar">
+                            <div class="w-8 rounded-full">
+                                <img src="{{ Auth::user()->avatar ?? asset('images/default-avatar.jpg') }}"
+                                    alt="{{ Auth::user()->name }}" />
+                            </div>
+                        </label>
+                        <ul tabindex="0"
+                            class="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-white rounded-box w-52">
+                            <div class="px-4 py-3 text-sm text-gray-900">
+                                <div class="font-bold">{{ Auth::user()->nama_pengguna }}</div>
+                                <div class="text-gray-500">{{ Auth::user()->email }}</div>
+                            </div>
+                            <li><a href="/profil">Profil</a></li>
+                            <li><a href="/pengaturan">Pengaturan</a></li>
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="w-full text-left">Keluar</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
                 @else
-                    <!-- Tampilan sebelum login (Tombol Masuk & Daftar) -->
-                    <div class="flex space-x-3">
-                        <a href="{{ route('login') }}" class="text-white bg-gray-800 hover:bg-gray-700 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 text-center transition duration-200">
-                            Masuk
-                        </a>
-                        <a href="{{ route('auth.daftar') }}" class="text-black bg-transparent hover:bg-pink-200 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 text-center border border-gray-600 transition duration-200">
-                            Daftar
-                        </a>
+                    <!-- Tombol Masuk/Daftar untuk guest -->
+                    <a href="{{ route('login') }}">
+                        <button class="btn !bg-black !text-white hover:bg-gray-800 mr-2">Masuk</button>
+                    </a>
+                    <a href="{{ route('auth.daftar') }}">
+                        <button class="btn border-black hover:bg-gray-100">Daftar</button>
+                    </a>
+
+                    <!-- Search Bar untuk guest -->
+                    <div class="join ml-5">
+                        <input type="text" placeholder="Cari studio..."
+                            class="input input-bordered join-item bg-white focus:outline-none w-40 md:w-52" />
+                        <button class="btn join-item !bg-pink-200 hover:bg-pink-600 text-white">
+                            <i class="fas fa-search"></i>
+                        </button>
                     </div>
                 @endauth
-                
-                <!-- Tombol Mobile Menu -->
-                <button data-collapse-toggle="navbar-sticky" type="button" class="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200">
-                    <span class="sr-only">Open main menu</span>
-                    <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 17 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M1 1h15M1 7h15M1 13h15"/>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div class="flex lg:hidden">
+                <button id="mobile-menu-btn" class="btn btn-square btn-ghost">
+                    <svg id="menu-icon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                    <svg id="close-icon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
                     </svg>
                 </button>
             </div>
-            
-            <!-- Menu navigasi utama -->
-            <div class="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-sticky">
-                <ul class="flex flex-col p-4 md:p-0 mt-4 font-medium border border-gray-100 rounded-lg md:space-x-8 rtl:space-x-reverse md:flex-row md:mt-0 md:border-0">
-                    <li>
-                        <a href="/" class="block py-2 px-3 text-gray-700 hover:text-black md:hover:bg-transparent md:p-0 {{ request()->is('/') ? 'text-black font-medium border-b-2 border-black' : '' }}">
-                            Beranda
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/studio" class="block py-2 px-3 text-gray-700 hover:text-black md:hover:bg-transparent md:p-0 {{ request()->is('studio*') ? 'text-black font-medium border-b-2 border-black' : '' }}">
-                            Studio
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/pemesanan" class="block py-2 px-3 text-gray-700 hover:text-black md:hover:bg-transparent md:p-0 {{ request()->is('pemesanan*') ? 'text-black font-medium border-b-2 border-black' : '' }}">
-                            Pemesanan
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/kontak" class="block py-2 px-3 text-gray-700 hover:text-black md:hover:bg-transparent md:p-0 {{ request()->is('kontak*') ? 'text-black font-medium border-b-2 border-black' : '' }}">
-                            Kontak
-                        </a>
-                    </li>
+        </div>
+
+        <div id="mobile-menu" class="lg:hidden">
+            <div class="p-4 space-y-4">
+                <!-- Mobile Navigation Links -->
+                <ul class="menu menu-vertical w-full">
+                    <li><a href="#home" class="nav-link active" data-section="home">Beranda</a></li>
+                    <li><a href="#studio" class="nav-link" data-section="studio">Studio</a></li>
+                    <li><a href="#kontak" class="nav-link" data-section="kontak">Kontak</a></li>
                 </ul>
+
+                <!-- Mobile Search Bar -->
+                <div class="mt-4">
+                    <div class="join w-full">
+                        <input type="text" placeholder="Cari studio..."
+                            class="input input-bordered w-full join-item" />
+                        <button class="btn join-item bg-pink-200 hover:bg-pink-300 border-pink-300">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile Tombol Masuk/Daftar -->
+                @auth
+                    <div class="divider"></div>
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="avatar">
+                            <div class="w-10 rounded-full">
+                                <img src="{{ Auth::user()->avatar ?? asset('images/default-avatar.jpg') }}"
+                                    alt="{{ Auth::user()->nama_pengguna }}">
+                            </div>
+                        </div>
+                        <div>
+                            <span class="font-medium">{{ Auth::user()->nama_pengguna }}</span>
+                            <p class="text-sm text-gray-500">{{ Auth::user()->email }}</p>
+                        </div>
+                    </div>
+
+                    <ul class="menu menu-vertical w-full">
+                        <li><a href="">Profil</a></li>
+                        <li><a href="">Pengaturan</a></li>
+                    </ul>
+
+                    <form method="POST" action="{{ route('logout') }}" class="mt-4">
+                        @csrf
+                        <button type="submit" class="btn btn-outline w-full">Keluar</button>
+                    </form>
+                @else
+                    <div class="divider"></div>
+                    <div class="flex flex-col gap-2">
+                        <a href="{{ route('login') }}">
+                            <button class="btn bg-black text-white hover:bg-gray-800 w-full">Masuk</button>
+                        </a>
+                        <a href="{{ route('auth.daftar') }}">
+                            <button class="btn border-black hover:bg-gray-100 w-full">Daftar</button>
+                        </a>
+                    </div>
+                @endauth
             </div>
         </div>
-    </nav>
+    </div>
 
-<!-- Script untuk active state dan toggle login/logout -->
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const currentUrl = window.location.pathname;
-        const navLinks = document.querySelectorAll('.nav-link');
-        
-        navLinks.forEach(link => {
-            if (link.getAttribute('href') === currentUrl) {
-                link.classList.add('text-black', 'font-medium', 'border-b-2', 'border-black');
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+            const mobileMenu = document.getElementById("mobile-menu");
+            const menuIcon = document.getElementById("menu-icon");
+            const closeIcon = document.getElementById("close-icon");
+            const navLinks = document.querySelectorAll(".nav-link");
+            const sections = document.querySelectorAll("section");
+
+            let lastClickedLink = document.querySelector(".nav-link.active");
+
+            mobileMenuBtn.addEventListener("click", function() {
+                mobileMenu.classList.toggle("show");
+                menuIcon.classList.toggle("hidden");
+                closeIcon.classList.toggle("hidden");
+            });
+
+            document.addEventListener("click", function(event) {
+                const isClickInsideMenu = mobileMenu.contains(event.target);
+                const isClickOnMenuBtn = mobileMenuBtn.contains(event.target);
+
+                if (mobileMenu.classList.contains("show") && !isClickInsideMenu && !isClickOnMenuBtn) {
+                    mobileMenu.classList.remove("show");
+                    menuIcon.classList.remove("hidden");
+                    closeIcon.classList.add("hidden");
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.addEventListener("click", function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute("href");
+                    const targetElement = document.querySelector(targetId);
+
+                    const sectionName = this.getAttribute("data-section");
+
+                    navLinks.forEach(navLink => navLink.classList.remove("active"));
+
+                    document.querySelectorAll(`.nav-link[data-section="${sectionName}"]`).forEach(
+                        navLink => {
+                            navLink.classList.add("active");
+                        });
+
+                    lastClickedLink = this;
+
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop,
+                            behavior: "smooth"
+                        });
+                    }
+
+                    mobileMenu.classList.remove("show");
+                    menuIcon.classList.remove("hidden");
+                    closeIcon.classList.add("hidden");
+                });
+            });
+
+            let isScrolling = false;
+            let userJustClicked = false;
+
+            window.addEventListener("scroll", function() {
+                if (!isScrolling) {
+                    isScrolling = true;
+
+                    if (!userJustClicked) {
+                        setTimeout(function() {
+                            highlightActiveSection();
+                            isScrolling = false;
+                        }, 100);
+                    } else {
+                        isScrolling = false;
+                    }
+                }
+            });
+
+            function isInViewport(element, threshold = 0.5) {
+                const rect = element.getBoundingClientRect();
+                const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+
+                return (
+                    (rect.top <= windowHeight * threshold) &&
+                    (rect.bottom >= windowHeight * threshold)
+                );
             }
-        });
-        
-        // Simulasi status login (dalam implementasi nyata, ini akan diperiksa dari session/cookie)
-        const isLoggedIn = false; // Ganti dengan true untuk melihat tampilan setelah login
-        
-        const guestButtons = document.getElementById('guest-buttons');
-        const userMenu = document.getElementById('user-menu');
-        
-        if (isLoggedIn) {
-            guestButtons.classList.add('hidden');
-            userMenu.classList.remove('hidden');
-        } else {
-            guestButtons.classList.remove('hidden');
-            userMenu.classList.add('hidden');
-        }
-    });
-</script>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
+            function highlightActiveSection() {
+                let activeSection = null;
+
+                sections.forEach(section => {
+                    if (isInViewport(section)) {
+                        activeSection = section;
+                    }
+                });
+
+                if (activeSection) {
+                    const sectionId = activeSection.id;
+
+                    navLinks.forEach(link => link.classList.remove("active"));
+
+                    document.querySelectorAll(`.nav-link[data-section="${sectionId}"]`).forEach(link => {
+                        link.classList.add("active");
+                    });
+                }
+            }
+
+            highlightActiveSection();
+
+            navLinks.forEach(link => {
+                link.addEventListener("click", function() {
+                    userJustClicked = true;
+                    setTimeout(() => {
+                        userJustClicked = false;
+                    }, 1000);
+                });
+            });
+        });
+    </script>
 </body>
+
 </html>
