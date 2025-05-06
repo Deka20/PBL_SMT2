@@ -15,172 +15,61 @@ $booking_id = "#BK-20250423-WCS-EA17W";
 <head>
   <meta charset="UTF-8">
   <title>Bukti Reservasi</title>
-  <style>
-    body {
-      background-color: #fff6f6;
-      font-family: Arial, sans-serif;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 40px;
-    }
-
-    .card {
-      background-color: white;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      padding: 24px;
-      width: 400px;
-    }
-
-    .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .logo-text {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .logo {
-      background-color: #ddd;
-      border-radius: 50%;
-      width: 48px;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-    }
-
-    .success-icon {
-      font-size: 28px;
-      color: green;
-    }
-
-    .thanks-text {
-      margin: 16px 0;
-      font-weight: bold;
-    }
-
-    .booking-id {
-      background-color: #fddcdc;
-      padding: 8px;
-      border-radius: 6px;
-      display: flex;
-      justify-content: space-between;
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    .details {
-      margin-top: 16px;
-      font-size: 14px;
-      line-height: 1.6;
-    }
-
-    .divider {
-      border-top: 1px solid #ddd;
-      margin: 16px 0;
-    }
-
-    .payment {
-      display: flex;
-      justify-content: space-between;
-      font-weight: bold;
-    }
-
-    .status {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 8px;
-    }
-
-    .status span {
-      background-color: #42db58;
-      color: white;
-      font-weight: bold;
-      padding: 4px 12px;
-      border-radius: 6px;
-      font-size: 13px;
-    }
-
-    .btn {
-      margin-top: 16px;
-      width: 100%;
-      background-color: black;
-      color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      font-size: 14px;
-      cursor: pointer;
-    }
-
-    .footer {
-      text-align: center;
-      font-size: 12px;
-      margin-top: 24px;
-      color: #555;
-    }
-
-    .footer b {
-      display: block;
-      margin-bottom: 4px;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
 </head>
-<body>
-
-<div class="card">
-  <div class="header">
-    <div class="logo-text">
-      <div class="logo"><img src="logo.jpeg" alt="Logo Studio" style="width: 100%; height: 100%; border-radius: 50%;"></div>
-      <strong>Potretine</strong>
+<body class="bg-[#fff6f6] flex justify-center items-center p-10">
+  <div class="card bg-white rounded-box shadow-sm w-full max-w-md p-6">
+    <div class="flex justify-between items-center">
+      <div class="flex items-center gap-2.5">
+        <div class="avatar">
+          <div class="w-12 h-12 rounded-full bg-gray-300">
+            <img src="logo.jpeg" alt="Logo Studio" class="rounded-full" />
+          </div>
+        </div>
+        <strong class="text-lg">Potretine</strong>
+      </div>
+      <div class="text-2xl text-green-500">✅</div>
     </div>
-    <div class="success-icon">✅</div>
+
+    <p class="font-bold my-4">Terimakasih sudah melakukan reservasi di studio kami!</p>
+
+    <div class="bg-[#fddcdc] p-2 rounded-lg flex justify-between font-bold text-sm">
+      <div>Booking ID:</div>
+      <div><?php echo $booking_id; ?></div>
+    </div>
+
+    <div class="mt-4 text-sm leading-relaxed">
+      Nama : <?php echo $nama; ?><br>
+      No. Handphone : <?php echo $no_hp; ?><br>
+      Pilih Studio : <?php echo $studio; ?><br>
+      Tanggal : <?php echo $tanggal; ?><br>
+      Jam : <?php echo $jam; ?><br>
+      Jumlah Orang : <?php echo $jumlah_orang; ?>
+    </div>
+
+    <div class="divider my-4"></div>
+
+    <div class="flex justify-between font-bold">
+      <div>Total Pembayaran :</div>
+      <div><?php echo $total_pembayaran; ?></div>
+    </div>
+
+    <div class="flex justify-between items-center mt-2">
+      <div>Status Pembayaran:</div>
+      <span class="badge bg-green-500 text-white font-bold px-3 py-1 rounded-lg text-xs">
+        <?php echo $status_pembayaran; ?>
+      </span>
+    </div>
+
+    <button class="btn btn-block bg-black text-white mt-4" onclick="window.print()">Cetak Resi</button>
+
+    <div class="text-center text-xs text-gray-600 mt-6">
+      <b class="block mb-1">Informasi Kontak</b>
+      Jl. Photo Studio<br>
+      Telp: +62 81234567890 | Email: ShutterSpace@gmail.com
+    </div>
   </div>
-
-  <p class="thanks-text">Terimakasih sudah melakukan reservasi di studio kami!</p>
-
-  <div class="booking-id">
-    <div>Booking ID:</div>
-    <div><?php echo $booking_id; ?></div>
-  </div>
-
-  <div class="details">
-    Nama : <?php echo $nama; ?><br>
-    No. Handphone : <?php echo $no_hp; ?><br>
-    Pilih Studio : <?php echo $studio; ?><br>
-    Tanggal : <?php echo $tanggal; ?><br>
-    Jam : <?php echo $jam; ?><br>
-    Jumlah Orang : <?php echo $jumlah_orang; ?>
-  </div>
-
-  <div class="divider"></div>
-
-  <div class="payment">
-    <div>Total Pembayaran :</div>
-    <div><?php echo $total_pembayaran; ?></div>
-  </div>
-
-  <div class="status">
-    <div>Status Pembayaran:</div>
-    <span><?php echo $status_pembayaran; ?></span>
-  </div>
-
-  <button class="btn" onclick="window.print()">Cetak Resi</button>
-
-  <div class="footer">
-    <b>Informasi Kontak</b>
-    Jl. Photo Studio<br>
-    Telp: +62 81234567890 | Email: ShutterSpace@gmail.com
-  </div>
-</div>
-
 </body>
 </html>
