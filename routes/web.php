@@ -42,6 +42,12 @@ Route::prefix('admin')->middleware(['auth', AdminMiddleware::class])->group(func
     Route::get('/dashboard', [AdminController::class, 'dashboard'])
         ->name('admin.dashboard');
     
+    // Pindahkan routes admin-only ke sini
+    Route::get('/pelanggan', [DashboardController::class, 'pelanggan'])->name('pelanggan');
+    Route::get('/pengaturan', [DashboardController::class, 'pengaturan'])->name('pengaturan');
+    Route::get('/studio', [DashboardController::class, 'studio'])->name('studio');
+    Route::get('/ulasan', [DashboardController::class, 'ulasan'])->name('ulasan');
+    Route::get('/statistik-pendapatan', [ReservasiController::class, 'statistikpendapatan'])->name('statistikpendapatan');
 });
 
 // User Authenticated Routes
@@ -55,13 +61,7 @@ Route::get('/keamanan', [KeamananController::class, 'keamanan'])->name('keamanan
 Route::get('/riwayat', [RiwayatController::class, 'riwayat'])->name('riwayat');
 Route::get('/pemesanan', [PemesananController::class, 'pemesanan'])->name('pemesanan');
 
-Route::get('/pelanggan', [DashboardController::class, 'pelanggan'])->name('pelanggan');
-Route::get('/pengaturan', [DashboardController::class, 'pengaturan'])->name('pengaturan');
-Route::get('/studio', [DashboardController::class, 'pelanggan'])->name('studio');
-Route::get('/ulasan', [DashboardController::class, 'ulasan'])->name('ulasan');
-
 Route::get('/detail-reservasi', [ReservasiController::class, 'detailreservasi'])->name('detailreservasi');
 Route::get('/reservasi', [ReservasiController::class, 'reservasi'])->name('reservasi');
 Route::get('/reservasi-selesai', [ReservasiController::class, 'reservasiselesai'])->name('reservasiselesai');
 Route::get('/reservasi-lunas', [ReservasiController::class, 'reservasilunas'])->name('reservasilunas');
-Route::get('/statistik-pendapatan', [ReservasiController::class, 'statistikpendapatan'])->name('statistikpendapatan');

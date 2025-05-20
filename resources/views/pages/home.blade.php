@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layout.app')
 
 @section('title', 'Potretine')
 
@@ -86,75 +86,43 @@
     </div>
 
     <dialog id="detail-modal" class="modal">
-        <div class="modal-box p-0 max-w-4xl h-[80vh]">
+        <div class="modal-box w-11/12 max-w-5xl p-0 rounded-xl overflow-hidden shadow-lg relative">
+
+            <!-- Tombol Close -->
             <form method="dialog" class="absolute right-4 top-4 z-10">
-                <button class="btn btn-sm btn-circle btn-ghost">✕</button>
+                <button class="text-xl font-bold text-gray-500 hover:text-red-500">✕</button>
             </form>
 
-            <div class="flex h-full">
+            <!-- Konten modal: layout horizontal -->
+            <div class="flex flex-row h-[340px]">
+                <!-- Gambar kiri -->
                 <div class="w-1/2 h-full">
                     <img src="https://i.pinimg.com/736x/73/b6/d4/73b6d4e8548a248be9c5e0a615772e0b.jpg"
                         alt="Selfphoto Studio" class="w-full h-full object-cover">
                 </div>
 
-                <div class="w-1/2 p-6 flex flex-col h-full overflow-y-auto">
-                    <h2 class="text-2xl font-bold mb-4">Selfphoto Studio</h2>
+                <!-- Konten teks kanan -->
+                <div class="w-1/2 p-8 flex flex-col justify-between">
+                    <div>
+                        <h3 class="text-2xl font-bold mb-4">Selfphoto Studio</h3>
+                        <ul class="space-y-2 text-gray-700 text-sm">
+                            <li><span class="text-pink-600 font-bold">✓</span> Kapasitas 1–3 orang</li>
+                            <li><span class="text-pink-600 font-bold">✓</span> Rp. 100.000 per 30 menit</li>
+                            <li><span class="text-pink-600 font-bold">✓</span> Bebas memilih latar</li>
+                        </ul>
+                    </div>
 
-                    <ul class="space-y-3 mb-6">
-                        <li class="flex items-start gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0"
-                                viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <span>Kapasitas 1-3 orang</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0"
-                                viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <span>Rp. 100.000 per 30 menit</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0"
-                                viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <span>3 print photo</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0"
-                                viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <span>Bebas memilih latar belakang</span>
-                        </li>
-                        <li class="flex items-start gap-3">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500 mt-0.5 flex-shrink-0"
-                                viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd"
-                                    d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-                                    clip-rule="evenodd" />
-                            </svg>
-                            <span>Mendapat semua soft file foto</span>
-                        </li>
-                    </ul>
-
-                    <button class="btn btn-primary w-full mt-auto uppercase font-bold py-3 text-lg">
-                        PESAN SEKARANG
-                    </button>
+                    <!-- Tombol Pesan -->
+                    <a href="{{ route('pemesanan') }}">
+                        <button class="mt-6 bg-black text-white w-full py-3 rounded-md font-medium">
+                            Pesan Sekarang
+                        </button>
+                    </a>
                 </div>
             </div>
         </div>
 
+        <!-- Backdrop -->
         <form method="dialog" class="modal-backdrop">
             <button>close</button>
         </form>

@@ -21,35 +21,7 @@
 </head>
 
 <body class="bg-gray-50 font-sans">
-    <!-- Sidebar -->
-    <aside class="w-64 h-screen fixed top-0 left-0 bg-pink-50 text-pink-700 p-5 border-r-2 border-pink-200">
-        <div class="flex flex-col items-center">
-            <img src="images/logo.png" class="w-16 h-16 rounded-full object-cover">
-            <h2 class="text-2xl font-bold text-primary mt-3">Potrétine</h2>
-        </div>
-        <nav class="mt-8">
-            <ul class="menu bg-pink-50 rounded-box">
-                <li><a href="dashboardadmin1.html"
-                        class="flex items-center gap-2 hover:bg-secondary hover:text-pink-800 hover:translate-x-1 transition-all duration-300"><span>🏠</span>
-                        Dashboard</a></li>
-                <li><a href="studionew.html"
-                        class="flex items-center gap-2 hover:bg-secondary hover:text-pink-800 hover:translate-x-1 transition-all duration-300"><span>📷</span>
-                        Studio</a></li>
-                <li><a href="datapelanggan1.html"
-                        class="flex items-center gap-2 hover:bg-secondary hover:text-pink-800 hover:translate-x-1 transition-all duration-300"><span>👥</span>
-                        Pelanggan</a></li>
-                <li><a href="pengaturan.html"
-                        class="flex items-center gap-2 hover:bg-secondary hover:text-pink-800 hover:translate-x-1 transition-all duration-300"><span>⚙</span>
-                        Pengaturan</a></li>
-                <li><a href="ulasan.html"
-                        class="flex items-center gap-2 hover:bg-secondary hover:text-pink-800 hover:translate-x-1 transition-all duration-300"><span>⭐</span>
-                        Rating & Review</a></li>
-                <li><a href="#"
-                        class="flex items-center gap-2 hover:bg-secondary hover:text-pink-800 hover:translate-x-1 transition-all duration-300"><span>📈</span>
-                        Statistik Pendapatan</a></li>
-            </ul>
-        </nav>
-    </aside>
+    <x-sidebar></x-sidebar>
 
     <!-- Content -->
     <div class="ml-72 p-5 w-[calc(100%-18rem)]">

@@ -5,42 +5,25 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Ulasan Pengguna</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/daisyui@1.14.2/dist/full.css" rel="stylesheet" type="text/css" />
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#d94c82',
+                        secondary: '#ffd6e7',
+                    }
+                }
+            }
+        }
+    </script>
 </head>
 
 <body class="bg-gray-50 pl-64">
     <!-- Sidebar -->
-    <aside class="w-64 fixed top-0 left-0 h-screen bg-pink-50 text-pink-600 border-r-2 border-pink-200 p-5">
-        <img src="images/logo.png" class="w-16 h-16 rounded-full object-cover block mx-auto">
-        <h2 class="text-2xl text-center font-bold text-pink-600 mt-2">Potrétine</h2>
-        <nav class="mt-6">
-            <a href="dashboardadmin1.html"
-                class="flex items-center gap-2 p-3 text-black text-base font-medium rounded-lg mb-2 hover:bg-pink-200 hover:text-pink-800 hover:translate-x-1 transition-all duration-300">
-                <span>🏠</span> Dashboard
-            </a>
-            <a href="studionew.html"
-                class="flex items-center gap-2 p-3 text-black text-base font-medium rounded-lg mb-2 hover:bg-pink-200 hover:text-pink-800 hover:translate-x-1 transition-all duration-300">
-                <span>📷</span> Studio
-            </a>
-            <a href="datapelanggan1.html"
-                class="flex items-center gap-2 p-3 text-black text-base font-medium rounded-lg mb-2 hover:bg-pink-200 hover:text-pink-800 hover:translate-x-1 transition-all duration-300">
-                <span>👥</span> Pelanggan
-            </a>
-            <a href="pengaturan.html"
-                class="flex items-center gap-2 p-3 text-black text-base font-medium rounded-lg mb-2 hover:bg-pink-200 hover:text-pink-800 hover:translate-x-1 transition-all duration-300">
-                <span>⚙</span> Pengaturan
-            </a>
-            <a href="ulasan.html"
-                class="flex items-center gap-2 p-3 text-black text-base font-medium rounded-lg mb-2 hover:bg-pink-200 hover:text-pink-800 hover:translate-x-1 transition-all duration-300">
-                <span>⭐</span> Rating & Review
-            </a>
-            <a href="#"
-                class="flex items-center gap-2 p-3 text-black text-base font-medium rounded-lg mb-2 hover:bg-pink-200 hover:text-pink-800 hover:translate-x-1 transition-all duration-300">
-                <span>📈</span> Statistik Pendapatan
-            </a>
-        </nav>
-    </aside>
+    <x-sidebar></x-sidebar>
 
     <!-- Main Content -->
     <div class="container mx-auto p-8 w-3/5">
@@ -102,7 +85,7 @@
             <div class="flex items-center">
                 <div class="w-12 h-12 bg-gray-300 rounded-full mr-4"></div>
                 <div>
-                    <div class="font-bold">DONTOL</div>
+                    <div class="font-bold">DENIS</div>
                     <div class="text-gray-500 text-sm">@adittolongindit</div>
                     <div class="text-sm mt-1">Studio nyaman dan alat-alatnya lengkap.</div>
                     <div class="text-yellow-400">★★★★★</div>

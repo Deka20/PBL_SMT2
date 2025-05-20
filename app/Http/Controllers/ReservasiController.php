@@ -28,6 +28,6 @@ class ReservasiController extends Controller
 
     public function statistikPendapatan()
     {
-        return view('statistikpendapatan');
+        return view('admin.statistikpendapatan');
     }
 }

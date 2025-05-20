@@ -1,19 +1,34 @@
 <!DOCTYPE html>
-<html lang="en">
+<html data-theme="light" lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@yield('title', 'My App')</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>@yield('title', 'Potretine')</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
+    <style>
+        .horizontal-modal {
+            min-width: 600px;
+            max-width: 800px;
+            padding: 0;
+        }
+    </style>
+    @stack('styles')
 </head>
-<body>
-    <nav class="navbar navbar-dark bg-dark">
-        <div class="container">
-            <a class="navbar-brand" href="#">My App</a>
-        </div>
-    </nav>
-    <div class="container mt-4">
+
+<body class="bg-white text-black">
+    @include('components.menu')
+
+    <main>
         @yield('content')
-    </div>
+    </main>
+
+    @include('components.footer')
+
+    @stack('scripts')
 </body>
+
 </html>

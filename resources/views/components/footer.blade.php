@@ -1,4 +1,4 @@
-<footer class="footer p-10 text-base-content w-full" id="kontak">
+<footer class="footer p-10 text-base-content w-full bg-[#fef6f6]" id="kontak">
     <div class="w-full mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-center w-full">
             <div class="flex flex-col items-center md:items-start mb-6 md:mb-0 w-full md:w-1/4">
@@ -84,10 +84,14 @@
             </div>
         </div>
 
-        <hr class="border-t-2 border-pink-300 w-full max-w-5xl mx-auto mt-5 mb-5">
-        <div class="text-center py-4 w-full">
-            <span class="text-sm text-gray-500">Copyright © {{ date('Y') }} <a href="#"
-                    class="text-pink-500 hover:underline">Potrétine</a> - All Rights Reserved.</span>
+        <hr class="border-t-2 border-pink-300 w-full max-w-5xl mx-auto mt-5">
+        <div class="text-center py-4 w-full mb-0 pb-0">
+
+            <span class="text-sm text-gray-500">
+                Copyright © {{ date('Y') }}
+                <a href="#" class="text-pink-500 hover:underline">Potrétine</a> - All Rights Reserved.
+            </span>
         </div>
+
     </div>
 </footer>

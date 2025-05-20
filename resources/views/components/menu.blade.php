@@ -102,7 +102,7 @@
                                 <div class="text-gray-500">{{ Auth::user()->email }}</div>
                             </div>
                             <li><a href="/profil">Profil</a></li>
-                            <li><a href="/pengaturan">Pengaturan</a></li>
+                            <li><a href="/keamanan">Pengaturan</a></li>
                             <li>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
@@ -185,8 +185,8 @@
                     </div>
 
                     <ul class="menu menu-vertical w-full">
-                        <li><a href="">Profil</a></li>
-                        <li><a href="">Pengaturan</a></li>
+                        <li><a href="/profil">Profil</a></li>
+                        <li><a href="/keamanan">Pengaturan</a></li>
                     </ul>
 
                     <form method="POST" action="{{ route('logout') }}" class="mt-4">

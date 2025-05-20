@@ -13,20 +13,20 @@ class DashboardController extends Controller
 
     public function pelanggan()
     {
-        return view('pelanggan');
+        return view('admin.pelanggan');
     }
 
     public function pengaturan()
     {
-        return view('pengaturan');
+        return view('admin.pengaturan');
     }
 
     public function ulasan()
     {
-        return view('ulasan');
+        return view('admin.ulasan');
     }
     public function studio()
     {
-        return view('studio');
+        return view('admin.studio');
     }
 }
