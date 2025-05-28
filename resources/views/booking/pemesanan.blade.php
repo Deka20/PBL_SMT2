@@ -27,6 +27,22 @@
         .active-menu:hover {
             filter: brightness(0.85);
         }
+        
+        /* Custom scrollbar for time dropdown */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
     </style>
 </head>
 
@@ -51,106 +67,54 @@
             </div>
         </div>
     </header>
-    <form id="orderForm" class="bg-white rounded-md p-6 w-full max-w-md mx-auto mt-6 shadow-lg ring-1 ring-gray-300">
-        <h2 class="text-center font-semibold mb-1">Form Pemesanan</h2>
-        <p class="text-center text-sm mb-4">Isi form dibawah ini untuk melakukan pemesanan</p>
-        <label class="block text-xs mb-1" for="nama">Nama Lengkap</label>
+    <form id="orderForm" class="bg-white rounded-md p-6 w-full max-w-lg mx-auto mt-6 shadow-lg ring-1 ring-gray-300">
+        <h2 class="text-center font-semibold text-xl mb-2">Form Pemesanan</h2>
+        <p class="text-center text-base mb-6">Isi form dibawah ini untuk melakukan pemesanan</p>
+        <label class="block text-base mb-2" for="nama">Nama Lengkap</label>
         <input id="nama" name="nama" type="text" placeholder="Nama Pelanggan"
-            class="w-full text-xs rounded-md bg-gray-300 placeholder:text-gray-400 px-2 py-1 mb-3" required />
-        <label class="block text-xs mb-1" for="hp">No. Handphone</label>
+            class="w-full text-base rounded-md bg-gray-300 placeholder:text-gray-400 px-4 py-2 mb-4" required />
+        <label class="block text-base mb-2" for="hp">No. Handphone</label>
         <input id="hp" name="hp" type="tel" placeholder="Nomor Handphone"
-            class="w-full text-xs rounded-md bg-gray-300 placeholder:text-gray-400 px-2 py-1 mb-3" required
+            class="w-full text-base rounded-md bg-gray-300 placeholder:text-gray-400 px-4 py-2 mb-4" required
             pattern="[0-9]+" />
-        <label class="block text-xs mb-1" for="studio">Studio</label>
+        <label class="block text-base mb-2" for="studio">Studio</label>
         <input id="studio" name="studio" type="text" placeholder="Studio pilihan pelanggan"
-            class="w-full text-xs rounded-md bg-gray-300 placeholder:text-gray-400 px-2 py-1 mb-3" required />
-        <label class="block text-xs mb-1" for="tanggal">Tanggal</label>
-        <input id="tanggal" name="tanggal" type="date" class="w-full text-xs rounded-md bg-gray-300 px-2 py-1 mb-3"
+            class="w-full text-base rounded-md bg-gray-300 placeholder:text-gray-400 px-4 py-2 mb-4" required />
+        <label class="block text-base mb-2" for="tanggal">Tanggal</label>
+        <input id="tanggal" name="tanggal" type="date" class="w-full text-base rounded-md bg-gray-300 px-4 py-2 mb-4"
             required />
-        <label class="block text-xs mb-1">Jam</label>
-        <div id="jamContainer" class="flex flex-wrap gap-1 mb-3 text-xs">
-            <label class="cursor-pointer">
-                <input type="checkbox" name="jam" value="09.00" class="hidden peer" />
-                <span
-                    class="bg-gray-300 rounded-full px-2 py-0.5 min-w-[38px] inline-block text-center peer-checked:bg-[#f9d6d6] peer-checked:text-black hover:bg-gray-400 transition">09.00</span>
-            </label>
-            <label class="cursor-pointer">
-                <input type="checkbox" name="jam" value="10.00" class="hidden peer" />
-                <span
-                    class="bg-gray-300 rounded-full px-2 py-0.5 min-w-[38px] inline-block text-center peer-checked:bg-[#f9d6d6] peer-checked:text-black hover:bg-gray-400 transition">10.00</span>
-            </label>
-            <label class="cursor-pointer">
-                <input type="checkbox" name="jam" value="11.00" class="hidden peer" />
-                <span
-                    class="bg-gray-300 rounded-full px-2 py-0.5 min-w-[38px] inline-block text-center peer-checked:bg-[#f9d6d6] peer-checked:text-black hover:bg-gray-400 transition">11.00</span>
-            </label>
-            <label class="cursor-pointer">
-                <input type="checkbox" name="jam" value="12.00" class="hidden peer" />
-                <span
-                    class="bg-gray-300 rounded-full px-2 py-0.5 min-w-[38px] inline-block text-center peer-checked:bg-[#f9d6d6] peer-checked:text-black hover:bg-gray-400 transition">12.00</span>
-            </label>
-            <label class="cursor-pointer">
-                <input type="checkbox" name="jam" value="13.00" class="hidden peer" />
-                <span
-                    class="bg-gray-300 rounded-full px-2 py-0.5 min-w-[38px] inline-block text-center peer-checked:bg-[#f9d6d6] peer-checked:text-black hover:bg-gray-400 transition">13.00</span>
-            </label>
-            <label class="cursor-pointer">
-                <input type="checkbox" name="jam" value="14.00" class="hidden peer" />
-                <span
-                    class="bg-gray-300 rounded-full px-2 py-0.5 min-w-[38px] inline-block text-center peer-checked:bg-[#f9d6d6] peer-checked:text-black hover:bg-gray-400 transition">14.00</span>
-            </label>
-            <label class="cursor-pointer">
-                <input type="checkbox" name="jam" value="15.00" class="hidden peer" />
-                <span
-                    class="bg-gray-300 rounded-full px-2 py-0.5 min-w-[38px] inline-block text-center peer-checked:bg-[#f9d6d6] peer-checked:text-black hover:bg-gray-400 transition">15.00</span>
-            </label>
-            <label class="cursor-pointer">
-                <input type="checkbox" name="jam" value="16.00" class="hidden peer" />
-                <span
-                    class="bg-gray-300 rounded-full px-2 py-0.5 min-w-[38px] inline-block text-center peer-checked:bg-[#f9d6d6] peer-checked:text-black hover:bg-gray-400 transition">16.00</span>
-            </label>
-            <label class="cursor-pointer">
-                <input type="checkbox" name="jam" value="17.00" class="hidden peer" />
-                <span
-                    class="bg-gray-300 rounded-full px-2 py-0.5 min-w-[38px] inline-block text-center peer-checked:bg-[#f9d6d6] peer-checked:text-black hover:bg-gray-400 transition">17.00</span>
-            </label>
-            <label class="cursor-pointer">
-                <input type="checkbox" name="jam" value="18.00" class="hidden peer" />
-                <span
-                    class="bg-gray-300 rounded-full px-2 py-0.5 min-w-[38px] inline-block text-center peer-checked:bg-[#f9d6d6] peer-checked:text-black hover:bg-gray-400 transition">18.00</span>
-            </label>
-            <label class="cursor-pointer">
-                <input type="checkbox" name="jam" value="19.00" class="hidden peer" />
-                <span
-                    class="bg-gray-300 rounded-full px-2 py-0.5 min-w-[38px] inline-block text-center peer-checked:bg-[#f9d6d6] peer-checked:text-black hover:bg-gray-400 transition">19.00</span>
-            </label>
-            <label class="cursor-pointer">
-                <input type="checkbox" name="jam" value="20.00" class="hidden peer" />
-                <span
-                    class="bg-gray-300 rounded-full px-2 py-0.5 min-w-[38px] inline-block text-center peer-checked:bg-[#f9d6d6] peer-checked:text-black hover:bg-gray-400 transition">20.00</span>
-            </label>
-            <label class="cursor-pointer">
-                <input type="checkbox" name="jam" value="21.00" class="hidden peer" />
-                <span
-                    class="bg-gray-300 rounded-full px-2 py-0.5 min-w-[38px] inline-block text-center peer-checked:bg-[#f9d6d6] peer-checked:text-black hover:bg-gray-400 transition">21.00</span>
-            </label>
+        
+        <!-- Jam Dropdown -->
+        <label class="block text-base mb-2" for="jamDropdown">Jam</label>
+        <div class="relative mb-4">
+            <button type="button" id="jamDropdownBtn" class="w-full text-left bg-gray-300 rounded-md px-4 py-2 flex justify-between items-center">
+                <span id="selectedJamText">Pilih Jam</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+            <div id="jamDropdown" class="hidden absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto custom-scrollbar">
+                <div class="grid grid-cols-2 gap-1 p-2">
+                    <!-- Jam options will be generated by JavaScript -->
+                </div>
+            </div>
+            <input type="hidden" id="selectedJam" name="jam" value="">
         </div>
-        <label class="block text-xs mb-1">Jumlah Orang</label>
-        <div class="flex items-center gap-2 mb-3 text-xs">
+
+        <label class="block text-base mb-2">Jumlah Orang</label>
+        <div class="flex items-center gap-3 mb-6 text-base">
             <button type="button" id="decrease"
-                class="bg-gray-300 rounded-full w-6 h-6 flex items-center justify-center select-none hover:bg-gray-400 transition">−</button>
+                class="bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center select-none hover:bg-gray-400 transition">−</button>
             <input id="jumlahOrang" name="jumlahOrang" type="number" value="5" min="1" max="20"
-                readonly class="w-10 text-center rounded-md bg-gray-300 text-xs py-1" />
+                readonly class="w-16 text-center rounded-md bg-gray-300 text-base py-2" />
             <button type="button" id="increase"
-                class="bg-gray-300 rounded-full w-6 h-6 flex items-center justify-center select-none hover:bg-gray-400 transition">+</button>
+                class="bg-gray-300 rounded-full w-8 h-8 flex items-center justify-center select-none hover:bg-gray-400 transition">+</button>
         </div>
-        <div class="flex gap-2 mb-4">
+        <div class="flex gap-3 mb-6">
             <input type="text" readonly value="Total Pembayaran"
-                class="flex-1 text-xs rounded-md bg-gray-300 px-2 py-1" />
-            <input type="text" readonly value="Rp." class="w-16 text-xs rounded-md bg-gray-300 px-2 py-1" />
+                class="flex-1 text-base rounded-md bg-gray-300 px-4 py-2" />
+            <input type="text" readonly value="Rp." class="w-20 text-base rounded-md bg-gray-300 px-4 py-2" />
         </div>
         <button type="button" id="konfirmasiPesanan"
-            class="w-full bg-[#f9d6d6] text-black text-[8px] py-1 rounded-sm hover:bg-[#e6bcbc] transition">
+            class="w-full bg-[#f9d6d6] text-black text-base py-3 rounded-sm hover:bg-[#e6bcbc] transition">
             Konfirmasi Pesanan
         </button>
     </form>
@@ -258,6 +222,59 @@
     </div>
 
     <script>
+        // Generate time slots from 09:00 to 21:45 in 15-minute intervals
+        function generateTimeSlots() {
+            const container = document.querySelector('#jamDropdown .grid');
+            container.innerHTML = '';
+            
+            const startHour = 9; // 9 AM
+            const endHour = 21;  // 9 PM
+            const interval = 15; // 15 minutes
+            
+            for (let hour = startHour; hour <= endHour; hour++) {
+                for (let minute = 0; minute < 60; minute += interval) {
+                    if (hour === endHour && minute > 0) break; // Stop at 21:00
+                    
+                    const timeStart = `${hour.toString().padStart(2, '0')}:${minute.toString().padStart(2, '0')}`;
+                    const nextMinute = minute + interval;
+                    const endHourAdj = nextMinute >= 60 ? hour + 1 : hour;
+                    const endMinute = nextMinute % 60;
+                    const timeEnd = `${endHourAdj.toString().padStart(2, '0')}:${endMinute.toString().padStart(2, '0')}`;
+                    
+                    const timeSlot = document.createElement('button');
+                    timeSlot.type = 'button';
+                    timeSlot.className = 'text-left px-3 py-2 text-sm hover:bg-gray-100 rounded';
+                    timeSlot.textContent = `${timeStart}-${timeEnd}`;
+                    timeSlot.dataset.value = `${timeStart}-${timeEnd}`;
+                    
+                    timeSlot.addEventListener('click', function() {
+                        document.getElementById('selectedJam').value = this.dataset.value;
+                        document.getElementById('selectedJamText').textContent = this.textContent;
+                        document.getElementById('jamDropdown').classList.add('hidden');
+                    });
+                    
+                    container.appendChild(timeSlot);
+                }
+            }
+        }
+
+        // Initialize time slots when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            generateTimeSlots();
+            
+            // Toggle dropdown
+            document.getElementById('jamDropdownBtn').addEventListener('click', function() {
+                document.getElementById('jamDropdown').classList.toggle('hidden');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('#jamDropdown') && !e.target.closest('#jamDropdownBtn')) {
+                    document.getElementById('jamDropdown').classList.add('hidden');
+                }
+            });
+        });
+
         // Modal functionality
         const modal = document.querySelector('.modal');
         const overlay = document.querySelector('.modal-overlay');
@@ -274,12 +291,9 @@
             }
 
             // Get selected jam
-            const selectedJam = [];
-            document.querySelectorAll('input[name="jam"]:checked').forEach(input => {
-                selectedJam.push(input.value);
-            });
+            const selectedJam = document.getElementById('selectedJam').value;
 
-            if (selectedJam.length === 0) {
+            if (!selectedJam) {
                 alert('Silakan pilih jam terlebih dahulu');
                 return;
             }
@@ -289,7 +303,7 @@
             const hp = document.getElementById('hp').value;
             const studio = document.getElementById('studio').value;
             const tanggal = document.getElementById('tanggal').value;
-            const jamText = selectedJam.join(', ');
+            const jamText = selectedJam;
             const jumlahOrang = document.getElementById('jumlahOrang').value;
 
             // Format tanggal to readable format
@@ -368,31 +382,6 @@
             formData.append('jam', document.getElementById('payment-jam').textContent);
             formData.append('jumlah', document.getElementById('payment-jumlah').textContent);
             formData.append('total', document.getElementById('payment-total').textContent);
-
-            // Example AJAX request (commented out as it needs a real endpoint)
-            /*
-            fetch('/payment/upload', {
-                method: 'POST',
-                body: formData,
-                // Include CSRF token if needed
-                headers: {
-                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Bukti pembayaran berhasil dikirim');
-                    closeModal();
-                } else {
-                    alert('Gagal mengirim bukti pembayaran: ' + data.message);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Terjadi kesalahan saat mengirim bukti pembayaran');
-            });
-            */
 
             // For demo purposes, show success message and close modal
             alert('Bukti pembayaran berhasil dikirim');

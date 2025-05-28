@@ -10,7 +10,7 @@ use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
-
+use App\Http\Controllers\ListProdukController;
 
 // Halaman Publik
 Route::get('/', function () {
@@ -56,12 +56,27 @@ Route::middleware('auth')->group(function () {
         ->name('user.dashboard');
 });
 
-Route::get('/profil', [ProfilController::class, 'profil'])->name('profil');
-Route::get('/keamanan', [KeamananController::class, 'keamanan'])->name('keamanan');
-Route::get('/riwayat', [RiwayatController::class, 'riwayat'])->name('riwayat');
 Route::get('/pemesanan', [PemesananController::class, 'pemesanan'])->name('pemesanan');
 
 Route::get('/detail-reservasi', [ReservasiController::class, 'detailreservasi'])->name('detailreservasi');
 Route::get('/reservasi', [ReservasiController::class, 'reservasi'])->name('reservasi');
 Route::get('/reservasi-selesai', [ReservasiController::class, 'reservasiselesai'])->name('reservasiselesai');
 Route::get('/reservasi-lunas', [ReservasiController::class, 'reservasilunas'])->name('reservasilunas');
+
+Route::middleware(['auth'])->group(function () {
+    // Profil Routes
+    Route::prefix('profil')->group(function () {
+        Route::get('/', [ProfilController::class, 'profil'])->name('profil');
+        Route::get('/edit', [ProfilController::class, 'edit'])->name('profil.edit');
+        Route::put('/update', [ProfilController::class, 'update'])->name('profil.update');
+    });
+    
+    // Keamanan Routes
+    Route::prefix('keamanan')->group(function () {
+        Route::get('/', [KeamananController::class, 'keamanan'])->name('keamanan');
+        Route::post('/ubah-password', [KeamananController::class, 'ubahPassword'])->name('password.ubah');
+    });
+    
+    // Riwayat Route
+    Route::get('/riwayat', [RiwayatController::class, 'riwayat'])->name('riwayat');
+});

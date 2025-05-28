@@ -5,254 +5,207 @@
     <meta content="width=device-width, initial-scale=1" name="viewport" />
     <title>Riwayat Pemesanan</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet" type="text/css" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet" />
     <style>
-        button {
-            transition: transform 0.2s ease, filter 0.2s ease, background-color 0.2s ease;
-        }
-
-        button:hover {
-            transform: translateY(-2px);
-            filter: brightness(0.85);
-            background-color: #f3f4f6;
-            /* Tailwind gray-100 */
-        }
-
         .active-menu {
             background-color: #f9d6d6;
-            color: black;
-            font-weight: 400;
+            color: #4b5563;
+            font-weight: 500;
         }
 
         .active-menu:hover {
-            filter: brightness(0.85);
+            background-color: #f5c2c2;
+        }
+
+        /* Consistent hover effect for all buttons */
+        .btn-hover-effect {
+            transition: background-color 0.2s ease;
+        }
+        
+        .btn-hover-effect:hover {
+            background-color: #f5c2c2;
+        }
+        
+        /* For ghost buttons */
+        .btn-ghost-hover:hover {
+            background-color: #f9d6d6;
+        }
+        
+        /* Custom scrollbar */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #f9d6d6;
+            border-radius: 10px;
+        }
+        
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #f5c2c2;
         }
     </style>
 </head>
 
-<body class="bg-[#fef6f6] min-h-screen flex flex-col">
-    <header class="flex items-center justify-between px-4 py-3 bg-white shadow-sm relative">
-        <button onclick="window.location.href='/'" class="flex items-center gap-2 text-sm font-normal text-black"
-            type="button">
+<body class="bg-[#fef6f6] min-h-screen">
+    <header class="flex items-center justify-between px-4 py-3 bg-white shadow-sm">
+        <button onclick="window.location.href='/'" class="flex items-center gap-2 text-sm font-medium text-gray-600 btn btn-ghost btn-hover-effect">
             <i class="fas fa-arrow-left"></i>
             Kembali
         </button>
-        <div class="relative">
-            <button aria-label="User profile" id="profileBtn" class="text-black text-lg focus:outline-none"
-                type="button">
-                <i class="fas fa-user-circle"></i>
+        <div class="dropdown dropdown-end">
+            <button tabindex="0" class="btn btn-ghost btn-circle btn-hover-effect">
+                <i class="fas fa-user-circle text-xl text-gray-600"></i>
             </button>
-            <div id="dropdownMenu"
-                class="hidden absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow-md z-10">
-                <button onclick="window.location.href='keluar'"
-                    class="w-full text-left px-4 py-2 text-sm text-black hover:bg-gray-100" type="button">
-                    Keluar
-                </button>
-            </div>
+            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-32">
+                <li><button onclick="window.location.href='keluar'" class="text-sm text-gray-600 btn-hover-effect">Keluar</button></li>
+            </ul>
         </div>
     </header>
-    <main class="flex max-w-4xl bg-white rounded-lg overflow-hidden w-full mx-4 md:mx-auto mt-10">
-        <nav class="flex flex-col w-48 border border-r border-gray-200 hidden md:flex">
-            <button onclick="window.location.href='profil'"
-                class="flex items-center gap-2 px-4 py-3 border-b border-gray-200 text-black font-normal text-sm"
-                type="button">
-                <i class="fas fa-user"></i>
-                Profil
-            </button>
-            <button onclick="window.location.href='keamanan'"
-                class="flex items-center gap-2 px-4 py-3 border-b border-gray-200 text-black font-normal text-sm"
-                ype="button">
-                <i class="fas fa-lock"></i>
-                Keamanan &amp; Privasi
-            </button>
-            <button onclick="window.location.href='riwayat'"
-                class="flex items-center gap-2 px-4 py-3 border-b border-gray-200 text-black font-normal text-sm active-menu"
-                type="button">
-                <i class="fas fa-history"></i>
-                Riwayat Pemesanan
-            </button>
-            <button onclick="window.location.href='keluar'"
-                class="flex items-center gap-2 px-4 py-3 mt-auto bg-[#f9d6d6] text-black font-normal text-sm"
-                type="button">
-                <i class="fas fa-sign-out-alt"></i>
-                Keluar
-            </button>
-        </nav>
-        <section class="flex-1 p-6 relative w-full rounded-lg shadow-lg min-h-[460px] max-h-[460px]">
-            <div class="flex justify-between items-start mb-2">
-                <h2 class="font-semibold text-lg text-black">Riwayat Pemesanan</h2>
-                <div class="flex flex-col items-center text-xs text-gray-500" style="min-width: 3rem">
-                    </label>
-                    <input accept="image/*" class="hidden" id="profile-upload" type="file" />
-                </div>
-            </div>
-            <div class="overflow-y-auto h-[400px] pr-1">
-                <section class="flex items-center px-6 py-4 border-b border-gray-200 w-full" style="">
-                    <img alt="Placeholder circle image 48x48 px in light gray" class="w-12 h-12 rounded-full"
-                        height="48"
-                        src="https://storage.googleapis.com/a1aa/image/3d6745d5-8e69-4701-3b07-ed9250390457.jpg"
-                        width="48" />
-                    <div class="text-black text-sm leading-relaxed flex flex-col gap-1 ml-4 flex-grow">
-                        <p>
-                            Booking ID:
-                        </p>
-                        <p>
-                            Studio:
-                        </p>
-                        <p class="flex items-center justify-between">
-                            <span>
-                                Tanggal:
-                            </span>
-                            <a href="/detail-reservasi">
-                                <button class="bg-[#fcd9db] text-black text-xs rounded-md px-3 py-1" type="button"
-                                    style="">
-                                    Lihat Detail
-                                </button>
-                            </a>
-                        </p>
-                    </div>
-                </section>
-                <section class="flex items-center px-6 py-4 border-b border-gray-200 w-full" style="">
-                    <img alt="Placeholder circle image 48x48 px in light gray" class="w-12 h-12 rounded-full"
-                        height="48"
-                        src="https://storage.googleapis.com/a1aa/image/3d6745d5-8e69-4701-3b07-ed9250390457.jpg"
-                        width="48" />
-                    <div class="text-black text-sm leading-relaxed flex flex-col gap-1 ml-4 flex-grow">
-                        <p>
-                            Booking ID:
-                        </p>
-                        <p>
-                            Studio:
-                        </p>
-                        <p class="flex items-center justify-between">
-                            <span>
-                                Tanggal:
-                            </span>
-                            <a href="/reservasi">
-                                <button class="bg-[#fcd9db] text-black text-xs rounded-md px-3 py-1" type="button"
-                                    style="">
-                                    Lihat Detail
-                                </button></a>
-                        </p>
-                    </div>
-                </section>
-                <section class="flex items-center px-6 py-4 border-b border-gray-200 w-full" style="">
-                    <img alt="Placeholder circle image 48x48 px in light gray" class="w-12 h-12 rounded-full"
-                        height="48"
-                        src="https://storage.googleapis.com/a1aa/image/3d6745d5-8e69-4701-3b07-ed9250390457.jpg"
-                        width="48" />
-                    <div class="text-black text-sm leading-relaxed flex flex-col gap-1 ml-4 flex-grow">
-                        <p>
-                            Booking ID:
-                        </p>
-                        <p>
-                            Studio:
-                        </p>
-                        <p class="flex items-center justify-between">
-                            <span>
-                                Tanggal:
-                            </span>
-                            <a href="/reservasi-lunas">
-                                <button class="bg-[#fcd9db] text-black text-xs rounded-md px-3 py-1" type="button"
-                                    style="">
-                                    Lihat Detail
-                                </button>
-                            </a>
-                        </p>
-                    </div>
-                </section>
-                <section class="flex items-center px-6 py-4 border-b border-gray-200 w-full" style="">
-                    <img alt="Placeholder circle image 48x48 px in light gray" class="w-12 h-12 rounded-full"
-                        height="48"
-                        src="https://storage.googleapis.com/a1aa/image/3d6745d5-8e69-4701-3b07-ed9250390457.jpg"
-                        width="48" />
-                    <div class="text-black text-sm leading-relaxed flex flex-col gap-1 ml-4 flex-grow">
-                        <p>
-                            Booking ID:
-                        </p>
-                        <p>
-                            Studio:
-                        </p>
-                        <p class="flex items-center justify-between">
-                            <span>
-                                Tanggal:
-                            </span>
-                            <a href="/reservasi-selesai">
-                                <button class="bg-[#fcd9db] text-black text-xs rounded-md px-3 py-1" type="button"
-                                    style="">
-                                    Lihat Detail
-                                </button>
-                            </a>
-                        </p>
-                    </div>
-                </section>
-                <section class="flex items-center px-6 py-4 border-b border-gray-200 w-full" style="">
-                    <img alt="Placeholder circle image 48x48 px in light gray" class="w-12 h-12 rounded-full"
-                        height="48"
-                        src="https://storage.googleapis.com/a1aa/image/3d6745d5-8e69-4701-3b07-ed9250390457.jpg"
-                        width="48" />
-                    <div class="text-black text-sm leading-relaxed flex flex-col gap-1 ml-4 flex-grow">
-                        <p>
-                            Booking ID:
-                        </p>
-                        <p>
-                            Studio:
-                        </p>
-                        <p class="flex items-center justify-between">
-                            <span>
-                                Tanggal:
-                            </span>
-                            <button class="bg-[#fcd9db] text-black text-xs rounded-md px-3 py-1" type="button"
-                                style="">
-                                Lihat Detail
-                            </button>
-                        </p>
-                    </div>
-                </section>
-                <section class="flex items-center px-6 py-4 border-b border-gray-200 w-full" style="">
-                    <img alt="Placeholder circle image 48x48 px in light gray" class="w-12 h-12 rounded-full"
-                        height="48"
-                        src="https://storage.googleapis.com/a1aa/image/3d6745d5-8e69-4701-3b07-ed9250390457.jpg"
-                        width="48" />
-                    <div class="text-black text-sm leading-relaxed flex flex-col gap-1 ml-4 flex-grow">
-                        <p>
-                            Booking ID:
-                        </p>
-                        <p>
-                            Studio:
-                        </p>
-                        <p class="flex items-center justify-between">
-                            <span>
-                                Tanggal:
-                            </span>
-                            <button class="bg-[#fcd9db] text-black text-xs rounded-md px-3 py-1" type="button"
-                                style="">
-                                Lihat Detail
-                            </button>
-                        </p>
-                    </div>
-                </section>
-            </div>
-        </section>
-    </main>
-    <script>
-        const profileBtn = document.getElementById("profileBtn");
-        const dropdownMenu = document.getElementById("dropdownMenu");
 
-        profileBtn.addEventListener("click", () => {
-            dropdownMenu.classList.toggle("hidden");
+    <main class="flex justify-center items-start min-h-[calc(100vh-64px)] p-4">
+        <div class="flex flex-col md:flex-row w-full max-w-5xl bg-white rounded-lg shadow-lg overflow-hidden">
+            <!-- Mobile Menu -->
+            <div class="md:hidden flex overflow-x-auto border-b border-gray-200 bg-gray-50">
+                <button onclick="window.location.href='profil'" class="flex-shrink-0 px-4 py-3 text-base font-medium text-gray-600 btn-hover-effect">
+                    <i class="fas fa-user mr-2 text-lg"></i>Profil
+                </button>
+                <button onclick="window.location.href='/keamanan'" class="flex-shrink-0 px-4 py-3 text-base font-medium text-gray-600 btn-hover-effect">
+                    <i class="fas fa-lock mr-2 text-lg"></i>Keamanan
+                </button>
+                <button onclick="window.location.href='/riwayat'" class="flex-shrink-0 px-4 py-3 text-base font-medium active-menu btn-hover-effect">
+                    <i class="fas fa-history mr-2 text-lg"></i>Riwayat
+                </button>
+                <button onclick="window.location.href=''" class="flex items-center gap-2 px-4 py-3 mt-auto font-normal text-sm btn-hover-effect">
+                    <i class="fas fa-sign-out-alt"></i>Keluar
+                </button>
+            </div>
+
+            <!-- Desktop Menu -->
+            <nav class="hidden md:flex flex-col w-64 border-r border-gray-200 bg-gray-50 p-2">
+                <button onclick="window.location.href='{{ route('profil') }}'" class="flex items-center gap-3 px-4 py-4 border-b border-gray-200 text-base font-medium text-gray-600 btn-hover-effect">
+                    <i class="fas fa-user text-lg"></i>Profil
+                </button>
+                <button onclick="window.location.href='{{ route('keamanan') }}'" class="flex items-center gap-3 px-4 py-4 border-b border-gray-200 text-base font-medium text-gray-600 btn-hover-effect">
+                    <i class="fas fa-lock text-lg"></i>Keamanan & Privasi
+                </button>
+                <button onclick="window.location.href='{{ route('riwayat') }}'" class="flex items-center gap-3 px-4 py-4 border-b border-gray-200 text-base font-medium active-menu btn-hover-effect">
+                    <i class="fas fa-history text-lg"></i>Riwayat Pemesanan
+                </button>
+                <button onclick="window.location.href=''" class="flex items-center gap-2 px-4 py-3 mt-auto font-normal text-sm btn-hover-effect">
+                    <i class="fas fa-sign-out-alt"></i>Keluar
+                </button>
+            </nav>
+
+            <!-- Content Section -->
+            <section class="flex-1 p-8 w-full">
+                <div class="flex justify-between items-start mb-6">
+                    <h2 class="text-2xl font-semibold text-gray-700">Riwayat Pemesanan</h2>
+                </div>
+
+                <div class="custom-scrollbar overflow-y-auto max-h-[calc(100vh-220px)] pr-2">
+                    <!-- Booking Item 1 -->
+                    <div class="flex items-center p-4 border-b border-gray-200 hover:bg-gray-50 rounded-lg transition">
+                        <img class="w-12 h-12 rounded-full" src="https://storage.googleapis.com/a1aa/image/3d6745d5-8e69-4701-3b07-ed9250390457.jpg" alt="Studio photo" />
+                        <div class="text-gray-700 text-sm ml-4 flex-grow">
+                            <p class="font-medium">Booking ID: #12345</p>
+                            <p>Studio: Studio A</p>
+                            <div class="flex items-center justify-between mt-1">
+                                <span>Tanggal: 12 Jan 2023</span>
+                                <a href="/detail-reservasi" class="btn btn-xs bg-[#f9d6d6] text-gray-700 border-none btn-hover-effect">Lihat Detail</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Booking Item 2 -->
+                    <div class="flex items-center p-4 border-b border-gray-200 hover:bg-gray-50 rounded-lg transition">
+                        <img class="w-12 h-12 rounded-full" src="https://storage.googleapis.com/a1aa/image/3d6745d5-8e69-4701-3b07-ed9250390457.jpg" alt="Studio photo" />
+                        <div class="text-gray-700 text-sm ml-4 flex-grow">
+                            <p class="font-medium">Booking ID: #12346</p>
+                            <p>Studio: Studio B</p>
+                            <div class="flex items-center justify-between mt-1">
+                                <span>Tanggal: 15 Jan 2023</span>
+                                <a href="/reservasi" class="btn btn-xs bg-[#f9d6d6] text-gray-700 border-none btn-hover-effect">Lihat Detail</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Booking Item 3 -->
+                    <div class="flex items-center p-4 border-b border-gray-200 hover:bg-gray-50 rounded-lg transition">
+                        <img class="w-12 h-12 rounded-full" src="https://storage.googleapis.com/a1aa/image/3d6745d5-8e69-4701-3b07-ed9250390457.jpg" alt="Studio photo" />
+                        <div class="text-gray-700 text-sm ml-4 flex-grow">
+                            <p class="font-medium">Booking ID: #12347</p>
+                            <p>Studio: Studio C</p>
+                            <div class="flex items-center justify-between mt-1">
+                                <span>Tanggal: 18 Jan 2023</span>
+                                <a href="/reservasi-lunas" class="btn btn-xs bg-[#f9d6d6] text-gray-700 border-none btn-hover-effect">Lihat Detail</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Booking Item 4 -->
+                    <div class="flex items-center p-4 border-b border-gray-200 hover:bg-gray-50 rounded-lg transition">
+                        <img class="w-12 h-12 rounded-full" src="https://storage.googleapis.com/a1aa/image/3d6745d5-8e69-4701-3b07-ed9250390457.jpg" alt="Studio photo" />
+                        <div class="text-gray-700 text-sm ml-4 flex-grow">
+                            <p class="font-medium">Booking ID: #12348</p>
+                            <p>Studio: Studio D</p>
+                            <div class="flex items-center justify-between mt-1">
+                                <span>Tanggal: 20 Jan 2023</span>
+                                <a href="/reservasi-selesai" class="btn btn-xs bg-[#f9d6d6] text-gray-700 border-none btn-hover-effect">Lihat Detail</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Booking Item 5 -->
+                    <div class="flex items-center p-4 border-b border-gray-200 hover:bg-gray-50 rounded-lg transition">
+                        <img class="w-12 h-12 rounded-full" src="https://storage.googleapis.com/a1aa/image/3d6745d5-8e69-4701-3b07-ed9250390457.jpg" alt="Studio photo" />
+                        <div class="text-gray-700 text-sm ml-4 flex-grow">
+                            <p class="font-medium">Booking ID: #12349</p>
+                            <p>Studio: Studio E</p>
+                            <div class="flex items-center justify-between mt-1">
+                                <span>Tanggal: 22 Jan 2023</span>
+                                <button class="btn btn-xs bg-[#f9d6d6] text-gray-700 border-none btn-hover-effect">Lihat Detail</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Booking Item 6 -->
+                    <div class="flex items-center p-4 border-b border-gray-200 hover:bg-gray-50 rounded-lg transition">
+                        <img class="w-12 h-12 rounded-full" src="https://storage.googleapis.com/a1aa/image/3d6745d5-8e69-4701-3b07-ed9250390457.jpg" alt="Studio photo" />
+                        <div class="text-gray-700 text-sm ml-4 flex-grow">
+                            <p class="font-medium">Booking ID: #12350</p>
+                            <p>Studio: Studio F</p>
+                            <div class="flex items-center justify-between mt-1">
+                                <span>Tanggal: 25 Jan 2023</span>
+                                <button class="btn btn-xs bg-[#f9d6d6] text-gray-700 border-none btn-hover-effect">Lihat Detail</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script>
+        // Handle dropdown menu
+        const profileBtn = document.querySelector('.dropdown button');
+        const dropdownMenu = document.querySelector('.dropdown-content');
+
+        profileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdownMenu.classList.toggle('hidden');
         });
 
-        // Close dropdown if clicked outside
-        window.addEventListener("click", (e) => {
-            if (
-                !profileBtn.contains(e.target) &&
-                !dropdownMenu.contains(e.target)
-            ) {
-                dropdownMenu.classList.add("hidden");
-            }
+        // Close dropdown when clicking outside
+        document.addEventListener('click', () => {
+            dropdownMenu.classList.add('hidden');
         });
     </script>
 </body>
-
 </html>
