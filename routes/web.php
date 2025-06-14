@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfilController;
@@ -7,16 +8,19 @@ use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\KeamananController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PemesananController;
+use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ListProdukController;
+use App\Http\Controllers\Auth\RegisterController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 // Halaman Publik
-Route::get('/', function () {
-    return view('pages.home');
-})->name('pages.home');
+Route::get('/', [HomeController::class, 'index'])->name('pages.home');
+Route::prefix('api')->middleware('api')->group(function () {
+    Route::get('/studio/{id}', [App\Http\Controllers\DashboardController::class, 'show'])->name('api.studio.show');
+    // ... (rute API lainnya)
+});
 
 // Auth Routes
 Route::middleware('guest')->group(function () {
@@ -44,8 +48,11 @@ Route::prefix('admin')->middleware(['auth', AdminMiddleware::class])->group(func
         ->name('admin.dashboard');
     
     // Pindahkan routes admin-only ke sini
-    Route::get('/pelanggan', [DashboardController::class, 'pelanggan'])->name('pelanggan');
-    Route::get('/pengaturan', [DashboardController::class, 'pengaturan'])->name('pengaturan');
+     Route::get('/pelanggan', [DashboardController::class, 'pelanggan'])->name('pelanggan');
+    Route::get('/pelanggan/{id}', [DashboardController::class, 'showPelanggan'])->name('pelanggan.show');
+    Route::put('/pelanggan/{id}', [DashboardController::class, 'updatePelanggan'])->name('pelanggan.update'); // Jika menggunakan POST dengan _method=PUT
+    // Atau Route::put('/pelanggan/{id}', [DashboardController::class, 'updatePelanggan']);
+    Route::delete('/pelanggan/{id}', [DashboardController::class, 'deletePelanggan'])->name('pelanggan.destroy');
 
     Route::get('/ulasan', [DashboardController::class, 'ulasan'])->name('ulasan');
     Route::get('/statistik-pendapatan', [ReservasiController::class, 'statistikpendapatan'])->name('statistikpendapatan');
@@ -56,6 +63,10 @@ Route::prefix('admin')->middleware(['auth', AdminMiddleware::class])->group(func
     Route::put('/studio/{id}', [DashboardController::class, 'updateStudio'])->name('studio.update');
     Route::delete('/studio/{id}', [DashboardController::class, 'deleteStudio'])->name('studio.destroy');
     Route::get('studio/{id}', [DashboardController::class, 'show'])->name('studio.show');
+
+    Route::get('/pengaturan', [DashboardController::class, 'pengaturan'])->name('pengaturan');
+    Route::post('/pengaturan', [PortfolioController::class, 'store'])->name('pengaturan.store');
+    Route::delete('/pengaturan/{portfolio}', [PortfolioController::class, 'destroy'])->name('pengaturan.destroy');
 });
 
 // User Authenticated Routes

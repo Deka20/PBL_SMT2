@@ -42,13 +42,10 @@
             display: flex;
         }
 
-        .fade-in {
-            opacity: 0;
-            transition: opacity 0.5s ease-in;
-        }
-
-        .fade-in.show {
+        /* DaisyUI modal-open class handles fade-in effect */
+        .modal.modal-open {
             opacity: 1;
+            visibility: visible;
         }
     </style>
 </head>
@@ -61,6 +58,7 @@
         </div>
     </div>
 
+    {{-- Assuming x-sidebar is a Blade component --}}
     <x-sidebar></x-sidebar>
 
     <div class="ml-64 p-5 flex-1">
@@ -80,7 +78,7 @@
                             <th class="text-center">Nama Studio</th>
                             <th class="text-center">Harga</th>
                             <th class="text-center">Gambar</th>
-                            <th class="text-center">Dibuat Pada</th>
+                            <th class="text-center">Kapasitas</th>
                             <th class="text-center">Diubah Pada</th>
                             <th class="text-center">Aksi</th>
                         </tr>
@@ -107,7 +105,7 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    {{ $studio->dibuat_pada ? $studio->dibuat_pada->format('d/m/Y H:i') : '-' }}</td>
+                                    {{ $studio->kapasitas }}</td>
                                 <td class="text-center">
                                     {{ $studio->diubah_pada ? $studio->diubah_pada->format('d/m/Y H:i') : '-' }}</td>
                                 <td class="text-center">
@@ -133,6 +131,7 @@
         </div>
     </div>
 
+    {{-- Image Preview Modal --}}
     <div id="imageModal" class="modal">
         <div class="modal-box max-w-4xl p-0 relative">
             <button class="btn btn-sm btn-circle absolute right-2 top-2 z-10" onclick="closeImageModal()">✕</button>
@@ -143,6 +142,7 @@
         </div>
     </div>
 
+    {{-- Add/Edit Studio Modal --}}
     <div id="studioModal" class="modal">
         <div class="modal-box w-11/12 max-w-2xl">
             <button class="btn btn-sm btn-circle absolute right-2 top-2" onclick="closeStudioModal()">✕</button>
@@ -151,9 +151,10 @@
                 <span id="modalTitleText" class="text-pink-600">Tambah Studio Baru</span>
             </h2>
 
-            <form id="studioForm" enctype="multipart/form-data" method="POST">
+            <form id="studioForm" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" id="id_studio" name="id_studio">
+                {{-- This hidden input is crucial for Laravel to interpret PUT/PATCH requests from a POST form --}}
                 <input type="hidden" name="_method" id="formMethod" value="POST">
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -187,6 +188,15 @@
                             </div>
                             <span id="error-harga" class="text-error text-sm mt-1"></span>
                         </div>
+
+                        <div class="form-control mb-3">
+                            <label class="label">
+                                <span class="label-text">Kapasitas</span>
+                            </label>
+                            <input type="number" id="kapasitas" name="kapasitas"
+                                class="input input-bordered w-full" required min="1">
+                            <span id="error-kapasitas" class="text-error text-sm mt-1"></span>
+                        </div>
                     </div>
 
                     <div>
@@ -209,7 +219,7 @@
                                     class="w-40 h-40 object-cover rounded-lg border-2 border-dashed border-gray-300 hidden">
                                 <button type="button" id="removeImageBtn"
                                     class="absolute top-0 right-0 btn btn-xs btn-circle btn-error -mt-2 -mr-2 hidden">
-                                    <i class="fas fa-times"></i>
+                                    <i class="fas fa-times text-white"></i>
                                 </button>
                                 <div id="noImagePlaceholder"
                                     class="w-40 h-40 bg-gray-100 rounded-lg flex items-center justify-center">
@@ -232,6 +242,7 @@
         </div>
     </div>
 
+    {{-- Error Modal --}}
     <div id="errorModal" class="modal">
         <div class="modal-box">
             <h3 class="font-bold text-lg text-error">
@@ -244,6 +255,7 @@
         </div>
     </div>
 
+    {{-- Confirmation Delete Modal --}}
     <div id="confirmDeleteModal" class="modal">
         <div class="modal-box">
             <h3 class="font-bold text-lg">
@@ -272,17 +284,30 @@
         const removeImageBtn = document.getElementById('removeImageBtn');
         const gambarInput = document.getElementById('gambar');
 
+        /**
+         * Toggles the visibility of the loading overlay.
+         * @param {boolean} show - True to show, false to hide.
+         */
         function toggleLoading(show) {
             loadingOverlay.classList.toggle('active', show);
         }
 
+        /**
+         * Displays a generic error message in the error modal.
+         * @param {string} message - The main error message.
+         * @param {object} [errors={}] - Optional object containing field-specific validation errors.
+         */
         function showError(message, errors = {}) {
             let errorHtml = `<span>${message}</span>`;
             if (Object.keys(errors).length > 0) {
                 errorHtml += '<ul class="list-disc list-inside mt-2">';
                 for (const field in errors) {
                     errors[field].forEach(error => {
-                        errorHtml += `<li>${error}</li>`;
+                        // Display actual field name if possible, or just the error
+                        const fieldName = document.querySelector(`label[for="${field}"] .label-text`)
+                            ?.textContent ||
+                            field;
+                        errorHtml += `<li>${fieldName}: ${error}</li>`;
                     });
                 }
                 errorHtml += '</ul>';
@@ -291,10 +316,18 @@
             errorModal.classList.add('modal-open');
         }
 
+        /**
+         * Closes the error modal.
+         */
         function closeErrorModal() {
             errorModal.classList.remove('modal-open');
         }
 
+        /**
+         * Shows the image preview modal.
+         * @param {string} src - The image source URL.
+         * @param {string} caption - The caption for the image.
+         */
         function showImageModal(src, caption) {
             const modal = document.getElementById('imageModal');
             document.getElementById('modalImage').src = src;
@@ -302,57 +335,97 @@
             modal.classList.add('modal-open');
         }
 
+        /**
+         * Closes the image preview modal.
+         */
         function closeImageModal() {
             document.getElementById('imageModal').classList.remove('modal-open');
         }
 
+        /**
+         * Opens the studio creation/edit modal.
+         * @param {'add'|'edit'} mode - The mode of the modal ('add' or 'edit').
+         * @param {object} [studioData=null] - The studio data object when in 'edit' mode.
+         */
         function openStudioModal(mode = 'add', studioData = null) {
-            console.log('Membuka modal dengan mode:', mode, 'dan data:', studioData);
-
             const modalTitleText = document.getElementById('modalTitleText');
-            const formMethod = document.getElementById('formMethod');
+            const formMethod = document.getElementById('formMethod'); // Hidden input for _method
 
-            modalTitleText.textContent = mode === 'add' ? 'Tambah Studio Baru' : 'Edit Studio';
-            formMethod.value = mode === 'add' ? 'POST' : 'PUT';
-
-            clearValidationErrors();
+            clearValidationErrors(); // Always clear previous errors
 
             if (mode === 'add') {
-                studioForm.reset();
-                studioForm.action = "{{ route('studio.store') }}";
-                updateImagePreview(null);
+                modalTitleText.textContent = 'Tambah Studio Baru';
+                studioForm.reset(); // Clear form fields
+                studioForm.action = "{{ route('studio.store') }}"; // Set action for store
+                formMethod.value = 'POST'; // Set method to POST
+                document.getElementById('id_studio').value = ''; // Ensure ID is empty for add
+                updateImagePreview(null); // Clear image preview
             } else if (studioData) {
-                studioForm.action = `/admin/studio/${studioData.id_studio}`;
+                modalTitleText.textContent = 'Edit Studio';
+                studioForm.action = `/admin/studio/${studioData.id_studio}`; // Set action for update
+                formMethod.value = 'POST'; // Laravel expects POST with _method for PUT/PATCH
+                // Set hidden input for actual PUT/PATCH method, if your backend requires it specifically
+                const methodOverride = document.createElement('input');
+                methodOverride.type = 'hidden';
+                methodOverride.name = '_method';
+                methodOverride.value = 'PUT'; // Or 'PATCH'
+                studioForm.appendChild(methodOverride);
+
                 document.getElementById('id_studio').value = studioData.id_studio;
                 document.getElementById('jenis_studio').value = studioData.jenis_studio || '';
                 document.getElementById('nama_studio').value = studioData.nama_studio || '';
                 document.getElementById('harga').value = studioData.harga || '';
-                updateImagePreview(studioData.gambar);
+                document.getElementById('kapasitas').value = studioData.kapasitas || '';
+                updateImagePreview(studioData.gambar); // Set image preview
             }
 
             studioModal.classList.add('modal-open');
         }
 
+        /**
+         * Closes the studio creation/edit modal.
+         */
         function closeStudioModal() {
             studioModal.classList.remove('modal-open');
             clearValidationErrors();
             studioForm.reset();
-            updateImagePreview(null);
+            updateImagePreview(null); // Ensure image preview is reset
+            // Remove the _method hidden input if it was added for editing
+            const methodOverride = studioForm.querySelector('input[name="_method"][value="PUT"]');
+            if (methodOverride) {
+                methodOverride.remove();
+            }
         }
 
+        /**
+         * Opens the delete confirmation modal.
+         * @param {number} id - The ID of the studio to be deleted.
+         */
         function openDeleteModal(id) {
             currentStudioId = id;
             confirmDeleteModal.classList.add('modal-open');
         }
 
+        /**
+         * Closes the delete confirmation modal.
+         */
         function closeDeleteModal() {
             confirmDeleteModal.classList.remove('modal-open');
             currentStudioId = null;
         }
 
+        /**
+         * Updates the image preview display.
+         * @param {string|null} imagePath - The path to the image or null to clear.
+         */
         function updateImagePreview(imagePath) {
             if (imagePath) {
-                imagePreview.src = "{{ asset('storage/') }}/" + imagePath;
+                // Check if it's a full URL (e.g., from FileReader) or a storage path
+                if (imagePath.startsWith('blob:') || imagePath.startsWith('data:')) {
+                    imagePreview.src = imagePath;
+                } else {
+                    imagePreview.src = "{{ asset('storage/') }}/" + imagePath;
+                }
                 imagePreview.classList.remove('hidden');
                 noImagePlaceholder.classList.add('hidden');
                 removeImageBtn.classList.remove('hidden');
@@ -364,26 +437,42 @@
             }
         }
 
+        /**
+         * Displays validation errors received from the server.
+         * Adds 'border-error' class to input fields and shows messages.
+         * @param {object} errors - An object where keys are field names and values are arrays of error messages.
+         */
         function showValidationErrors(errors) {
+            clearValidationErrors(); // Clear existing errors first
             for (const field in errors) {
                 const errorElement = document.getElementById(`error-${field}`);
                 const inputElement = document.getElementById(field);
+
                 if (errorElement) {
-                    errorElement.textContent = errors[field][0];
-                    if (inputElement) {
-                        inputElement.classList.add('border-error');
-                    }
+                    errorElement.textContent = errors[field][0]; // Display the first error message
+                }
+                if (inputElement) {
+                    inputElement.classList.add('border-error'); // Add error border to input
                 }
             }
         }
 
+        /**
+         * Clears all displayed validation error messages and removes error borders from inputs.
+         */
         function clearValidationErrors() {
-            const errorElements = document.querySelectorAll('[id^="error-"]');
-            errorElements.forEach(el => el.textContent = '');
-            const inputElements = document.querySelectorAll('.input-bordered');
-            inputElements.forEach(el => el.classList.remove('border-error'));
+            document.querySelectorAll('[id^="error-"]').forEach(el => {
+                el.textContent = '';
+            });
+            document.querySelectorAll('.input-bordered.border-error').forEach(el => {
+                el.classList.remove('border-error');
+            });
         }
 
+        /**
+         * Fetches studio data from the server for editing.
+         * @param {number} id - The ID of the studio to fetch.
+         */
         async function fetchStudioData(id) {
             toggleLoading(true);
 
@@ -393,8 +482,6 @@
                 }
                 const studioId = parseInt(id);
 
-                console.log('Mengambil data studio dengan ID:', studioId);
-
                 const response = await fetch(`/admin/studio/${studioId}`, {
                     method: 'GET',
                     headers: {
@@ -403,200 +490,214 @@
                     }
                 });
 
-                console.log('Status respons:', response.status);
-                const responseText = await response.text();
-                console.log('Teks respons mentah:', responseText);
-
-                let data;
-                try {
-                    data = JSON.parse(responseText);
-                } catch (e) {
-                    throw new Error(
-                        `Respons tidak valid JSON. Status: ${response.status}. Isi: ${responseText.substring(0, 200)}...`
-                    );
-                }
+                const data = await response.json(); // Always try to parse JSON
 
                 if (!response.ok) {
-                    const message = data.message || `HTTP error! Status: ${response.status}.`;
-                    showError(message, data.errors || {});
+                    // If not OK, it's an error. Use the message from data if available.
+                    showError(data.message || `Terjadi kesalahan saat memuat data studio. Status: ${response.status}.`,
+                        data
+                        .errors);
                     return;
                 }
 
-                if (!data.success) {
-                    showError(data.message || 'Gagal memuat data studio dari server.', data.errors || {});
-                    return;
+                if (data.success) {
+                    openStudioModal('edit', data.data);
+                } else {
+                    showError(data.message || 'Gagal memuat data studio dari server.', data.errors);
                 }
-
-                console.log('Data studio berhasil diterima:', data.data);
-                openStudioModal('edit', data.data);
 
             } catch (error) {
                 console.error('Error in fetchStudioData:', error);
-                showError(error.message || 'Terjadi kesalahan saat memuat data studio.');
+                showError(error.message || 'Terjadi kesalahan jaringan atau server saat memuat data studio.');
             } finally {
                 toggleLoading(false);
             }
         }
 
+        /**
+         * Sends a request to delete a studio.
+         * @param {number} id - The ID of the studio to delete.
+         */
         async function deleteStudio(id) {
+            toggleLoading(true);
+            closeDeleteModal(); // Close confirmation modal immediately
+
+            try {
+                const response = await fetch(`/admin/studio/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || `Gagal menghapus studio. Status: ${response.status}`);
+                }
+
+                if (data.success) {
+                    window.location.reload(); // Reload page on success
+                } else {
+                    showError(data.message || 'Terjadi kesalahan saat menghapus studio.');
+                }
+
+            } catch (error) {
+                console.error('Error deleting studio:', error);
+                showError(error.message || 'Terjadi kesalahan jaringan atau server saat menghapus studio.');
+            } finally {
+                toggleLoading(false);
+            }
+        }
+
+        // --- Event Listeners ---
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add Studio Button Click
+            document.getElementById('addStudioBtn').addEventListener('click', () => {
+                openStudioModal('add');
+            });
+
+            // Edit and Delete Buttons (Event Delegation)
+            document.addEventListener('click', function(e) {
+                const editBtn = e.target.closest('.edit-studio-btn');
+                const deleteBtn = e.target.closest('.delete-studio-btn');
+
+                if (editBtn) {
+                    const studioId = editBtn.dataset.id;
+                    fetchStudioData(studioId);
+                }
+
+                if (deleteBtn) {
+                    const studioId = deleteBtn.dataset.id;
+                    openDeleteModal(studioId);
+                }
+            });
+
+            // Image Input Change (for preview)
+            gambarInput.addEventListener('change', function() {
+                if (this.files && this.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        updateImagePreview(e.target.result); // Pass the Data URL for preview
+                    }
+                    reader.readAsDataURL(this.files[0]);
+                } else {
+                    updateImagePreview(null); // Clear preview if no file selected
+                }
+            });
+
+            // Remove Image Button
+            removeImageBtn.addEventListener('click', function() {
+                gambarInput.value = ''; // Clear the file input
+                updateImagePreview(null); // Clear the image preview
+            });
+
+            // Confirm Delete Button
+            document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+                if (currentStudioId) {
+                    deleteStudio(currentStudioId);
+                }
+            });
+
+            // Studio Form Submission
+            studioForm.addEventListener('submit', async function(e) {
+                e.preventDefault();
+
+                const submitBtn = document.getElementById('submitBtn');
+                const originalBtnText = submitBtn.innerHTML;
+
+                if (submitBtn.disabled) return; // Prevent double submission
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="loading loading-spinner"></span> Menyimpan...';
                 toggleLoading(true);
-                closeDeleteModal();
+                clearValidationErrors(); // Clear errors before new submission
 
                 try {
-                    const response = await fetch(`/admin/studio/${id}`, {
-                        method: 'DELETE',
+                    const formData = new FormData(this);
+                    const response = await fetch(this.action, {
+                        method: 'POST', // Always POST for form submission, Laravel handles _method
+                        body: formData,
                         headers: {
-                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
+                                .content,
                             'Accept': 'application/json'
                         }
                     });
 
-                    const data = await response.json();
+                    const data = await response.json(); // Always parse JSON
 
                     if (!response.ok) {
-                        throw new Error(data.message || 'Gagal menghapus studio');
+                        if (response.status === 422 && data.errors) {
+                            showValidationErrors(data.errors);
+                            showError('Terjadi kesalahan validasi. Mohon periksa kembali input Anda.',
+                                data
+                                .errors); // Show summary error
+                        } else {
+                            showError(data.message ||
+                                `Terjadi kesalahan. Status: ${response.status}.`); // Generic error
+                        }
+                        return; // Stop if there are errors
                     }
 
                     if (data.success) {
-                        window.location.reload();
+                        closeStudioModal();
+                        window.location.reload(); // Reload the page to show updated data
                     } else {
-                        showError(data.message || 'Terjadi kesalahan saat menghapus studio.');
+                        showError(data.message || 'Operasi gagal.');
                     }
 
                 } catch (error) {
-                    console.error('Error deleting studio:', error);
-                    showError(error.message || 'Terjadi kesalahan saat menghapus studio.');
+                    console.error('Error submitting form:', error);
+                    showError(error.message ||
+                        'Terjadi kesalahan jaringan atau server saat menyimpan data.');
                 } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = originalBtnText;
                     toggleLoading(false);
                 }
-            } -
-            document.addEventListener('DOMContentLoaded', function() {
+            });
 
-                document.getElementById('addStudioBtn').addEventListener('click', () => {
-                    openStudioModal('add');
-                });
-
-                document.addEventListener('click', function(e) {
-                    if (e.target.closest('.edit-studio-btn')) {
-                        const studioId = e.target.closest('.edit-studio-btn').dataset.id;
-                        fetchStudioData(studioId);
-                    }
-
-                    if (e.target.closest('.delete-studio-btn')) {
-                        const studioId = e.target.closest('.delete-studio-btn').dataset.id;
-                        openDeleteModal(studioId);
-                    }
-                });
-
-                gambarInput.addEventListener('change', function(e) {
-                    if (this.files && this.files[0]) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            updateImagePreview(e.target.result);
-                        }
-                        reader.readAsDataURL(this.files[0]);
-                    } else {
-                        updateImagePreview(null);
-                    }
-                });
-
-                // Remove Image Button
-                removeImageBtn.addEventListener('click', function() {
-                    gambarInput.value = '';
-                    updateImagePreview(null);
-                });
-
-                document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
-                    deleteStudio(currentStudioId);
-                });
-
-                studioForm.addEventListener('submit', async function(e) {
-                    e.preventDefault();
-
-                    const submitBtn = document.getElementById('submitBtn');
-                    const originalBtnText = submitBtn.innerHTML;
-
-                    if (submitBtn.disabled) return;
-
-                    // Show loading state
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<span class="loading loading-spinner"></span> Menyimpan...';
-                    toggleLoading(true);
-                    clearValidationErrors();
-
-                    try {
-                        const formData = new FormData(this);
-                        const method = document.getElementById('formMethod').value;
-
-
-                        const actualMethod = (method === 'PUT' || method === 'PATCH') ? 'POST' : method;
-
-                        const response = await fetch(this.action, {
-                            method: actualMethod,
-                            body: formData,
-                            headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')
-                                    .content,
-                                'Accept': 'application/json'
-                            }
-                        });
-
-                        const responseText = await response.text();
-                        console.log('Teks respons form submit:', responseText);
-
-                        let data;
-                        try {
-                            data = JSON.parse(responseText);
-                        } catch (jsonError) {
-                            throw new Error(
-                                `Respon server tidak dalam format JSON yang valid. Status: ${response.status}. Isi: ${responseText.substring(0, 200)}...`
-                            );
-                        }
-
-                        if (!response.ok) {
-                            if (response.status === 422 && data.errors) {
-                                showValidationErrors(data.errors);
-                                showError('Terjadi kesalahan validasi. Mohon periksa kembali input Anda.',
-                                    data.errors);
-                            } else {
-                                showError(data.message || `Terjadi kesalahan. Status: ${response.status}.`);
-                            }
-                            return;
-                        }
-
-                        if (data.success) {
+            // Close modals when clicking outside
+            document.querySelectorAll('.modal').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target ===
+                        this) { // Only close if the click is directly on the modal backdrop
+                        this.classList.remove('modal-open');
+                        // Specific handling for studioModal to clear form/preview on close
+                        if (this.id === 'studioModal') {
                             closeStudioModal();
-                            window.location.reload();
-                        } else {
-                            showError(data.message || 'Operasi gagal.');
+                        } else if (this.id === 'imageModal') {
+                            closeImageModal();
+                        } else if (this.id === 'confirmDeleteModal') {
+                            closeDeleteModal();
+                        } else if (this.id === 'errorModal') {
+                            closeErrorModal();
                         }
-
-                    } catch (error) {
-                        console.error('Error submitting form:', error);
-                        showError(error.message || 'Terjadi kesalahan saat menyimpan data.');
-                    } finally {
-                        submitBtn.disabled = false;
-                        submitBtn.innerHTML = originalBtnText;
-                        toggleLoading(false);
-                    }
-                });
-
-                document.querySelectorAll('.modal').forEach(modal => {
-                    modal.addEventListener('click', function(e) {
-                        if (e.target === this) {
-                            this.classList.remove('modal-open');
-                        }
-                    });
-                });
-
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape') {
-                        document.querySelectorAll('.modal.modal-open').forEach(modal => {
-                            modal.classList.remove('modal-open');
-                        });
                     }
                 });
             });
+
+            // Close modals with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    document.querySelectorAll('.modal.modal-open').forEach(modal => {
+                        modal.classList.remove('modal-open');
+                        // Specific handling for studioModal to clear form/preview on close
+                        if (modal.id === 'studioModal') {
+                            closeStudioModal();
+                        } else if (modal.id === 'imageModal') {
+                            closeImageModal();
+                        } else if (modal.id === 'confirmDeleteModal') {
+                            closeDeleteModal();
+                        } else if (modal.id === 'errorModal') {
+                            closeErrorModal();
+                        }
+                    });
+                }
+            });
+        });
     </script>
 </body>
 

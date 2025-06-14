@@ -19,6 +19,7 @@ class Studio extends Model
         'jenis_studio',
         'nama_studio',
         'harga',
+        'kapasitas',
         'gambar',
         'dibuat_pada',
         'diubah_pada'
