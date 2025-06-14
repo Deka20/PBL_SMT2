@@ -25,6 +25,7 @@ class User extends Authenticatable
         'password',
         'role',
         'tgl_lahir',
+        'foto',
     ];
     
 
