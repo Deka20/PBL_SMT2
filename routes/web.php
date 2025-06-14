@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\ListProdukController;
 use App\Http\Controllers\PembayaranController;
+use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 // Halaman Publik
 Route::get('/', function () {
@@ -48,9 +49,16 @@ Route::prefix('admin')->middleware(['auth', AdminMiddleware::class])->group(func
     // Pindahkan routes admin-only ke sini
     Route::get('/pelanggan', [DashboardController::class, 'pelanggan'])->name('pelanggan');
     Route::get('/pengaturan', [DashboardController::class, 'pengaturan'])->name('pengaturan');
-    Route::get('/studio', [DashboardController::class, 'studio'])->name('studio');
+
     Route::get('/ulasan', [DashboardController::class, 'ulasan'])->name('ulasan');
     Route::get('/statistik-pendapatan', [ReservasiController::class, 'statistikpendapatan'])->name('statistikpendapatan');
+
+    Route::get('/studio', [DashboardController::class, 'studio'])->name('studio');
+    Route::post('/studio', [DashboardController::class, 'storeStudio'])->name('studio.store');
+    Route::get('/studio/{id}/edit', [DashboardController::class, 'editStudio'])->name('studio.edit');
+    Route::put('/studio/{id}', [DashboardController::class, 'updateStudio'])->name('studio.update');
+    Route::delete('/studio/{id}', [DashboardController::class, 'deleteStudio'])->name('studio.destroy');
+    Route::get('studio/{id}', [DashboardController::class, 'show'])->name('studio.show');
 });
 
 // User Authenticated Routes
