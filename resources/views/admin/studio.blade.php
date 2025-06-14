@@ -147,8 +147,8 @@
         <div class="modal-box w-11/12 max-w-2xl">
             <button class="btn btn-sm btn-circle absolute right-2 top-2" onclick="closeStudioModal()">✕</button>
             <h2 id="modalTitle" class="text-xl font-bold mb-4 flex items-center">
-                <i class="fas fa-camera mr-2"></i>
-                <span id="modalTitleText">Tambah Studio Baru</span>
+                <i class="fas fa-camera mr-2 text-pink-600"></i>
+                <span id="modalTitleText" class="text-pink-600">Tambah Studio Baru</span>
             </h2>
 
             <form id="studioForm" enctype="multipart/form-data" method="POST">
