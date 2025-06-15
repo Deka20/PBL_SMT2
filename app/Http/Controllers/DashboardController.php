@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Studio;
+use App\Models\Pemesanan;
 use App\Models\Portfolio;
+use App\Models\Pembayaran;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -15,16 +17,38 @@ use Illuminate\Validation\ValidationException; // Import ValidationException
 
 class DashboardController extends Controller
 {
-    public function index()
-    {
-        return view('dashboard.index');
+   public function index()
+{
+    try {
+        $stats = [
+            'totalStudio' => Studio::count(),
+            'totalPemesanan' => Pemesanan::count(),
+            'totalPelanggan' => User::where('role', 'pelanggan')->count(),
+        ];
+
+        $stats['totalPenghasilan'] = Pemesanan::where('status', 'lunas')
+            ->with('studio')
+            ->get()
+            ->sum(function($booking) {
+                return ($booking->studio->harga ?? 0) + ($booking->jumlah_orang * 5000);
+            });
+
+        $pemesanan = Pemesanan::with(['studio', 'pembayaran'])
+            ->orderBy('created_at', 'desc')
+            ->paginate(10); // Changed from get() to paginate(10)
+
+        return view('admin.dashboard', array_merge($stats, [
+            'pemesanan' => $pemesanan
+        ]));
+
+    } catch (\Exception $e) {
+        Log::error('Dashboard error: '.$e->getMessage());
+        return back()->with('error', 'Gagal memuat data dashboard');
     }
+}
 
     public function pelanggan()
     {
-        // Mengambil semua user, diurutkan berdasarkan tanggal pembuatan terbaru
-        // Anda bisa menambahkan filter jika 'pelanggan' memiliki role spesifik, misalnya:
-        // $customers = User::where('role', 'customer')->orderBy('created_at', 'desc')->get();
         $customers = User::orderBy('created_at', 'desc')->get();
         
         return view('admin.pelanggan', compact('customers'));
@@ -84,18 +108,15 @@ class DashboardController extends Controller
     public function updatePelanggan(Request $request, $id)
     {
         try {
-            // Validasi data yang masuk
             $validatedData = $request->validate([
                 'nama_lengkap' => 'required|string|max:255',
-                'nama_pengguna' => 'required|string|max:255|unique:users,nama_pengguna,' . $id, // Unique kecuali ID ini
-                'email' => 'required|string|email|max:255|unique:users,email,' . $id, // Unique kecuali ID ini
-                'telepon' => 'nullable|string|max:20', // Telepon bisa null atau string
+                'nama_pengguna' => 'required|string|max:255|unique:users,nama_pengguna,' . $id,
+                'email' => 'required|string|email|max:255|unique:users,email,' . $id,
+                'telepon' => 'nullable|string|max:20',
             ]);
 
-            // Temukan pelanggan berdasarkan ID
             $customer = User::findOrFail($id);
 
-            // Perbarui data pelanggan
             $customer->update($validatedData);
 
             Log::info('Customer updated successfully: ' . $customer->id);
@@ -149,7 +170,6 @@ class DashboardController extends Controller
             // Temukan pelanggan berdasarkan ID
             $customer = User::findOrFail($id);
 
-            // Hapus pelanggan
             $customer->delete();
 
             Log::info('Customer deleted successfully: ' . $id);
@@ -186,7 +206,6 @@ class DashboardController extends Controller
     public function pengaturan()
     {
        $portfolios = Portfolio::orderBy('created_at', 'desc')->get();
-        // You would typically pass this to your Blade view
         return view('admin.pengaturan', compact('portfolios'));
     }
 
@@ -197,7 +216,6 @@ class DashboardController extends Controller
 
     public function studio()
     {
-        // Menggunakan Eloquent untuk mengambil semua studio
         $studios = Studio::orderBy('dibuat_pada', 'desc')->get();
         return view('admin.studio', compact('studios'));
     }
@@ -288,7 +306,6 @@ class DashboardController extends Controller
         DB::beginTransaction();
 
         try {
-            // Handle file upload
             if ($request->hasFile('gambar')) {
                 $file = $request->file('gambar');
 
@@ -386,7 +403,6 @@ class DashboardController extends Controller
                 $validatedData['gambar'] = $path;
             }
 
-            // Update record studio
             $studio->update($validatedData);
 
             DB::commit();
@@ -447,7 +463,6 @@ class DashboardController extends Controller
 
             DB::beginTransaction();
 
-            // Hapus file gambar jika ada
             if ($studio->gambar && Storage::disk('public')->exists($studio->gambar)) {
                 Storage::disk('public')->delete($studio->gambar);
                 Log::info('Deleted image for studio ID ' . $id . ': ' . $studio->gambar);

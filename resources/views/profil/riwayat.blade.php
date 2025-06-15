@@ -22,40 +22,57 @@
         .btn-hover-effect {
             transition: background-color 0.2s ease;
         }
-        
+
         .btn-hover-effect:hover {
             background-color: #f5c2c2;
         }
-        
+
         /* For ghost buttons */
         .btn-ghost-hover:hover {
             background-color: #f9d6d6;
         }
-        
+
         /* Custom scrollbar */
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
         }
-        
+
         .custom-scrollbar::-webkit-scrollbar-track {
             background: #f1f1f1;
             border-radius: 10px;
         }
-        
+
         .custom-scrollbar::-webkit-scrollbar-thumb {
             background: #f9d6d6;
             border-radius: 10px;
         }
-        
+
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #f5c2c2;
+        }
+
+        /* Status badges */
+        .badge-pending {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
+        .badge-lunas {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-default {
+            background-color: #e5e7eb;
+            color: #4b5563;
         }
     </style>
 </head>
 
 <body class="bg-[#fef6f6] min-h-screen">
     <header class="flex items-center justify-between px-4 py-3 bg-white shadow-sm">
-        <button onclick="window.location.href='/'" class="flex items-center gap-2 text-sm font-medium text-gray-600 btn btn-ghost btn-hover-effect">
+        <button onclick="window.location.href='{{ route('pages.home') }}'"
+            class="flex items-center gap-2 text-sm font-medium text-gray-600 btn btn-ghost btn-hover-effect">
             <i class="fas fa-arrow-left"></i>
             Kembali
         </button>
@@ -64,7 +81,13 @@
                 <i class="fas fa-user-circle text-xl text-gray-600"></i>
             </button>
             <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-32">
-                <li><button onclick="window.location.href='keluar'" class="text-sm text-gray-600 btn-hover-effect">Keluar</button></li>
+                <li>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                            class="text-sm text-gray-600 btn-hover-effect w-full text-left">Keluar</button>
+                    </form>
+                </li>
             </ul>
         </div>
     </header>
@@ -73,34 +96,34 @@
         <div class="flex flex-col md:flex-row w-full max-w-5xl bg-white rounded-lg shadow-lg overflow-hidden">
             <!-- Mobile Menu -->
             <div class="md:hidden flex overflow-x-auto border-b border-gray-200 bg-gray-50">
-                <button onclick="window.location.href='profil'" class="flex-shrink-0 px-4 py-3 text-base font-medium text-gray-600 btn-hover-effect">
+                <a href="{{ route('profil') }}"
+                    class="flex-shrink-0 px-4 py-3 text-base font-medium text-gray-600 btn-hover-effect">
                     <i class="fas fa-user mr-2 text-lg"></i>Profil
-                </button>
-                <button onclick="window.location.href='/keamanan'" class="flex-shrink-0 px-4 py-3 text-base font-medium text-gray-600 btn-hover-effect">
+                </a>
+                <a href="{{ route('keamanan') }}"
+                    class="flex-shrink-0 px-4 py-3 text-base font-medium text-gray-600 btn-hover-effect">
                     <i class="fas fa-lock mr-2 text-lg"></i>Keamanan
-                </button>
-                <button onclick="window.location.href='/riwayat'" class="flex-shrink-0 px-4 py-3 text-base font-medium active-menu btn-hover-effect">
+                </a>
+                <a href="{{ route('riwayat') }}"
+                    class="flex-shrink-0 px-4 py-3 text-base font-medium active-menu btn-hover-effect">
                     <i class="fas fa-history mr-2 text-lg"></i>Riwayat
-                </button>
-                <button onclick="window.location.href=''" class="flex items-center gap-2 px-4 py-3 mt-auto font-normal text-sm btn-hover-effect">
-                    <i class="fas fa-sign-out-alt"></i>Keluar
-                </button>
+                </a>
             </div>
 
             <!-- Desktop Menu -->
             <nav class="hidden md:flex flex-col w-64 border-r border-gray-200 bg-gray-50 p-2">
-                <button onclick="window.location.href='{{ route('profil') }}'" class="flex items-center gap-3 px-4 py-4 border-b border-gray-200 text-base font-medium text-gray-600 btn-hover-effect">
+                <a href="{{ route('profil') }}"
+                    class="flex items-center gap-3 px-4 py-4 border-b border-gray-200 text-base font-medium text-gray-600 btn-hover-effect">
                     <i class="fas fa-user text-lg"></i>Profil
-                </button>
-                <button onclick="window.location.href='{{ route('keamanan') }}'" class="flex items-center gap-3 px-4 py-4 border-b border-gray-200 text-base font-medium text-gray-600 btn-hover-effect">
+                </a>
+                <a href="{{ route('keamanan') }}"
+                    class="flex items-center gap-3 px-4 py-4 border-b border-gray-200 text-base font-medium text-gray-600 btn-hover-effect">
                     <i class="fas fa-lock text-lg"></i>Keamanan & Privasi
-                </button>
-                <button onclick="window.location.href='{{ route('riwayat') }}'" class="flex items-center gap-3 px-4 py-4 border-b border-gray-200 text-base font-medium active-menu btn-hover-effect">
+                </a>
+                <a href="{{ route('riwayat') }}"
+                    class="flex items-center gap-3 px-4 py-4 border-b border-gray-200 text-base font-medium active-menu btn-hover-effect">
                     <i class="fas fa-history text-lg"></i>Riwayat Pemesanan
-                </button>
-                <button onclick="window.location.href=''" class="flex items-center gap-2 px-4 py-3 mt-auto font-normal text-sm btn-hover-effect">
-                    <i class="fas fa-sign-out-alt"></i>Keluar
-                </button>
+                </a>
             </nav>
 
             <!-- Content Section -->
@@ -110,83 +133,81 @@
                 </div>
 
                 <div class="custom-scrollbar overflow-y-auto max-h-[calc(100vh-220px)] pr-2">
-                    <!-- Booking Item 1 -->
-                    <div class="flex items-center p-4 border-b border-gray-200 hover:bg-gray-50 rounded-lg transition">
-                        <img class="w-12 h-12 rounded-full" src="https://storage.googleapis.com/a1aa/image/3d6745d5-8e69-4701-3b07-ed9250390457.jpg" alt="Studio photo" />
-                        <div class="text-gray-700 text-sm ml-4 flex-grow">
-                            <p class="font-medium">Booking ID: #12345</p>
-                            <p>Studio: Studio A</p>
-                            <div class="flex items-center justify-between mt-1">
-                                <span>Tanggal: 12 Jan 2023</span>
-                                <a href="/detail-reservasi" class="btn btn-xs bg-[#f9d6d6] text-gray-700 border-none btn-hover-effect">Lihat Detail</a>
-                            </div>
-                        </div>
-                    </div>
+                    @auth
+                        @php
+                            $user = Auth::user();
+                            $bookings = \App\Models\Pemesanan::with(['studio', 'pembayaran'])
+                                ->where('id_pemesanan', $user->id)
+                                ->orderBy('tanggal', 'DESC')
+                                ->orderBy('jam', 'DESC')
+                                ->get();
+                        @endphp
 
-                    <!-- Booking Item 2 -->
-                    <div class="flex items-center p-4 border-b border-gray-200 hover:bg-gray-50 rounded-lg transition">
-                        <img class="w-12 h-12 rounded-full" src="https://storage.googleapis.com/a1aa/image/3d6745d5-8e69-4701-3b07-ed9250390457.jpg" alt="Studio photo" />
-                        <div class="text-gray-700 text-sm ml-4 flex-grow">
-                            <p class="font-medium">Booking ID: #12346</p>
-                            <p>Studio: Studio B</p>
-                            <div class="flex items-center justify-between mt-1">
-                                <span>Tanggal: 15 Jan 2023</span>
-                                <a href="/reservasi" class="btn btn-xs bg-[#f9d6d6] text-gray-700 border-none btn-hover-effect">Lihat Detail</a>
-                            </div>
-                        </div>
-                    </div>
+                        @if ($bookings->count() > 0)
+                            @foreach ($bookings as $booking)
+                                @php
+                                    $statusClass = 'badge-default';
+                                    $statusText = 'Menunggu';
 
-                    <!-- Booking Item 3 -->
-                    <div class="flex items-center p-4 border-b border-gray-200 hover:bg-gray-50 rounded-lg transition">
-                        <img class="w-12 h-12 rounded-full" src="https://storage.googleapis.com/a1aa/image/3d6745d5-8e69-4701-3b07-ed9250390457.jpg" alt="Studio photo" />
-                        <div class="text-gray-700 text-sm ml-4 flex-grow">
-                            <p class="font-medium">Booking ID: #12347</p>
-                            <p>Studio: Studio C</p>
-                            <div class="flex items-center justify-between mt-1">
-                                <span>Tanggal: 18 Jan 2023</span>
-                                <a href="/reservasi-lunas" class="btn btn-xs bg-[#f9d6d6] text-gray-700 border-none btn-hover-effect">Lihat Detail</a>
-                            </div>
-                        </div>
-                    </div>
+                                    if ($booking->pembayaran && $booking->pembayaran->status == 'lunas') {
+                                        $statusClass = 'badge-lunas';
+                                        $statusText = 'Lunas';
+                                    } elseif ($booking->pembayaran && $booking->pembayaran->status == 'pending') {
+                                        $statusClass = 'badge-pending';
+                                        $statusText = 'Pending';
+                                    }
 
-                    <!-- Booking Item 4 -->
-                    <div class="flex items-center p-4 border-b border-gray-200 hover:bg-gray-50 rounded-lg transition">
-                        <img class="w-12 h-12 rounded-full" src="https://storage.googleapis.com/a1aa/image/3d6745d5-8e69-4701-3b07-ed9250390457.jpg" alt="Studio photo" />
-                        <div class="text-gray-700 text-sm ml-4 flex-grow">
-                            <p class="font-medium">Booking ID: #12348</p>
-                            <p>Studio: Studio D</p>
-                            <div class="flex items-center justify-between mt-1">
-                                <span>Tanggal: 20 Jan 2023</span>
-                                <a href="/reservasi-selesai" class="btn btn-xs bg-[#f9d6d6] text-gray-700 border-none btn-hover-effect">Lihat Detail</a>
-                            </div>
-                        </div>
-                    </div>
+                                    // Format date and time
+                                    $tanggal = \Carbon\Carbon::parse($booking->tanggal)->translatedFormat('d M Y');
+                                    $jam = \Carbon\Carbon::parse($booking->jam)->format('H:i');
 
-                    <!-- Booking Item 5 -->
-                    <div class="flex items-center p-4 border-b border-gray-200 hover:bg-gray-50 rounded-lg transition">
-                        <img class="w-12 h-12 rounded-full" src="https://storage.googleapis.com/a1aa/image/3d6745d5-8e69-4701-3b07-ed9250390457.jpg" alt="Studio photo" />
-                        <div class="text-gray-700 text-sm ml-4 flex-grow">
-                            <p class="font-medium">Booking ID: #12349</p>
-                            <p>Studio: Studio E</p>
-                            <div class="flex items-center justify-between mt-1">
-                                <span>Tanggal: 22 Jan 2023</span>
-                                <button class="btn btn-xs bg-[#f9d6d6] text-gray-700 border-none btn-hover-effect">Lihat Detail</button>
-                            </div>
-                        </div>
-                    </div>
+                                    // Format price
+                                    $harga = number_format($booking->harga, 0, ',', '.');
+                                @endphp
 
-                    <!-- Booking Item 6 -->
-                    <div class="flex items-center p-4 border-b border-gray-200 hover:bg-gray-50 rounded-lg transition">
-                        <img class="w-12 h-12 rounded-full" src="https://storage.googleapis.com/a1aa/image/3d6745d5-8e69-4701-3b07-ed9250390457.jpg" alt="Studio photo" />
-                        <div class="text-gray-700 text-sm ml-4 flex-grow">
-                            <p class="font-medium">Booking ID: #12350</p>
-                            <p>Studio: Studio F</p>
-                            <div class="flex items-center justify-between mt-1">
-                                <span>Tanggal: 25 Jan 2023</span>
-                                <button class="btn btn-xs bg-[#f9d6d6] text-gray-700 border-none btn-hover-effect">Lihat Detail</button>
+                                <div
+                                    class="flex items-start p-4 border-b border-gray-200 hover:bg-gray-50 rounded-lg transition">
+                                    <img class="w-12 h-12 rounded-full object-cover" src="{{ $booking->studio->gambar }}"
+                                        alt="Studio photo" />
+                                    <div class="text-gray-700 text-sm ml-4 flex-grow">
+                                        <div class="flex justify-between items-start">
+                                            <div>
+                                                <p class="font-medium">Booking ID: #{{ $booking->id }}</p>
+                                                <p>{{ $booking->studio->jenis_studio }} -
+                                                    {{ $booking->studio->nama_studio }}</p>
+                                            </div>
+                                            <span
+                                                class="text-xs px-2 py-1 rounded-full {{ $statusClass }}">{{ $statusText }}</span>
+                                        </div>
+                                        <div class="mt-1">
+                                            <p>Tanggal: {{ $tanggal }} • {{ $jam }}</p>
+                                            <p>Jumlah Orang: {{ $booking->jumlah_orang }}</p>
+                                            @if ($booking->harga > 0)
+                                                <p>Total: Rp {{ $harga }}</p>
+                                            @endif
+                                        </div>
+                                        <div class="flex justify-between items-center mt-2">
+                                            <span class="text-xs text-gray-500">{{ $booking->no_hp }}</span>
+                                            <a href="{{ route('detailreservasi', ['id' => $booking->id]) }}"
+                                                class="btn btn-xs bg-[#f9d6d6] text-gray-700 border-none btn-hover-effect">Lihat
+                                                Detail</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        @else
+                            <div class="text-center py-8 text-gray-500">
+                                <i class="fas fa-calendar-times text-4xl mb-2"></i>
+                                <p>Belum ada riwayat pemesanan</p>
                             </div>
+                        @endif
+                    @else
+                        <div class="text-center py-8 text-gray-500">
+                            <i class="fas fa-exclamation-circle text-4xl mb-2"></i>
+                            <p>Silakan login untuk melihat riwayat pemesanan</p>
+                            <a href="{{ route('login') }}" class="btn btn-sm bg-[#f9d6d6] text-gray-700 mt-4">Login</a>
                         </div>
-                    </div>
+                    @endauth
                 </div>
             </section>
         </div>
@@ -208,4 +229,5 @@
         });
     </script>
 </body>
+
 </html>
