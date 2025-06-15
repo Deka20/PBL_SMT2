@@ -11,8 +11,8 @@ use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\ListProdukController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\PembayaranController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 // Halaman Publik
@@ -75,8 +75,6 @@ Route::middleware('auth')->group(function () {
         ->name('user.dashboard');
 });
 
-Route::get('/pemesanan', [PemesananController::class, 'pemesanan'])->name('pemesanan');
-
 Route::get('/detail-reservasi', [ReservasiController::class, 'detailreservasi'])->name('detailreservasi');
 Route::get('/reservasi', [ReservasiController::class, 'reservasi'])->name('reservasi');
 Route::get('/reservasi-selesai', [ReservasiController::class, 'reservasiselesai'])->name('reservasiselesai');
@@ -98,4 +96,10 @@ Route::middleware(['auth'])->group(function () {
     
     // Riwayat Route
     Route::get('/riwayat', [RiwayatController::class, 'riwayat'])->name('riwayat');
+    
+    // Pemesanan Route
+    Route::get('/pemesanan', [PemesananController::class, 'pemesanan'])->name('pemesanan');
+    Route::post('/pemesanan/simpan', [PemesananController::class, 'simpan'])->name('pemesanan.simpan');
+Route::get('/pembayaran/{id}', [PembayaranController::class, 'form'])->name('bukti.form');
+Route::post('/pembayaran/kirim', [PembayaranController::class, 'upload'])->name('bukti.upload');
 });
