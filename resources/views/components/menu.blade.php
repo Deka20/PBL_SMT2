@@ -103,6 +103,7 @@
                             </div>
                             <li><a href="/profil">Profil</a></li>
                             <li><a href="/keamanan">Pengaturan</a></li>
+                            <li><a href="/riwayat">Riwayat Pemesanan</a></li>
                             <li>
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf

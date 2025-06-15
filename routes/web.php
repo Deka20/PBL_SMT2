@@ -44,8 +44,11 @@ Route::post('/keluar', [LoginController::class, 'logout'])
 
 // Admin Routes
 Route::prefix('admin')->middleware(['auth', AdminMiddleware::class])->group(function () {
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])
+    Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('admin.dashboard');
+
+   Route::post('/admin/pemesanan/{id}/update-status', [PembayaranController::class, 'updateStatus'])
+        ->name('admin.pemesanan.update-status');
     
     // Pindahkan routes admin-only ke sini
      Route::get('/pelanggan', [DashboardController::class, 'pelanggan'])->name('pelanggan');
@@ -67,6 +70,8 @@ Route::prefix('admin')->middleware(['auth', AdminMiddleware::class])->group(func
     Route::get('/pengaturan', [DashboardController::class, 'pengaturan'])->name('pengaturan');
     Route::post('/pengaturan', [PortfolioController::class, 'store'])->name('pengaturan.store');
     Route::delete('/pengaturan/{portfolio}', [PortfolioController::class, 'destroy'])->name('pengaturan.destroy');
+
+
 });
 
 // User Authenticated Routes

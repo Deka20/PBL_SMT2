@@ -38,7 +38,7 @@
         </div>
     </div>
 
-    {{-- If you have a shared detail modal, ensure it's outside the loop or dynamically populated --}}
+    <!-- Modal untuk detail studio (jika masih diperlukan) -->
     <dialog id="detail-modal" class="modal">
         <div class="modal-box">
             <h3 class="font-bold text-lg" id="modal-studio-name"></h3>
@@ -53,6 +53,7 @@
                 <form method="dialog">
                     <button class="btn">Tutup</button>
                 </form>
+                <a href="{{ route('pemesanan') }}" class="btn btn-neutral">Pesan Sekarang</a>
             </div>
         </div>
     </dialog>
@@ -127,7 +128,8 @@
                         <input type="radio" name="rating-10" class="bg-yellow-400 mask mask-star-2 mask-half-2" checked />
                         <input type="radio" name="rating-10" class="bg-yellow-400 mask mask-star-2 mask-half-1" checked />
                         <input type="radio" name="rating-10" class="bg-yellow-400 mask mask-star-2 mask-half-2" checked />
-                        <input type="radio" name="rating-10" class="bg-yellow-400 mask mask-star-2 mask-half-1" checked />
+                        <input type="radio" name="rating-10" class="bg-yellow-400 mask mask-star-2 mask-half-1"
+                            checked />
                         <input type="radio" name="rating-10" class="bg-yellow-400 mask mask-star-2 mask-half-2"
                             checked />
                     </div>

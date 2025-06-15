@@ -10,6 +10,11 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
-// Artisan::command('some:command', function () {
-//     $this->info('This command uses middleware');
-// })->middleware(AdminMiddleware::class);
+Artisan::command('some:command', function () {
+    if (! app(AdminMiddleware::class)->handle(request(), fn () => true)) {
+        $this->error('Akses ditolak.');
+        return;
+    }
+
+    $this->info('This command is authorized.');
+});
