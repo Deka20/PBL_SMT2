@@ -5,10 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <meta name="csrf-token" content="{{ csrf_token() }}"> {{-- Penting untuk AJAX --}}
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>Manajemen Pelanggan - Potrétine</title>
 
-    <!-- CSS Resources -->
     <link href="https://cdn.jsdelivr.net/npm/daisyui@3.9.4/dist/full.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -27,24 +26,10 @@
     </script>
 
     <style>
-        /* Custom styles for colors if not in tailwind.config.js (pastikan di Tailwind config Anda) */
-        .text-primary {
-            color: #DB2777;
+        body {
+            background-color: #f8fafc;
         }
 
-        /* A shade of pink */
-        .bg-secondary {
-            background-color: #FCE7F3;
-        }
-
-        /* A lighter shade of pink for hover */
-        .text-pink-800 {
-            color: #9D174D;
-        }
-
-        /* Darker pink for hover text */
-
-        /* Loading Overlay styles */
         .loading-overlay {
             display: none;
             position: fixed;
@@ -52,180 +37,260 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0, 0, 0, 0.6);
             z-index: 9999;
             justify-content: center;
             align-items: center;
+            backdrop-filter: blur(4px);
         }
 
         .loading-overlay.active {
             display: flex;
         }
 
-        /* Styles for sidebar layout */
-        body {
-            padding-left: 16rem;
-            /* Sesuaikan dengan lebar sidebar w-64 */
-            background-color: #f8fafc;
-            /* Warna latar belakang umum */
+        /* Compact table styling */
+        .custom-table {
+            font-size: 0.875rem;
+            /* Smaller font size */
         }
 
-        /* Adjust table cell padding for compactness if needed, or use default Tailwind padding */
-        .table th,
-        .table td {
-            padding: 0.75rem 1rem;
-            /* Slightly reduced padding */
+        .custom-table th {
+            padding: 0.5rem 0.75rem;
+            /* Reduced padding */
+            background-color: #f9fafb;
+            color: #6b7280;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.025em;
+            text-align: left;
+            font-size: 0.75rem;
+            /* Even smaller font for headers */
+        }
+
+        .custom-table td {
+            padding: 0.5rem 0.75rem;
+            /* Reduced padding */
+            vertical-align: middle;
+        }
+
+        .custom-table tr:not(:last-child) {
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        /* Compact action buttons */
+        .action-buttons {
+            min-width: 160px;
+            /* Increased width for horizontal buttons */
+        }
+
+        /* Compact date cell */
+        .date-cell {
+            white-space: nowrap;
+            font-size: 0.75rem;
+            /* Smaller font for dates */
+        }
+
+        /* Horizontal button styling */
+        .btn-edit,
+        .btn-delete {
+            padding: 0.375rem 0.75rem;
+            /* More horizontal padding */
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            transition: all 0.2s;
+            min-width: 60px;
+            /* Minimum width for buttons */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-edit {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .btn-edit:hover {
+            background-color: #2563eb;
+        }
+
+        .btn-delete {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .btn-delete:hover {
+            background-color: #dc2626;
+        }
+
+        /* Compact avatar */
+        .avatar-compact {
+            width: 2rem;
+            /* 32px */
+            height: 2rem;
+            /* 32px */
+        }
+
+        /* Hide some columns on smaller screens */
+        @media (max-width: 768px) {
+            .hide-mobile {
+                display: none;
+            }
+        }
+
+        /* Compact row height */
+        .custom-table tbody tr {
+            height: 3rem;
+            /* Fixed row height */
         }
     </style>
 </head>
 
-<body class="bg-gray-50">
+<body class="flex">
 
-    <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay">
         <div class="text-white text-2xl flex flex-col items-center">
-            <span class="loading loading-spinner loading-lg mb-2"></span>
-            <span>Memuat...</span>
+            <span class="loading loading-spinner loading-lg mb-4 text-primary"></span>
+            <span>Memuat Data...</span>
         </div>
     </div>
 
-    <!-- Sidebar Component (panggil langsung) -->
     <x-sidebar></x-sidebar>
 
-    <!-- Konten Tabel Pelanggan -->
-    <main class="p-8">
-        <h1 class="text-4xl font-bold text-pink-600 mb-6">Manajemen Pelanggan</h1>
+    <main class="flex-1 p-4 lg:ml-64">
+        <div class="mx-auto px-4 py-4"> <!-- Reduced padding -->
+            <h1 class="text-2xl font-bold text-gray-800 mb-4">Manajemen Pelanggan</h1> <!-- Smaller heading -->
 
-        <!-- Konten Tabel Pelanggan -->
-        <div class="bg-white p-6 rounded-lg shadow-md overflow-x-auto"> {{-- overflow-x-auto untuk scroll horizontal pada tabel saja --}}
-            <h3 class="text-xl font-semibold text-pink-700 mb-4">Daftar Pelanggan</h3>
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama
-                            Lengkap</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nama
-                            Pengguna</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email
-                        </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">No.
-                            Telepon</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Dibuat Pada</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi
-                        </th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200" id="customerTableBody">
-                    @forelse ($customers as $index => $customer)
-                        <tr class="hover:bg-pink-100" data-id="{{ $customer->id }}"> {{-- Tambahkan data-id untuk JS --}}
-                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                {{ $index + 1 }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $customer->nama_lengkap }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $customer->nama_pengguna }}
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $customer->email }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $customer->telepon }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {{ $customer->created_at ? $customer->created_at->format('d/m/Y H:i') : '-' }}</td>
-                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                <button class="btn bg-base-200 btn-xs edit-customer-btn" data-id="{{ $customer->id }}">
-                                    <i class="fas fa-edit"></i> Ubah
-                                </button>
-                                <button class="btn bg-[#d94c82] text-white btn-xs ml-1 delete-customer-btn"
-                                    data-id="{{ $customer->id }}">
-                                    <i class="fas fa-trash-alt text-white"></i> Hapus
-                                </button>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="8" class="px-6 py-4 text-center text-gray-500">Tidak ada data pelanggan
-                                ditemukan.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+            <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                <div class="p-4 border-b border-gray-200 flex justify-between items-center"> <!-- Reduced padding -->
+                    <h3 class="text-lg font-semibold text-gray-800">Daftar Pelanggan</h3> <!-- Smaller heading -->
+                    <button onclick="openCustomerModal('add')"
+                        class="btn btn-sm bg-primary text-white hover:bg-primary/90">
+                        <i class="fas fa-plus mr-1"></i> Tambah
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full custom-table">
+                        <thead>
+                            <tr>
+                                <th class="w-12">No</th>
+                                <th>Nama</th>
+                                <th class="hide-mobile">Username</th>
+                                <th class="w-16">Avatar</th>
+                                <th class="hide-mobile">Email</th>
+                                <th>Telepon</th>
+                                <th class="date-cell hide-mobile">Dibuat</th>
+                                <th class="action-buttons">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="customerTableBody">
+                            @forelse ($customers as $index => $customer)
+                                <tr class="hover:bg-gray-50 transition-colors" data-id="{{ $customer->id }}">
+                                    <td class="font-medium text-gray-900 text-center">{{ $index + 1 }}</td>
+                                    <td class="text-gray-700 font-medium">{{ $customer->nama_lengkap }}</td>
+                                    <td class="text-gray-600 hide-mobile">{{ $customer->nama_pengguna }}</td>
+                                    <td>
+                                        <div
+                                            class="avatar-compact rounded-full overflow-hidden bg-gray-200 flex items-center justify-center text-xs font-semibold text-gray-600 mx-auto">
+                                            @if ($customer->foto)
+                                                <img src="{{ asset('storage/' . $customer->foto) }}" alt="Avatar"
+                                                    class="w-full h-full object-cover">
+                                            @else
+                                                {{ strtoupper(substr($customer->nama_pengguna, 0, 1)) }}
+                                            @endif
+                                        </div>
+                                    </td>
+                                    <td class="text-gray-600 hide-mobile">{{ $customer->email }}</td>
+                                    <td class="text-gray-700">{{ $customer->telepon }}</td>
+                                    <td class="text-gray-500 date-cell hide-mobile">
+                                        {{ $customer->created_at ? $customer->created_at->format('d/m/y') : '-' }}
+                                    </td>
+                                    <td class="action-buttons">
+                                        <div class="flex items-center space-x-2">
+                                            <button class="btn bg-gray-300 edit-customer-btn"
+                                                data-id="{{ $customer->id }}" title="Edit">
+                                                <i class="fas fa-edit mr-1"></i> Ubah
+                                            </button>
+                                            <button class="btn bg-[#d94c82] text-white delete-customer-btn"
+                                                data-id="{{ $customer->id }}" title="Hapus">
+                                                <i class="fas fa-trash mr-1"></i> Hapus
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="8" class="py-4 text-center text-gray-500">Tidak ada data pelanggan
+                                        ditemukan.</td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </main>
 
-    <!-- Add/Edit Customer Modal -->
+    <!-- Modal Dialog -->
     <div id="customerModal" class="modal">
-        <div class="modal-box w-11/12 max-w-md">
-            <button class="btn btn-sm btn-circle absolute right-2 top-2" onclick="closeCustomerModal()">✕</button>
-            <h2 id="modalTitle" class="text-xl font-bold mb-4 flex items-center">
-                <i class="fas fa-user-edit mr-2"></i>
+        <div class="modal-box w-11/12 max-w-2xl">
+            <button class="btn btn-sm btn-circle absolute right-4 top-4" onclick="closeCustomerModal()">✕</button>
+            <h2 id="modalTitle" class="text-2xl font-bold mb-6 text-gray-800">
+                <i class="fas fa-user-edit mr-2 text-primary"></i>
                 <span id="modalTitleText">Ubah Pelanggan</span>
             </h2>
 
             <form id="customerForm" method="POST">
                 @csrf
                 <input type="hidden" id="customer_id" name="customer_id">
-                <input type="hidden" name="_method" id="formMethod" value="PUT"> {{-- Akan selalu PUT untuk update --}}
+                <input type="hidden" name="_method" id="formMethod" value="PUT">
 
-                <div class="form-control mb-3">
-                    <label class="label"><span class="label-text">Nama Lengkap</span></label>
-                    <input type="text" id="nama_lengkap" name="nama_lengkap" class="input input-bordered w-full"
-                        required>
-                    <span id="error-nama_lengkap" class="text-error text-sm mt-1"></span>
-                </div>
-                <div class="form-control mb-3">
-                    <label class="label"><span class="label-text">Nama Pengguna</span></label>
-                    <input type="text" id="nama_pengguna" name="nama_pengguna" class="input input-bordered w-full"
-                        required>
-                    <span id="error-nama_pengguna" class="text-error text-sm mt-1"></span>
-                </div>
-                <div class="form-control mb-3">
-                    <label class="label"><span class="label-text">Email</span></label>
-                    <input type="email" id="email" name="email" class="input input-bordered w-full" required>
-                    <span id="error-email" class="text-error text-sm mt-1"></span>
-                </div>
-                <div class="form-control mb-3">
-                    <label class="label"><span class="label-text">No. Telepon</span></label>
-                    <input type="text" id="telepon" name="telepon" class="input input-bordered w-full" required>
-                    <span id="error-telepon" class="text-error text-sm mt-1"></span>
-                </div>
-                {{-- Anda bisa menambahkan input untuk 'role', 'tgl_lahir' jika diperlukan --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-medium">Nama Lengkap</span>
+                        </label>
+                        <input type="text" id="nama_lengkap" name="nama_lengkap" class="input input-bordered w-full"
+                            required>
+                        <span id="error-nama_lengkap" class="text-error text-sm mt-1"></span>
+                    </div>
 
-                <div class="modal-action mt-6">
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-medium">Nama Pengguna</span>
+                        </label>
+                        <input type="text" id="nama_pengguna" name="nama_pengguna"
+                            class="input input-bordered w-full" required>
+                        <span id="error-nama_pengguna" class="text-error text-sm mt-1"></span>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-medium">Email</span>
+                        </label>
+                        <input type="email" id="email" name="email" class="input input-bordered w-full"
+                            required>
+                        <span id="error-email" class="text-error text-sm mt-1"></span>
+                    </div>
+
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-medium">No. Telepon</span>
+                        </label>
+                        <input type="text" id="telepon" name="telepon" class="input input-bordered w-full"
+                            required>
+                        <span id="error-telepon" class="text-error text-sm mt-1"></span>
+                    </div>
+                </div>
+
+                <div class="modal-action mt-8">
                     <button type="button" class="btn btn-ghost" onclick="closeCustomerModal()">Batal</button>
-                    <button type="submit" id="submitBtn" class="btn bg-[#d94c82] text-white hover:bg-pink-300">
-                        <i class="fas fa-save mr-2"></i> Simpan
+                    <button type="submit" id="submitBtn" class="btn bg-primary text-white hover:bg-primary/90">
+                        <i class="fas fa-save mr-2"></i> Simpan Perubahan
                     </button>
                 </div>
             </form>
-        </div>
-    </div>
-
-    <!-- Error Modal -->
-    <div id="errorModal" class="modal">
-        <div class="modal-box">
-            <h3 class="font-bold text-lg text-error">
-                <i class="fas fa-exclamation-triangle mr-2"></i> Terjadi Kesalahan
-            </h3>
-            <p id="errorMessage" class="py-4"></p>
-            <div class="modal-action">
-                <button class="btn btn-error" onclick="closeErrorModal()">Tutup</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Confirm Delete Modal -->
-    <div id="confirmDeleteModal" class="modal">
-        <div class="modal-box">
-            <h3 class="font-bold text-lg">
-                <i class="fas fa-exclamation-circle mr-2 text-warning"></i> Konfirmasi Hapus
-            </h3>
-            <p class="py-4">Apakah Anda yakin ingin menghapus pelanggan ini?</p>
-            <div class="modal-action">
-                <button class="btn btn-ghost" onclick="closeDeleteModal()">Batal</button>
-                <button id="confirmDeleteBtn" class="btn bg-[#d94c82] text-white">
-                    <i class="fas fa-trash mr-2 text-white"></i> Hapus
-                </button>
-            </div>
         </div>
     </div>
 

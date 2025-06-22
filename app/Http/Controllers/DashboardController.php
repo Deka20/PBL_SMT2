@@ -13,32 +13,56 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Validation\ValidationException; // Import ValidationException
+use Illuminate\Validation\ValidationException;
 
 class DashboardController extends Controller
 {
-   public function index()
+   public function index(Request $request)
 {
     try {
+        // Query untuk pemesanan dengan relasi yang diperlukan
+        $pemesananQuery = Pemesanan::with([
+                'studio', 
+                'pembayaran',
+                'verifikasiPembayaran' // Tambahkan relasi ini
+            ])
+            ->orderBy('created_at', 'desc');
+
+        // Filter tanggal
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $pemesananQuery->whereBetween('created_at', [
+                $request->input('start_date') . ' 00:00:00',
+                $request->input('end_date') . ' 23:59:59'
+            ]);
+        }
+
+        // Filter status - sekarang memeriksa verifikasi_pembayaran
+        if ($request->filled('status')) {
+            $pemesananQuery->whereHas('verifikasiPembayaran', function($query) use ($request) {
+                $query->where('status_pembayaran', $request->status);
+            });
+        }
+
+        $pemesanan = $pemesananQuery->paginate(10);
+
+        // Hitung statistik
         $stats = [
             'totalStudio' => Studio::count(),
             'totalPemesanan' => Pemesanan::count(),
             'totalPelanggan' => User::where('role', 'pelanggan')->count(),
+            'totalPenghasilan' => Pemesanan::whereHas('verifikasiPembayaran', function($query) {
+                    $query->whereIn('status_pembayaran', ['diverifikasi', 'selesai']);
+                })
+                ->with('studio')
+                ->get()
+                ->sum(function($booking) {
+                    return ($booking->total_amount ?? 0) + ($booking->jumlah_orang * 5000);
+                })
         ];
 
-        $stats['totalPenghasilan'] = Pemesanan::where('status', 'lunas')
-            ->with('studio')
-            ->get()
-            ->sum(function($booking) {
-                return ($booking->studio->harga ?? 0) + ($booking->jumlah_orang * 5000);
-            });
-
-        $pemesanan = Pemesanan::with(['studio', 'pembayaran'])
-            ->orderBy('created_at', 'desc')
-            ->paginate(10); // Changed from get() to paginate(10)
-
         return view('admin.dashboard', array_merge($stats, [
-            'pemesanan' => $pemesanan
+            'pemesanan' => $pemesanan,
+            'filter' => $request->only(['start_date', 'end_date', 'status'])
         ]));
 
     } catch (\Exception $e) {
@@ -59,7 +83,6 @@ class DashboardController extends Controller
         try {
             Log::info('showPelanggan method called with ID: ' . $id);
 
-            // Validasi parameter ID
             if (!is_numeric($id) || $id <= 0) {
                 Log::warning('Invalid ID provided to showPelanggan method: ' . $id);
                 return response()->json([
@@ -68,12 +91,10 @@ class DashboardController extends Controller
                 ], 400);
             }
 
-            // Menggunakan Eloquent findOrFail untuk mencari pelanggan
             $customer = User::findOrFail($id);
 
             Log::info('Customer found successfully with ID: ' . $id);
 
-            // Mengembalikan semua atribut model sebagai array JSON
             return response()->json([
                 'success' => true,
                 'data' => $customer->toArray()
@@ -167,7 +188,6 @@ class DashboardController extends Controller
     public function deletePelanggan($id)
     {
         try {
-            // Temukan pelanggan berdasarkan ID
             $customer = User::findOrFail($id);
 
             $customer->delete();
@@ -232,7 +252,6 @@ class DashboardController extends Controller
         try {
             Log::info('Studio show method called with ID: ' . $id);
 
-            // Validasi parameter ID
             if (!is_numeric($id) || $id <= 0) {
                 Log::warning('Invalid ID provided to show method: ' . $id);
                 return response()->json([
@@ -282,7 +301,6 @@ class DashboardController extends Controller
     public function storeStudio(Request $request)
     {
         try {
-            // Validasi data
             $validatedData = $request->validate([
                 'jenis_studio' => 'required|string|max:100',
                 'nama_studio' => 'required|string|max:100',

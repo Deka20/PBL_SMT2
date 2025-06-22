@@ -1,4 +1,4 @@
-<footer class="footer p-10 text-base-content w-full bg-[#fef6f6]" id="kontak">
+<footer class="footer mt-10 p-10 text-base-content w-full bg-[#fef6f6]" id="kontak">
     <div class="w-full mx-auto">
         <div class="flex flex-col md:flex-row justify-between items-center w-full">
             <div class="flex flex-col items-center md:items-start mb-6 md:mb-0 w-full md:w-1/4">

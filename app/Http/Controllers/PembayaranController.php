@@ -8,7 +8,9 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use App\Models\VerifikasiPembayaran;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\ValidationException;
 
 class PembayaranController extends Controller
 {
@@ -22,178 +24,112 @@ class PembayaranController extends Controller
         ]);
     }
 
-   public function upload(Request $request)
+  public function upload(Request $request)
 {
+    // Validasi input
     $validated = $request->validate([
         'bukti_pembayaran' => 'required|file|mimes:jpg,jpeg,png,pdf|max:2048',
         'id_pemesanan' => 'required|integer|exists:pemesanan,id_pemesanan'
     ]);
 
+    DB::beginTransaction();
+
     try {
-        DB::beginTransaction();
+        // Temukan pemesanan
+        $pemesanan = Pemesanan::with('verifikasiPembayaran')->findOrFail($validated['id_pemesanan']);
 
-        $pemesanan = Pemesanan::findOrFail($validated['id_pemesanan']);
+        // Validasi status pemesanan
+        if ($pemesanan->status !== 'pending') {
+            throw new \Exception('Pemesanan sudah diproses, tidak dapat mengupload bukti pembayaran');
+        }
 
-        // Generate unique filename
-        $filename = 'payment_'.$pemesanan->id.'_'.time().'.'.$request->file('bukti_pembayaran')->extension();
+        // Generate nama file unik
+        $extension = $request->file('bukti_pembayaran')->extension();
+        $filename = 'payment_'.$pemesanan->id_pemesanan.'_'.time().'.'.$extension;
         
-        // Simpan file ke public storage
+        // Simpan file
         $path = $request->file('bukti_pembayaran')->storeAs(
-            'bukti_pembayaran', // Folder tujuan
-            $filename,          // Nama file
-            'public'            // Gunakan disk public
+            'bukti_pembayaran',
+            $filename,
+            'public'
         );
 
-        Pembayaran::updateOrCreate(
-            ['id_pemesanan' => $validated['id_pemesanan']],
+        // Update atau buat pembayaran
+        $pembayaran = Pembayaran::updateOrCreate(
+            ['id_pemesanan' => $pemesanan->id_pemesanan],
             [
                 'bukti_pembayaran' => $path,
-                'tgl_pembayaran' => now(),
-                'status' => 'menunggu_verifikasi'
+                'status' => 'pending', // Tetap 'pending'
             ]
         );
 
-        $pemesanan->update(['status' => 'menunggu_verifikasi']);
+        // Verifikasi pembayaran tetap 'pending'
+        VerifikasiPembayaran::updateOrCreate(
+            ['id_pemesanan' => $pemesanan->id_pemesanan],
+            [
+                'status_pembayaran' => 'menunggu verifikasi', // Tetap 'pending'
+            ]
+        );
 
         DB::commit();
 
-        return redirect()->route('riwayat')->with('success', 'Bukti pembayaran berhasil diupload');
-
+        return redirect()->route('riwayat')
+            ->with('success', 'Bukti pembayaran berhasil diupload. Status tetap pending.');
     } catch (\Exception $e) {
         DB::rollBack();
-        \Log::error('Upload error: '.$e->getMessage());
-        return back()->with('error', 'Gagal upload: '.$e->getMessage());
+        return back()->with('error', 'Gagal upload: ' . $e->getMessage());
     }
 }
 
-    public function updateStatus(Request $request, $id_pemesanan)
-{
-    // Log input request
-    Log::info('Permintaan updateStatus diterima.', [
-        'id_pemesanan_route' => $id_pemesanan,
-        'request_status' => $request->status
-    ]);
-
-    $request->validate([
-        'status' => 'required|string|in:pending,lunas,dibatalkan',
-    ]);
-
-    try {
-        DB::beginTransaction();
-
-        // Cari data pemesanan dan pembayaran
-        $pemesanan = Pemesanan::with('pembayaran')->findOrFail($id_pemesanan);
-        
-        // Log hasil pencarian
-        Log::info('Data pemesanan dan pembayaran ditemukan.', [
-            'id_pemesanan' => $pemesanan->id_pemesanan, 
-            'current_status_pemesanan' => $pemesanan->status,
-            'current_status_pembayaran' => $pemesanan->pembayaran ? $pemesanan->pembayaran->status : null
+   public function updateStatus(Request $request, $id_pemesanan)
+    {
+        $validated = $request->validate([
+            'status_pembayaran' => 'required|string|in:menunggu verifikasi,diverifikasi,ditolak,selesai',
         ]);
 
-        // Simpan status lama untuk logging
-        $oldStatusPemesanan = $pemesanan->status;
-        $oldStatusPembayaran = $pemesanan->pembayaran ? $pemesanan->pembayaran->status : null;
+        try {
+            DB::beginTransaction();
 
-        // Mapping status yang sesuai antara pemesanan dan pembayaran
-        $statusMapping = [
-            'pending' => 'menunggu_verifikasi',
-            'lunas' => 'dikonfirmasi',
-            'dibatalkan' => 'ditolak'
-        ];
+            // Find the booking with its related verification and payment data
+            $pemesanan = Pemesanan::with(['verifikasiPembayaran', 'pembayaran'])->findOrFail($id_pemesanan);
 
-        // Perbarui status pemesanan
-        $pemesanan->status = $request->status;
-        
-        // Perbarui status pembayaran jika ada
-        if ($pemesanan->pembayaran) {
-            $pemesanan->pembayaran->status = $statusMapping[$request->status] ?? $request->status;
-        }
-
-        // Cek apakah ada perubahan yang sebenarnya
-        $isPemesananChanged = $pemesanan->isDirty('status');
-        $isPembayaranChanged = $pemesanan->pembayaran ? $pemesanan->pembayaran->isDirty('status') : false;
-
-        if ($isPemesananChanged || $isPembayaranChanged) {
-            // Simpan perubahan ke database
-            $pemesanan->save();
-            if ($pemesanan->pembayaran) {
-                $pemesanan->pembayaran->save();
+            // If a verification record already exists, update it.
+            if ($pemesanan->verifikasiPembayaran) {
+                $pemesanan->verifikasiPembayaran->update([
+                    'status_pembayaran' => $validated['status_pembayaran'],
+                    'updated_at' => now()
+                ]);
+            } else {
+                // If no verification record exists, create one.
+                // It's crucial that a 'pembayaran' record exists for this 'pemesanan'
+                // before a 'verifikasiPembayaran' can be created.
+                if (!$pemesanan->pembayaran) {
+                    throw new \Exception('Data pembayaran tidak ditemukan untuk pemesanan ini. Tidak dapat membuat verifikasi pembayaran.');
+                }
             }
 
             DB::commit();
 
-            Log::info('Status berhasil diperbarui.', [
-                'id_pemesanan' => $id_pemesanan,
-                'old_status_pemesanan' => $oldStatusPemesanan,
-                'new_status_pemesanan' => $pemesanan->status,
-                'old_status_pembayaran' => $oldStatusPembayaran,
-                'new_status_pembayaran' => $pemesanan->pembayaran ? $pemesanan->pembayaran->status : null
+            return response()->json([
+                'success' => true,
+                'message' => 'Status verifikasi pembayaran berhasil diperbarui.',
+                'status_pembayaran' => $validated['status_pembayaran']
             ]);
-            
-            // Response untuk AJAX
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Status berhasil diperbarui.',
-                    'new_status_pemesanan' => $pemesanan->status,
-                    'new_status_pembayaran' => $pemesanan->pembayaran ? $pemesanan->pembayaran->status : null
-                ]);
-            }
-            
-            return back()->with('success', 'Status berhasil diperbarui.');
-        } else {
-            DB::rollBack();
-            
-            Log::info('Status tidak berubah (sudah sama).', [
-                'id_pemesanan' => $id_pemesanan,
-                'current_status_pemesanan' => $pemesanan->status,
-                'current_status_pembayaran' => $pemesanan->pembayaran ? $pemesanan->pembayaran->status : null,
-                'requested_status' => $request->status
-            ]);
-            
-            if ($request->ajax() || $request->wantsJson()) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Status sudah sesuai. Tidak ada perubahan dilakukan.',
-                    'current_status_pemesanan' => $pemesanan->status,
-                    'current_status_pembayaran' => $pemesanan->pembayaran ? $pemesanan->pembayaran->status : null
-                ]);
-            }
-            
-            return back()->with('info', 'Status sudah sesuai. Tidak ada perubahan dilakukan.');
-        }
 
-    } catch (\Illuminate\Validation\ValidationException $e) {
-        DB::rollBack();
-        Log::error('Validasi gagal untuk updateStatus.', ['errors' => $e->errors()]);
-        
-        if ($request->ajax() || $request->wantsJson()) {
+        } catch (ValidationException $e) {
+            DB::rollBack();
             return response()->json([
                 'success' => false,
-                'message' => 'Validasi gagal',
+                'message' => 'Validasi gagal.',
                 'errors' => $e->errors()
             ], 422);
-        }
-        
-        return back()->withErrors($e->errors())->withInput();
-    } catch (\Exception $e) {
-        DB::rollBack();
-        Log::error('Terjadi kesalahan saat memperbarui status.', [
-            'id_pemesanan' => $id_pemesanan,
-            'error_message' => $e->getMessage(),
-            'error_file' => $e->getFile(),
-            'error_line' => $e->getLine()
-        ]);
-        
-        if ($request->ajax() || $request->wantsJson()) {
+
+        } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json([
                 'success' => false,
-                'message' => 'Terjadi kesalahan saat memperbarui status: ' . $e->getMessage()
+                'message' => 'Gagal memperbarui status: ' . $e->getMessage()
             ], 500);
         }
-        
-        return back()->with('error', 'Terjadi kesalahan saat memperbarui status: ' . $e->getMessage());
     }
-}
 }

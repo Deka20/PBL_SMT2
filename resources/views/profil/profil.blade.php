@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="utf-8" />
@@ -43,27 +43,7 @@
 </head>
 
 <body class="bg-[#fef6f6] min-h-screen">
-    <header class="flex items-center justify-between px-4 py-3 bg-white shadow-sm">
-        <button onclick="window.location.href='/'"
-            class="flex items-center gap-2 text-sm font-medium text-gray-600 btn btn-ghost btn-hover-effect">
-            <i class="fas fa-arrow-left"></i>
-            Kembali
-        </button>
-        <div class="dropdown dropdown-end">
-            <button tabindex="0" class="btn btn-ghost btn-circle btn-hover-effect">
-                <i class="fas fa-user-circle text-xl text-gray-600"></i>
-            </button>
-            <ul tabindex="0"
-                class="dropdown-content z-[1] menu p-2 shadow bg-base-75 rounded-box w-32">
-                <li>
-                    <button onclick="window.location.href='{{ route('logout') }}'" 
-                        class="text-sm text-gray-600 bg-white hover:bg-[#f5c2c2] px-4 py-2 w-full text-left rounded transition">
-                        Keluar
-                    </button>
-                </li>
-            </ul>
-        </div>
-    </header>
+    <x-second-nav></x-second-nav>
 
     <main class="flex justify-center items-center min-h-[calc(100vh-64px)] p-4">
         <div class="flex flex-col md:flex-row w-full max-w-5xl bg-white rounded-lg shadow-lg overflow-hidden">
@@ -81,9 +61,6 @@
                     class="flex-shrink-0 px-4 py-3 text-base font-medium text-gray-600 btn-hover-effect">
                     <i class="fas fa-history mr-2 text-lg"></i>Riwayat
                 </button>
-                <button onclick="window.location.href=''" class="flex items-center gap-2 px-4 py-3 mt-auto font-normal text-sm btn-hover-effect">
-                    <i class="fas fa-sign-out-alt"></i>Keluar
-                </button>
             </div>
 
             <!-- Desktop Menu -->
@@ -100,7 +77,8 @@
                     class="flex items-center gap-3 px-4 py-4 border-b border-gray-200 text-base font-medium text-gray-600 btn-hover-effect">
                     <i class="fas fa-history text-lg"></i>Riwayat Pemesanan
                 </button>
-                <button onclick="window.location.href=''" class="flex items-center gap-3 px-4 py-4 border-t border-gray-200 text-gray-600 mt-auto font-medium text-sm btn-hover-effect">
+                <button onclick="window.location.href=''"
+                    class="flex items-center gap-3 px-4 py-4 border-t border-gray-200 text-gray-600 mt-auto font-medium text-sm btn-hover-effect">
                     <i class="fas fa-sign-out-alt"></i>Keluar
                 </button>
             </nav>
@@ -120,8 +98,7 @@
                                 <div class="avatar">
                                     <div
                                         class="w-16 rounded-full ring ring-gray-200 ring-offset-base-100 ring-offset-2">
-                                        <img
-                                            src="{{ $user->foto ? asset('storage/' . $user->foto) : asset('images/default-photo.jpg') }}"
+                                        <img src="{{ $user->foto ? asset('storage/' . $user->foto) : asset('images/default-photo.jpg') }}"
                                             alt="Foto Profil" id="foto-preview" />
                                     </div>
                                 </div>
@@ -167,7 +144,8 @@
                     </div>
 
                     <div class="flex justify-end gap-4 pt-6">
-                        <a href="{{ route('profil.edit') }}" class="btn btn-ghost text-gray-600 btn-ghost-hover">Batal</a>
+                        <a href="{{ route('profil.edit') }}"
+                            class="btn btn-ghost text-gray-600 btn-ghost-hover">Batal</a>
                         <button type="button" id="btn-submit" class="btn btn-custom btn-hover-effect">Simpan
                             Perubahan</button>
                     </div>
@@ -177,8 +155,7 @@
     </main>
 
     <!-- Modal Konfirmasi -->
-    <div id="confirm-modal"
-        class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
+    <div id="confirm-modal" class="fixed inset-0 bg-black bg-opacity-50 hidden justify-center items-center z-50">
         <div class="bg-white rounded-lg p-6 max-w-sm w-full shadow-lg">
             <h3 class="text-lg font-semibold mb-4 text-gray-700">Konfirmasi Perubahan</h3>
             <p class="mb-6 text-gray-600">Yakin mau simpan perubahan profil ini?</p>
@@ -194,11 +171,11 @@
         const inputFoto = document.getElementById('foto');
         const imgPreview = document.getElementById('foto-preview');
 
-        inputFoto.addEventListener('change', function () {
+        inputFoto.addEventListener('change', function() {
             const file = this.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function (e) {
+                reader.onload = function(e) {
                     imgPreview.src = e.target.result;
                 };
                 reader.readAsDataURL(file);

@@ -9,21 +9,37 @@ class Pembayaran extends Model
 {
     use HasFactory;
 
-    protected $table = 'pembayaran'; // Pastikan nama tabel benar
+    protected $table = 'pembayaran';
 
-    protected $primaryKey = 'id_pembayaran'; // Sesuaikan jika primary key Anda berbeda
-    public $timestamps = false; // Jika Anda tidak menggunakan timestamps
+    protected $primaryKey = 'id_pembayaran';
+    public $timestamps = false;
 
     protected $fillable = [
-        'id_pemesanan',
-        'bukti_pembayaran',
-        'tgl_pembayaran',
-        'status',
-    ];
+    'user_id',
+    'id_pemesanan',
+    'bukti_pembayaran',
+    'tgl_pembayaran',
+];
 
     // Jika Anda memiliki relasi, definisikan di sini
     public function pemesanan()
     {
         return $this->belongsTo(Pemesanan::class, 'id_pemesanan', 'id_pemesanan');
+    }
+
+    public function verifikasiPembayaran()
+    {
+        return $this->hasOne(VerifikasiPembayaran::class, 'id_pembayaran', 'id');
+    }
+
+    // Accessor untuk status (jika masih diperlukan)
+    public function getStatusAttribute()
+    {
+        return $this->verifikasiPembayaran ? $this->verifikasiPembayaran->status_pembayaran : null;
+    }
+
+     public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }

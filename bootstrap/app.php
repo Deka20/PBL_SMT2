@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use App\Console\Commands\CleanExpiredBookings;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
@@ -22,6 +23,8 @@ return Application::configure(basePath: dirname(__DIR__))
 $app->middleware([
     // Middleware global
 ]);
+
+$app->command('bookings:clean', CleanExpiredBookings::class);
 
 $app->routeMiddleware([
     'role' => App\Http\Middleware\CheckRole::class,

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Review;
 use App\Models\Portfolio;
 use Illuminate\Http\Request;
 use App\Models\Studio; // Pastikan model Studio diimpor
@@ -15,14 +16,30 @@ class HomeController extends Controller
      */
     public function index()
     {
-        // Ambil semua data studio dari database
-        // Anda bisa menambahkan kriteria pengurutan atau filter sesuai kebutuhan
-        $studios = Studio::orderBy('nama_studio', 'asc')->get();
+        $studios = Studio::all();
 
-        // Ambil semua data portofolio dari database, diurutkan berdasarkan terbaru
-        $portfolios = Portfolio::latest()->get(); // Mengambil semua portofolio terbaru
+        $portfolios = Portfolio::latest()->get();
 
-        // Kirim data studio dan portofolio ke view 'pages.home'
-        return view('pages.home', compact('studios', 'portfolios')); // Tambahkan 'portfolios' di compact
+        $reviews = Review::with(['user', 'studio'])->get();
+    
+    // Calculate average rating and rating distribution
+    $averageRating = $reviews->avg('rating');
+    $ratingCount = $reviews->count();
+    $ratingDistribution = [
+        5 => $reviews->where('rating', 5)->count(),
+        4 => $reviews->where('rating', 4)->count(),
+        3 => $reviews->where('rating', 3)->count(),
+        2 => $reviews->where('rating', 2)->count(),
+        1 => $reviews->where('rating', 1)->count(),
+    ];
+
+     return view('pages.home', [ // Make sure 'your.view.name' matches your actual blade path, e.g., 'home' or 'welcome'
+            'studios' => $studios,
+            'portfolios' => $portfolios,
+            'reviews' => $reviews,
+            'averageRating' => $averageRating,
+            'ratingCount' => $ratingCount,
+            'ratingDistribution' => $ratingDistribution,
+        ]);
     }
 }

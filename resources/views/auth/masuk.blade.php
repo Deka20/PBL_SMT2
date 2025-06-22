@@ -14,6 +14,11 @@
             background-position: center;
             background-repeat: no-repeat;
         }
+
+        input::-ms-reveal,
+        input::-ms-clear {
+            display: none;
+        }
     </style>
 </head>
 

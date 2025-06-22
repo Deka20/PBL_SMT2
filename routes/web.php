@@ -1,9 +1,11 @@
 <?php
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ProfilController;
+use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RiwayatController;
 use App\Http\Controllers\KeamananController;
 use App\Http\Controllers\DashboardController;
@@ -11,8 +13,9 @@ use App\Http\Controllers\PemesananController;
 use App\Http\Controllers\PortfolioController;
 use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\StatistikPendapatanController;
 use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 // Halaman Publik
@@ -37,6 +40,11 @@ Route::middleware('guest')->group(function () {
     });
 });
 
+Route::post('/reviews', [ReviewController::class, 'store'])->name('reviews.store');
+Route::put('/reviews/{review}', [ReviewController::class, 'update'])->name('reviews.update');
+Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
+Route::get('/reviews/{review}/edit', [ReviewController::class, 'edit'])->name('reviews.edit');
+
 // Logout
 Route::post('/keluar', [LoginController::class, 'logout'])
     ->middleware('auth')
@@ -57,8 +65,8 @@ Route::prefix('admin')->middleware(['auth', AdminMiddleware::class])->group(func
     // Atau Route::put('/pelanggan/{id}', [DashboardController::class, 'updatePelanggan']);
     Route::delete('/pelanggan/{id}', [DashboardController::class, 'deletePelanggan'])->name('pelanggan.destroy');
 
-    Route::get('/ulasan', [DashboardController::class, 'ulasan'])->name('ulasan');
-    Route::get('/statistik-pendapatan', [ReservasiController::class, 'statistikpendapatan'])->name('statistikpendapatan');
+    Route::get('/ulasan', [ReviewController::class, 'index'])->name('ulasan');
+    Route::get('/statistik-pendapatan', [StatistikPendapatanController::class, 'index'])->name('statistikpendapatan');
 
     Route::get('/studio', [DashboardController::class, 'studio'])->name('studio');
     Route::post('/studio', [DashboardController::class, 'storeStudio'])->name('studio.store');
@@ -80,10 +88,16 @@ Route::middleware('auth')->group(function () {
         ->name('user.dashboard');
 });
 
-Route::get('/detail-reservasi', [ReservasiController::class, 'detailreservasi'])->name('detailreservasi');
+// routes/web.php
+// routes/web.php
+Route::get('/detail-reservasi/{id}', [PemesananController::class, 'detailreservasi'])
+    ->name('detailreservasi');
 Route::get('/reservasi', [ReservasiController::class, 'reservasi'])->name('reservasi');
 Route::get('/reservasi-selesai', [ReservasiController::class, 'reservasiselesai'])->name('reservasiselesai');
 Route::get('/reservasi-lunas', [ReservasiController::class, 'reservasilunas'])->name('reservasilunas');
+
+// routes/web.php
+Route::post('/review', [ReviewController::class, 'store'])->name('review.store');
 
 Route::middleware(['auth'])->group(function () {
     // Profil Routes
@@ -93,6 +107,8 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/update', [ProfilController::class, 'update'])->name('profil.update');
     });
     
+    Route::post('/booked-slots', [PemesananController::class, 'getBookedSlots']);
+
     // Keamanan Routes
     Route::prefix('keamanan')->group(function () {
         Route::get('/', [KeamananController::class, 'keamanan'])->name('keamanan');

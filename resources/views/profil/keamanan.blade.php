@@ -1,4 +1,5 @@
-<html lang="en">
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="utf-8" />
@@ -26,24 +27,24 @@
         .btn-custom:hover {
             background-color: #f5c2c2;
         }
-        
+
         .btn-hover-effect {
             transition: background-color 0.2s ease;
         }
-        
+
         .btn-hover-effect:hover {
             background-color: #f5c2c2;
         }
-        
+
         .btn-ghost-hover:hover {
             background-color: #f9d6d6;
         }
-        
+
         .input-focus:focus {
             border-color: #f9d6d6;
             box-shadow: 0 0 0 1px #f9d6d6;
         }
-        
+
         .error-message {
             color: #ef4444;
             font-size: 0.875rem;
@@ -53,51 +54,42 @@
 </head>
 
 <body class="bg-[#fef6f6] min-h-screen">
-    <header class="flex items-center justify-between px-4 py-3 bg-white shadow-sm">
-        <button onclick="window.location.href='/'" class="flex items-center gap-2 text-sm font-medium text-gray-600 btn btn-ghost btn-hover-effect">
-            <i class="fas fa-arrow-left"></i>
-            Kembali
-        </button>
-        <div class="dropdown dropdown-end">
-            <button tabindex="0" class="btn btn-ghost btn-circle btn-hover-effect">
-                <i class="fas fa-user-circle text-xl text-gray-600"></i>
-            </button>
-            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-32">
-                <li><button onclick="window.location.href='keluar'" class="text-sm text-gray-600 btn-hover-effect">Keluar</button></li>
-            </ul>
-        </div>
-    </header>
+    <x-second-nav></x-second-nav>
 
     <main class="flex justify-center items-center min-h-[calc(100vh-64px)] p-4">
         <div class="flex flex-col md:flex-row w-full max-w-5xl bg-white rounded-lg shadow-lg overflow-hidden">
             <!-- Mobile Menu -->
             <div class="md:hidden flex overflow-x-auto border-b border-gray-200 bg-gray-50">
-                <button onclick="window.location.href='profil'" class="flex-shrink-0 px-4 py-3 text-base font-medium text-gray-600 btn-hover-effect">
+                <button onclick="window.location.href='profil'"
+                    class="flex-shrink-0 px-4 py-3 text-base font-medium text-gray-600 btn-hover-effect">
                     <i class="fas fa-user mr-2 text-lg"></i>Profil
                 </button>
-                <button onclick="window.location.href='/keamanan'" class="flex-shrink-0 px-4 py-3 text-base font-medium active-menu btn-hover-effect">
+                <button onclick="window.location.href='/keamanan'"
+                    class="flex-shrink-0 px-4 py-3 text-base font-medium active-menu btn-hover-effect">
                     <i class="fas fa-lock mr-2 text-lg"></i>Keamanan
                 </button>
-                <button onclick="window.location.href='/riwayat'" class="flex-shrink-0 px-4 py-3 text-base font-medium text-gray-600 btn-hover-effect">
+                <button onclick="window.location.href='/riwayat'"
+                    class="flex-shrink-0 px-4 py-3 text-base font-medium text-gray-600 btn-hover-effect">
                     <i class="fas fa-history mr-2 text-lg"></i>Riwayat
-                </button>
-                <button onclick="window.location.href=''" class="flex items-center gap-2 px-4 py-3 mt-auto font-normal text-sm btn-hover-effect">
-                    <i class="fas fa-sign-out-alt"></i>Keluar
                 </button>
             </div>
 
             <!-- Desktop Menu -->
             <nav class="hidden md:flex flex-col w-64 border-r border-gray-200 bg-gray-50 p-2">
-                <button onclick="window.location.href='{{ route('profil') }}'" class="flex items-center gap-3 px-4 py-4 border-b border-gray-200 text-base font-medium text-gray-600 btn-hover-effect">
+                <button onclick="window.location.href='{{ route('profil') }}'"
+                    class="flex items-center gap-3 px-4 py-4 border-b border-gray-200 text-base font-medium text-gray-600 btn-hover-effect">
                     <i class="fas fa-user text-lg"></i>Profil
                 </button>
-                <button onclick="window.location.href='{{ route('keamanan') }}'" class="flex items-center gap-3 px-4 py-4 border-b border-gray-200 text-base font-medium active-menu btn-hover-effect">
+                <button onclick="window.location.href='{{ route('keamanan') }}'"
+                    class="flex items-center gap-3 px-4 py-4 border-b border-gray-200 text-base font-medium active-menu btn-hover-effect">
                     <i class="fas fa-lock text-lg"></i>Keamanan & Privasi
                 </button>
-                <button onclick="window.location.href='{{ route('riwayat') }}'" class="flex items-center gap-3 px-4 py-4 border-b border-gray-200 text-base font-medium text-gray-600 btn-hover-effect">
+                <button onclick="window.location.href='{{ route('riwayat') }}'"
+                    class="flex items-center gap-3 px-4 py-4 border-b border-gray-200 text-base font-medium text-gray-600 btn-hover-effect">
                     <i class="fas fa-history text-lg"></i>Riwayat Pemesanan
                 </button>
-                <button onclick="window.location.href=''" class="flex items-center gap-3 px-4 py-4 border-t border-gray-200 text-gray-600 mt-auto font-medium text-sm btn-hover-effect">
+                <button onclick="window.location.href=''"
+                    class="flex items-center gap-3 px-4 py-4 border-t border-gray-200 text-gray-600 mt-auto font-medium text-sm btn-hover-effect">
                     <i class="fas fa-sign-out-alt"></i>Keluar
                 </button>
             </nav>
@@ -108,16 +100,16 @@
                     <h2 class="text-2xl font-semibold text-gray-700">Keamanan & Privasi</h2>
                 </div>
 
-                @if(session('success'))
+                @if (session('success'))
                     <div class="alert alert-success mb-4 p-4 bg-green-100 text-green-700 rounded">
                         {{ session('success') }}
                     </div>
                 @endif
 
-                @if($errors->any())
+                @if ($errors->any())
                     <div class="alert alert-error mb-4 p-4 bg-red-100 text-red-700 rounded">
                         <ul>
-                            @foreach($errors->all() as $error)
+                            @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
                         </ul>
@@ -126,42 +118,42 @@
 
                 <form method="POST" action="{{ route('password.ubah') }}" class="space-y-6">
                     @csrf
-                    
+
                     <p class="text-sm font-semibold text-gray-700">Ganti Password</p>
-                    
+
                     <div class="form-control">
                         <label class="label" for="current_password">
                             <span class="label-text text-gray-600">Password saat ini</span>
                         </label>
                         <input type="password" id="current_password" name="current_password" required
-                               class="input input-bordered w-full bg-gray-50 text-gray-700 border-gray-200 input-focus @error('current_password') border-red-500 @enderror" />
+                            class="input input-bordered w-full bg-gray-50 text-gray-700 border-gray-200 input-focus @error('current_password') border-red-500 @enderror" />
                         @error('current_password')
                             <div class="error-message">{{ $message }}</div>
                         @enderror
                     </div>
-                    
+
                     <div class="form-control">
                         <label class="label" for="new_password">
                             <span class="label-text text-gray-600">Password baru</span>
                         </label>
                         <input type="password" id="new_password" name="new_password" required
-                               class="input input-bordered w-full bg-gray-50 text-gray-700 border-gray-200 input-focus @error('new_password') border-red-500 @enderror" />
+                            class="input input-bordered w-full bg-gray-50 text-gray-700 border-gray-200 input-focus @error('new_password') border-red-500 @enderror" />
                         <p class="text-xs text-gray-400 mt-1">Minimal 8 karakter, mengandung angka</p>
                         @error('new_password')
                             <div class="error-message">{{ $message }}</div>
                         @enderror
                     </div>
-                    
+
                     <div class="form-control">
                         <label class="label" for="new_password_confirmation">
                             <span class="label-text text-gray-600">Konfirmasi Password baru</span>
                         </label>
                         <input type="password" id="new_password_confirmation" name="new_password_confirmation" required
-                               class="input input-bordered w-full bg-gray-50 text-gray-700 border-gray-200 input-focus" />
+                            class="input input-bordered w-full bg-gray-50 text-gray-700 border-gray-200 input-focus" />
                     </div>
-                    
+
                     <div class="flex justify-end gap-4 pt-6">
-                        <button type="button" onclick="window.location.href='{{ route('profil') }}'" 
+                        <button type="button" onclick="window.location.href='{{ route('profil') }}'"
                             class="btn btn-ghost text-gray-600 btn-ghost-hover">Batal</button>
                         <button type="submit" class="btn btn-custom btn-hover-effect">Simpan Perubahan</button>
                     </div>
@@ -191,17 +183,17 @@
         document.querySelector('form').addEventListener('submit', function(e) {
             const newPassword = document.getElementById('new_password').value;
             const confirmPassword = document.getElementById('new_password_confirmation').value;
-            
+
             if (newPassword.length < 8) {
                 alert('Password baru minimal 8 karakter!');
                 e.preventDefault();
             }
-            
+
             if (!/\d/.test(newPassword)) {
                 alert('Password baru harus mengandung angka!');
                 e.preventDefault();
             }
-            
+
             if (newPassword !== confirmPassword) {
                 alert('Konfirmasi password tidak sesuai!');
                 e.preventDefault();
@@ -209,4 +201,5 @@
         });
     </script>
 </body>
+
 </html>

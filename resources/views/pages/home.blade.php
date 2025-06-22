@@ -38,7 +38,6 @@
         </div>
     </div>
 
-    <!-- Modal untuk detail studio (jika masih diperlukan) -->
     <dialog id="detail-modal" class="modal">
         <div class="modal-box">
             <h3 class="font-bold text-lg" id="modal-studio-name"></h3>
@@ -61,21 +60,17 @@
     <div class="container mx-auto px-4 py-8">
         <h1 class="mt-10 text-center text-3xl font-bold">Portofolio</h1>
 
-        <!-- Define rotations array at the top of the view -->
         @php
             $rotations = ['-rotate-1', 'rotate-2', '-rotate-2', 'rotate-1', '-rotate-3', 'rotate-3'];
         @endphp
 
-        <!-- Auto-scrolling container -->
         <div class="relative mt-5 overflow-hidden">
-            <!-- Portfolio cards container with auto-scroll animation -->
             <div class="flex space-x-6 py-4 animate-auto-scroll whitespace-nowrap"
                 style="animation: scroll 30s linear infinite;">
-                <!-- Duplicate items for seamless looping -->
                 @foreach (array_merge($portfolios->toArray(), $portfolios->toArray()) as $portfolio)
                     <div
-                        class="bg-white p-4 pb-10 shadow-md hover:shadow-xl transition-all duration-300 
-                    {{ $rotations[array_rand($rotations)] }} hover:rotate-0 hover:scale-105 
+                        class="bg-white p-4 pb-10 shadow-md hover:shadow-xl transition-all duration-300
+                    {{ $rotations[array_rand($rotations)] }} hover:rotate-0 hover:scale-105
                     flex-shrink-0 w-64 h-80 inline-flex flex-col">
                         <div class="border border-gray-100 bg-gray-50 p-2 flex-grow">
                             <img src="{{ Storage::url($portfolio['image_path']) }}"
@@ -89,12 +84,10 @@
                 @endforeach
             </div>
 
-            <!-- Gradient overlay for better UX -->
             <div class="absolute top-0 bottom-0 left-0 w-20 bg-gradient-to-r from-white to-transparent z-10"></div>
             <div class="absolute top-0 bottom-0 right-0 w-20 bg-gradient-to-l from-white to-transparent z-10"></div>
         </div>
 
-        <!-- Empty state (only shown if no portfolios) -->
         @if ($portfolios->isEmpty())
             <div class="col-span-full text-center py-10">
                 <div class="mx-auto w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-3">
@@ -112,120 +105,183 @@
     <h1 class="mt-10 text-center text-3xl font-bold">Ratings & Reviews</h1>
 
     <div class="max-w-3xl mx-auto space-y-4 mt-5">
-        <!-- Card 1: Rating -->
         <div class="bg-[#fef6f6] rounded-box p-6">
             <div class="flex flex-col md:flex-row gap-4">
-                <!-- Average Rating -->
                 <div class="text-center md:text-left md:w-1/3">
-                    <h2 class="text-4xl font-bold mb-2">5.0</h2>
-                    <div class="rating rating-md rating-half">
-                        <input type="radio" name="rating-10" class="rating-hidden" />
-                        <input type="radio" name="rating-10" class="bg-yellow-100 mask mask-star-2 mask-half-1" checked />
-                        <input type="radio" name="rating-10" class="bg-yellow-400 mask mask-star-2 mask-half-2" checked />
-                        <input type="radio" name="rating-10" class="bg-yellow-400 mask mask-star-2 mask-half-1" checked />
-                        <input type="radio" name="rating-10" class="bg-yellow-400 mask mask-star-2 mask-half-2" checked />
-                        <input type="radio" name="rating-10" class="bg-yellow-400 mask mask-star-2 mask-half-1" checked />
-                        <input type="radio" name="rating-10" class="bg-yellow-400 mask mask-star-2 mask-half-2" checked />
-                        <input type="radio" name="rating-10" class="bg-yellow-400 mask mask-star-2 mask-half-1" checked />
-                        <input type="radio" name="rating-10" class="bg-yellow-400 mask mask-star-2 mask-half-2" checked />
-                        <input type="radio" name="rating-10" class="bg-yellow-400 mask mask-star-2 mask-half-1"
-                            checked />
-                        <input type="radio" name="rating-10" class="bg-yellow-400 mask mask-star-2 mask-half-2"
-                            checked />
+                    <h2 class="text-4xl font-bold mb-2">{{ number_format($averageRating, 1) }}</h2>
+                    <div class="rating rating-md">
+                        @for ($i = 1; $i <= 5; $i++)
+                            <input type="radio" name="average-rating"
+                                class="mask mask-star-2 !bg-yellow-400 {{ $i <= round($averageRating) ? 'opacity-100' : 'opacity-40' }} cursor-default"
+                                {{ $i <= round($averageRating) ? 'checked' : '' }} disabled />
+                        @endfor
+
                     </div>
-                    <p class="text-gray-600 mt-6">Dari 6 Ulasan</p>
+                    <p class="text-gray-600 mt-6">Dari {{ $ratingCount }} Ulasan</p>
                 </div>
 
-                <!-- Rating Progres -->
                 <div class="md:w-2/3">
                     <div class="space-y-2">
-                        <!-- 5 Stars -->
-                        <div class="flex items-center">
-                            <span class="w-8 flex items-center justify-center">
-                                <span class="text-yellow-400">★</span><span class="text-gray-700">5</span>
-                            </span>
-                            <progress class="progress progress-warning mx-2 flex-1" value="80"
-                                max="100"></progress>
-                            <span class="text-gray-600 text-sm w-16">4 Orang</span>
-                        </div>
-
-                        <!-- 4 Stars -->
-                        <div class="flex items-center">
-                            <span class="w-8 flex items-center justify-center">
-                                <span class="text-yellow-400">★</span><span class="text-gray-700">4</span>
-                            </span>
-                            <progress class="progress progress-warning mx-2 flex-1" value="20"
-                                max="100"></progress>
-                            <span class="text-gray-600 text-sm w-16">1 Orang</span>
-                        </div>
-
-                        <!-- 3 Stars -->
-                        <div class="flex items-center">
-                            <span class="w-8 flex items-center justify-center">
-                                <span class="text-yellow-400">★</span><span class="text-gray-700">3</span>
-                            </span>
-                            <progress class="progress progress-warning mx-2 flex-1" value="0"
-                                max="100"></progress>
-                            <span class="text-gray-600 text-sm w-16">0 Orang</span>
-                        </div>
-
-                        <!-- 2 Stars -->
-                        <div class="flex items-center">
-                            <span class="w-8 flex items-center justify-center">
-                                <span class="text-yellow-400">★</span><span class="text-gray-700">2</span>
-                            </span>
-                            <progress class="progress progress-warning mx-2 flex-1" value="0"
-                                max="100"></progress>
-                            <span class="text-gray-600 text-sm w-16">0 Orang</span>
-                        </div>
-
-                        <!-- 1 Star -->
-                        <div class="flex items-center">
-                            <span class="w-8 flex items-center justify-center">
-                                <span class="text-yellow-400">★</span><span class="text-gray-700">1</span>
-                            </span>
-                            <progress class="progress progress-warning mx-2 flex-1" value="0"
-                                max="100"></progress>
-                            <span class="text-gray-600 text-sm w-16">0 Orang</span>
-                        </div>
+                        @for ($i = 5; $i >= 1; $i--)
+                            <div class="flex items-center">
+                                <span class="w-8 flex items-center justify-center">
+                                    <span class="text-yellow-400">★</span><span
+                                        class="text-gray-700">{{ $i }}</span>
+                                </span>
+                                <progress class="progress progress-warning mx-2 flex-1"
+                                    value="{{ $ratingCount > 0 ? ($ratingDistribution[$i] / $ratingCount) * 100 : 0 }}"
+                                    max="100"></progress>
+                                <span class="text-gray-600 text-sm w-16">{{ $ratingDistribution[$i] }} Orang</span>
+                            </div>
+                        @endfor
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Card 2: User Review -->
-        <div class="bg-[#fef6f6] rounded-box p-6">
-            <div class="flex justify-between items-start">
-                <div>
-                    <div class="flex items-center mb-2">
-                        <div class="avatar">
-                            <div class="w-10 rounded-full bg-gray-400"></div>
+        @forelse($reviews as $review)
+            <div class="bg-[#fef6f6] rounded-box p-6" id="review-{{ $review->id }}">
+                <div class="flex justify-between items-start" id="review-content-{{ $review->id }}">
+                    <div>
+                        <div class="flex items-center mb-2">
+                            <div class="avatar">
+                                <div class="w-10 rounded-full bg-gray-400 flex items-center justify-center">
+                                    @if ($review->user && $review->user->foto)
+                                        <img src="{{ Storage::url($review->user->foto) }}" alt="User Avatar"
+                                            class="w-full h-full rounded-full object-cover">
+                                    @elseif ($review->user && $review->user->nama_pengguna)
+                                        <span
+                                            class="text-white text-lg font-semibold">{{ substr($review->user->nama_pengguna, 0, 1) }}</span>
+                                    @else
+                                        <span class="text-white text-lg font-semibold">?</span>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="font-bold">{{ $review->user->nama_pengguna ?? 'Pengguna Tidak Ditemukan' }}</h3>
+                                <p class="text-gray-600 text-sm">
+                                    @if ($review->studio)
+                                        {{ $review->studio->nama_studio }}
+                                    @else
+                                        Studio Tidak Ditemukan
+                                    @endif
+                                    - {{ $review->created_at->format('d M Y') }}
+                                </p>
+                            </div>
                         </div>
-                        <div class="ml-3">
-                            <h3 class="font-bold">Nama Pengguna</h3>
-                            <p class="text-gray-600 text-sm">Selfphoto</p>
+                        <div class="rating rating-sm mb-2" id="rating-display-{{ $review->id }}">
+                            @for ($i = 1; $i <= 5; $i++)
+                                <input type="radio" name="rating-{{ $review->id }}"
+                                    class="mask mask-star-2 !bg-yellow-400 {{ $i <= $review->rating ? 'opacity-100' : 'opacity-20' }} cursor-default"
+                                    {{ $i <= $review->rating ? 'checked' : '' }} disabled />
+                            @endfor
                         </div>
+
+                        <p class="text-gray-700" id="review-text-{{ $review->id }}">{{ $review->review }}</p>
                     </div>
-                    <div class="rating rating-sm mb-2">
-                        <input type="radio" name="rating-5" class="mask mask-star-2 bg-yellow-400" checked />
-                        <input type="radio" name="rating-5" class="mask mask-star-2 bg-yellow-400" checked />
-                        <input type="radio" name="rating-5" class="mask mask-star-2 bg-yellow-400" checked />
-                        <input type="radio" name="rating-5" class="mask mask-star-2 bg-yellow-400" checked />
-                        <input type="radio" name="rating-5" class="mask mask-star-2 bg-yellow-400" checked />
-                    </div>
-                    <p class="text-gray-700">Review pengguna tentang studio foto ini sangat memuaskan!</p>
+
+                    @if (auth()->check() && auth()->id() === $review->user_id)
+                        <div class="flex space-x-2" id="review-actions-{{ $review->id }}">
+                            <button class="btn btn-sm edit-review-btn" data-review-id="{{ $review->id }}">
+                                <i class="fas fa-edit mr-1"></i> Ubah
+                            </button>
+                            <button type="button"
+                                class="btn btn-sm bg-red-500 text-white hover:bg-red-600 delete-review-btn"
+                                data-review-id="{{ $review->id }}" data-review-text="{{ $review->review }}"
+                                data-review-rating="{{ $review->rating }}"
+                                data-action-url="{{ route('reviews.destroy', $review->id) }}">
+                                <i class="fas fa-trash mr-1"></i> Hapus
+                            </button>
+                        </div>
+                    @endif
                 </div>
-                <div class="flex space-x-2">
-                    <button class="btn btn-sm ">
-                        <i class="fas fa-edit mr-1"></i> Ubah
+
+                <!-- Edit Form (Hidden by default) -->
+                <div id="edit-form-{{ $review->id }}" class="hidden mt-4">
+                    <form class="update-review-form" data-review-id="{{ $review->id }}">
+                        @csrf
+                        @method('PUT')
+                        <div class="mb-4">
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+                            <div class="star-rating">
+                                @for ($i = 5; $i >= 1; $i--)
+                                    <input type="radio" id="edit-star{{ $i }}-{{ $review->id }}"
+                                        name="rating" value="{{ $i }}"
+                                        {{ $review->rating == $i ? 'checked' : '' }} />
+                                    <label for="edit-star{{ $i }}-{{ $review->id }}"
+                                        title="{{ $i }} stars">
+                                        <i class="fas fa-star"></i>
+                                    </label>
+                                @endfor
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="edit-review-{{ $review->id }}"
+                                class="block text-sm font-medium text-gray-700 mb-1">Ulasan</label>
+                            <textarea id="edit-review-{{ $review->id }}" name="review" rows="3"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-secondary focus:border-secondary">{{ $review->review }}</textarea>
+                        </div>
+
+                        <div class="flex justify-end space-x-2">
+                            <button type="button" class="btn btn-ghost cancel-edit-btn"
+                                data-review-id="{{ $review->id }}">Batal</button>
+                            <button type="submit" class="btn !text-white !bg-[#d94c82]"
+                                id="update-btn-{{ $review->id }}">
+                                Simpan Perubahan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        @empty
+            <div class="bg-[#fef6f6] rounded-box p-6 text-center">
+                <p class="text-gray-600">Belum ada ulasan untuk studio ini.</p>
+            </div>
+        @endforelse
+
+        <!-- Delete Review Modal -->
+        <div id="deleteReviewModal" class="modal">
+            <div class="modal-box">
+                <h3 class="font-bold text-lg mb-4">
+                    <i class="fas fa-exclamation-triangle text-red-500 mr-2"></i>
+                    Konfirmasi Hapus Ulasan
+                </h3>
+
+                <div class="py-4">
+                    <p class="text-gray-700 mb-4">
+                        Apakah Anda yakin ingin menghapus ulasan ini? Tindakan ini tidak dapat dibatalkan.
+                    </p>
+
+                    <!-- Preview of review to be deleted -->
+                    <div class="bg-gray-50 rounded-lg p-4 mb-4" id="reviewPreview">
+                        <div class="flex items-center mb-2">
+                            <div class="rating rating-sm" id="previewRating">
+                                <!-- Stars will be populated by JavaScript -->
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm" id="previewText">
+                        </p>
+                    </div>
+                </div>
+
+                <div class="modal-action">
+                    <button type="button" class="btn btn-ghost" onclick="closeDeleteModal()">
+                        <i class="fas fa-times mr-1"></i>
+                        Batal
                     </button>
-                    <button class="btn btn-sm bg-gray-600">
-                        <i class="fas fa-trash mr-1"></i> Hapus
+                    <button type="button" class="btn btn-error text-white" id="confirmDeleteBtn">
+                        <i class="fas fa-trash mr-1"></i>
+                        Ya, Hapus Ulasan
                     </button>
                 </div>
             </div>
+
+            <!-- Modal backdrop -->
+            <form method="dialog" class="modal-backdrop">
+                <button type="button" onclick="closeDeleteModal()">close</button>
+            </form>
         </div>
-    </div>
     </div>
 @endsection
 
@@ -258,6 +314,311 @@
             });
         });
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            let currentDeleteAction = null;
+            let currentReviewId = null;
+
+            // Edit review button click handler
+            document.querySelectorAll('.edit-review-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const reviewId = this.getAttribute('data-review-id');
+                    const editForm = document.getElementById(`edit-form-${reviewId}`);
+                    const reviewContent = document.getElementById(`review-content-${reviewId}`);
+
+                    if (editForm && reviewContent) {
+                        editForm.classList.remove('hidden');
+                        reviewContent.style.display = 'none';
+                    }
+                });
+            });
+
+            // Cancel edit button click handler
+            document.querySelectorAll('.cancel-edit-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const reviewId = this.getAttribute('data-review-id');
+                    const editForm = document.getElementById(`edit-form-${reviewId}`);
+                    const reviewContent = document.getElementById(`review-content-${reviewId}`);
+
+                    if (editForm && reviewContent) {
+                        editForm.classList.add('hidden');
+                        reviewContent.style.display = 'flex';
+                    }
+                });
+            });
+
+            // Delete review button click handler - Open modal
+            document.querySelectorAll('.delete-review-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const reviewId = this.getAttribute('data-review-id');
+                    const reviewText = this.getAttribute('data-review-text');
+                    const reviewRating = parseInt(this.getAttribute('data-review-rating'));
+                    const actionUrl = this.getAttribute('data-action-url');
+
+                    // Store current action
+                    currentDeleteAction = actionUrl;
+                    currentReviewId = reviewId;
+
+                    // Populate modal preview
+                    populateModalPreview(reviewText, reviewRating);
+
+                    // Show modal
+                    openDeleteModal();
+                });
+            });
+
+            // Confirm delete button in modal
+            document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+                if (currentDeleteAction && currentReviewId) {
+                    performDelete(currentDeleteAction, currentReviewId);
+                }
+            });
+
+            // Update review form submission
+            document.querySelectorAll('.update-review-form').forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const reviewId = this.getAttribute('data-review-id');
+                    const formData = new FormData(this);
+                    const submitBtn = document.getElementById(`update-btn-${reviewId}`);
+                    const originalBtnText = submitBtn.innerHTML;
+
+                    // Validate rating
+                    const ratingChecked = formData.get('rating');
+                    if (!ratingChecked) {
+                        showToast('error', 'Rating harus dipilih!');
+                        return;
+                    }
+
+                    // Show loading state
+                    submitBtn.disabled = true;
+                    submitBtn.innerHTML =
+                        '<i class="fas fa-spinner fa-spin mr-1"></i> Menyimpan...';
+
+                    // Create request body
+                    const requestBody = new URLSearchParams();
+                    requestBody.append('rating', formData.get('rating'));
+                    requestBody.append('review', formData.get('review') || '');
+                    requestBody.append('_token', document.querySelector('meta[name="csrf-token"]')
+                        .content);
+                    requestBody.append('_method', 'PUT');
+
+                    fetch(`/reviews/${reviewId}`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                                'X-CSRF-TOKEN': document.querySelector(
+                                    'meta[name="csrf-token"]').content,
+                                'Accept': 'application/json',
+                                'X-Requested-With': 'XMLHttpRequest'
+                            },
+                            body: requestBody
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                // Update the displayed review
+                                updateDisplayedReview(reviewId, data.review);
+
+                                // Hide edit form and show content
+                                const editForm = document.getElementById(
+                                    `edit-form-${reviewId}`);
+                                const reviewContent = document.getElementById(
+                                    `review-content-${reviewId}`);
+
+                                if (editForm && reviewContent) {
+                                    editForm.classList.add('hidden');
+                                    reviewContent.style.display = 'flex';
+                                }
+
+                                showToast('success', 'Ulasan berhasil diperbarui!');
+                            } else {
+                                throw new Error(data.message || 'Gagal memperbarui ulasan');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            showToast('error', 'Terjadi kesalahan: ' + error.message);
+                        })
+                        .finally(() => {
+                            submitBtn.disabled = false;
+                            submitBtn.innerHTML = originalBtnText;
+                        });
+                });
+            });
+
+            // Modal functions
+            function openDeleteModal() {
+                const modal = document.getElementById('deleteReviewModal');
+                modal.classList.add('modal-open');
+                document.body.style.overflow = 'hidden'; // Prevent background scroll
+            }
+
+            function closeDeleteModal() {
+                const modal = document.getElementById('deleteReviewModal');
+                modal.classList.remove('modal-open');
+                document.body.style.overflow = ''; // Restore scroll
+
+                // Reset state
+                currentDeleteAction = null;
+                currentReviewId = null;
+            }
+
+            // Make closeDeleteModal globally accessible
+            window.closeDeleteModal = closeDeleteModal;
+
+            function populateModalPreview(reviewText, rating) {
+                // Update rating stars
+                const previewRating = document.getElementById('previewRating');
+                previewRating.innerHTML = '';
+
+                for (let i = 1; i <= 5; i++) {
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = 'preview-rating';
+                    input.className = 'mask mask-star-2 bg-yellow-400';
+                    if (i <= rating) input.checked = true;
+                    input.disabled = true;
+                    previewRating.appendChild(input);
+                }
+
+                // Update review text
+                const previewText = document.getElementById('previewText');
+                previewText.textContent = reviewText || 'Tidak ada teks ulasan';
+            }
+
+            function performDelete(actionUrl, reviewId) {
+                const confirmBtn = document.getElementById('confirmDeleteBtn');
+                const originalBtnText = confirmBtn.innerHTML;
+
+                // Show loading state
+                confirmBtn.disabled = true;
+                confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Menghapus...';
+
+                // Create form data
+                const formData = new FormData();
+                formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
+                formData.append('_method', 'DELETE');
+
+                fetch(actionUrl, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        body: formData
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        if (data.success) {
+                            // Close modal
+                            closeDeleteModal();
+
+                            // Remove review element
+                            const reviewElement = document.getElementById(`review-${reviewId}`);
+                            if (reviewElement) {
+                                reviewElement.remove();
+                            }
+
+                            showToast('success', 'Ulasan berhasil dihapus!');
+
+                            // Check if no reviews left
+                            const remainingReviews = document.querySelectorAll('[id^="review-"]');
+                            if (remainingReviews.length === 0) {
+                                // Show empty state or reload page
+                                setTimeout(() => {
+                                    location.reload();
+                                }, 1500);
+                            }
+                        } else {
+                            throw new Error(data.message || 'Gagal menghapus ulasan');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        showToast('error', 'Terjadi kesalahan: ' + error.message);
+                    })
+                    .finally(() => {
+                        confirmBtn.disabled = false;
+                        confirmBtn.innerHTML = originalBtnText;
+                    });
+            }
+
+            // Close modal when clicking backdrop
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal-backdrop')) {
+                    closeDeleteModal();
+                }
+            });
+
+            // Close modal with Escape key
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeDeleteModal();
+                }
+            });
+
+            // Function to update displayed review
+            function updateDisplayedReview(reviewId, reviewData) {
+                // Update rating display
+                const ratingContainer = document.getElementById(`rating-display-${reviewId}`);
+                if (ratingContainer) {
+                    ratingContainer.innerHTML = '';
+                    for (let i = 1; i <= 5; i++) {
+                        const input = document.createElement('input');
+                        input.type = 'radio';
+                        input.name = `rating-${reviewId}`;
+                        input.className = 'mask mask-star-2 bg-yellow-400';
+                        if (i <= reviewData.rating) input.checked = true;
+                        input.disabled = true;
+                        ratingContainer.appendChild(input);
+                    }
+                }
+
+                // Update review text
+                const reviewText = document.getElementById(`review-text-${reviewId}`);
+                if (reviewText) {
+                    reviewText.textContent = reviewData.review || '';
+                }
+            }
+
+            // Toast notification function
+            function showToast(type, message) {
+                // Create toast element
+                const toast = document.createElement('div');
+                toast.className =
+                    `alert ${type === 'success' ? 'alert-success' : 'alert-error'} fixed top-4 right-4 z-50 max-w-sm`;
+                toast.style.zIndex = '9999';
+                toast.innerHTML = `
+            <div class="flex items-center">
+                <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} mr-2"></i>
+                <span>${message}</span>
+            </div>
+        `;
+
+                document.body.appendChild(toast);
+
+                // Auto remove after 3 seconds
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 3000);
+            }
+        });
+    </script>
 @endpush
 
 <style>
@@ -278,5 +639,86 @@
     /* Pause animation on hover */
     .relative:hover .animate-auto-scroll {
         animation-play-state: paused;
+    }
+
+    .star-rating {
+        display: flex;
+        flex-direction: row-reverse;
+        justify-content: flex-end;
+    }
+
+    .star-rating input {
+        position: absolute;
+        opacity: 0;
+    }
+
+    .star-rating label {
+        cursor: pointer;
+        font-size: 1.5rem;
+        color: #ccc;
+        transition: color 0.2s;
+    }
+
+    .star-rating input:checked~label,
+    .star-rating input:hover~label,
+    .star-rating label:hover,
+    .star-rating label:hover~label {
+        color: #f59e0b;
+    }
+
+    .modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1000;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .modal.modal-open {
+        display: flex;
+    }
+
+    .modal-backdrop {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.3);
+        border: none;
+        cursor: pointer;
+    }
+
+    .modal-box {
+        position: relative;
+        z-index: 1001;
+        background: white;
+        border-radius: 0.5rem;
+        padding: 1.5rem;
+        max-width: 500px;
+        width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    }
+
+    .btn-error {
+        background-color: #ef4444;
+        border-color: #ef4444;
+        color: white;
+    }
+
+    .btn-error:hover {
+        background-color: #dc2626;
+        border-color: #dc2626;
+    }
+
+    .rating-sm .mask {
+        width: 1rem;
+        height: 1rem;
     }
 </style>

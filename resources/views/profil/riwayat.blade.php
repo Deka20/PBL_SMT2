@@ -1,4 +1,4 @@
-<html lang="en">
+<html lang="en" data-theme="light">
 
 <head>
     <meta charset="utf-8" />
@@ -57,9 +57,34 @@
             color: #92400e;
         }
 
+        .badge-menunggu_verifikasi {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+
         .badge-lunas {
             background-color: #d1fae5;
             color: #065f46;
+        }
+
+        .badge-diverifikasi {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .badge-selesai {
+            background-color: #dbeafe;
+            color: #1e40af;
+        }
+
+        .badge-ditolak {
+            background-color: #fee2e2;
+            color: #991b1b;
+        }
+
+        .badge-dibatalkan {
+            background-color: #fee2e2;
+            color: #991b1b;
         }
 
         .badge-default {
@@ -70,27 +95,7 @@
 </head>
 
 <body class="bg-[#fef6f6] min-h-screen">
-    <header class="flex items-center justify-between px-4 py-3 bg-white shadow-sm">
-        <button onclick="window.location.href='{{ route('pages.home') }}'"
-            class="flex items-center gap-2 text-sm font-medium text-gray-600 btn btn-ghost btn-hover-effect">
-            <i class="fas fa-arrow-left"></i>
-            Kembali
-        </button>
-        <div class="dropdown dropdown-end">
-            <button tabindex="0" class="btn btn-ghost btn-circle btn-hover-effect">
-                <i class="fas fa-user-circle text-xl text-gray-600"></i>
-            </button>
-            <ul tabindex="0" class="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-32">
-                <li>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button type="submit"
-                            class="text-sm text-gray-600 btn-hover-effect w-full text-left">Keluar</button>
-                    </form>
-                </li>
-            </ul>
-        </div>
-    </header>
+    <x-second-nav></x-second-nav>
 
     <main class="flex justify-center items-start min-h-[calc(100vh-64px)] p-4">
         <div class="flex flex-col md:flex-row w-full max-w-5xl bg-white rounded-lg shadow-lg overflow-hidden">
@@ -112,21 +117,25 @@
 
             <!-- Desktop Menu -->
             <nav class="hidden md:flex flex-col w-64 border-r border-gray-200 bg-gray-50 p-2">
-                <a href="{{ route('profil') }}"
+                <button onclick="window.location.href='{{ route('profil') }}'"
                     class="flex items-center gap-3 px-4 py-4 border-b border-gray-200 text-base font-medium text-gray-600 btn-hover-effect">
                     <i class="fas fa-user text-lg"></i>Profil
-                </a>
-                <a href="{{ route('keamanan') }}"
-                    class="flex items-center gap-3 px-4 py-4 border-b border-gray-200 text-base font-medium text-gray-600 btn-hover-effect">
+                </button>
+                <button onclick="window.location.href='{{ route('keamanan') }}'"
+                    class="flex items-center gap-3 px-4 py-4 border-b border-gray-200 text-gray-600 text-base font-medium btn-hover-effect">
                     <i class="fas fa-lock text-lg"></i>Keamanan & Privasi
-                </a>
-                <a href="{{ route('riwayat') }}"
-                    class="flex items-center gap-3 px-4 py-4 border-b border-gray-200 text-base font-medium active-menu btn-hover-effect">
+                </button>
+                <button onclick="window.location.href='{{ route('riwayat') }}'"
+                    class="flex items-center gap-3 px-4 py-4 border-b border-gray-200 text-base font-medium active-menu text-gray-600 btn-hover-effect">
                     <i class="fas fa-history text-lg"></i>Riwayat Pemesanan
-                </a>
+                </button>
+                <button onclick="window.location.href=''"
+                    class="flex items-center gap-3 px-4 py-4 border-t border-gray-200 text-gray-600 mt-auto font-medium text-sm btn-hover-effect">
+                    <i class="fas fa-sign-out-alt"></i>Keluar
+                </button>
             </nav>
 
-            <!-- Content Section -->
+            <!-- Bagian Content Section yang diperbaiki -->
             <section class="flex-1 p-8 w-full">
                 <div class="flex justify-between items-start mb-6">
                     <h2 class="text-2xl font-semibold text-gray-700">Riwayat Pemesanan</h2>
@@ -136,25 +145,30 @@
                     @auth
                         @php
                             $user = Auth::user();
+                            // Query yang diperbaiki - pastikan menggunakan id_user
                             $bookings = \App\Models\Pemesanan::with(['studio', 'pembayaran'])
-                                ->where('id_pemesanan', $user->id)
-                                ->orderBy('tanggal', 'DESC')
-                                ->orderBy('jam', 'DESC')
+                                ->where('user_id', $user->id)
+                                ->orderBy('created_at', 'desc')
+                                ->orderBy('jam', 'asc')
                                 ->get();
                         @endphp
 
                         @if ($bookings->count() > 0)
                             @foreach ($bookings as $booking)
                                 @php
+                                    // Determine status class and text
                                     $statusClass = 'badge-default';
-                                    $statusText = 'Menunggu';
+                                    $statusText = 'Pending';
 
-                                    if ($booking->pembayaran && $booking->pembayaran->status == 'lunas') {
-                                        $statusClass = 'badge-lunas';
-                                        $statusText = 'Lunas';
-                                    } elseif ($booking->pembayaran && $booking->pembayaran->status == 'pending') {
+                                    if ($booking->status === 'menunggu verifikasi') {
                                         $statusClass = 'badge-pending';
                                         $statusText = 'Pending';
+                                    } elseif ($booking->status === 'diverifikasi') {
+                                        $statusClass = 'badge-diverifikasi';
+                                        $statusText = 'Dikonfirmasi';
+                                    } elseif ($booking->status === 'selesai') {
+                                        $statusClass = 'badge-selesai';
+                                        $statusText = 'Selesai';
                                     }
 
                                     // Format date and time
@@ -167,14 +181,23 @@
 
                                 <div
                                     class="flex items-start p-4 border-b border-gray-200 hover:bg-gray-50 rounded-lg transition">
-                                    <img class="w-12 h-12 rounded-full object-cover" src="{{ $booking->studio->gambar }}"
-                                        alt="Studio photo" />
+                                    @if ($booking->studio && $booking->studio->gambar)
+                                        <img class="w-12 h-12 rounded-full object-cover"
+                                            src="{{ asset('storage/' . $booking->studio->gambar) }}"
+                                            alt="{{ $booking->studio->nama_studio }}">
+                                    @else
+                                        <div class="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center">
+                                            <i class="fas fa-camera text-gray-400"></i>
+                                        </div>
+                                    @endif
                                     <div class="text-gray-700 text-sm ml-4 flex-grow">
                                         <div class="flex justify-between items-start">
                                             <div>
-                                                <p class="font-medium">Booking ID: #{{ $booking->id }}</p>
-                                                <p>{{ $booking->studio->jenis_studio }} -
-                                                    {{ $booking->studio->nama_studio }}</p>
+                                                <p class="font-medium">Booking ID: #{{ $booking->id_pemesanan }}</p>
+                                                @if ($booking->studio)
+                                                    <p>{{ $booking->studio->jenis_studio ?? '' }} -
+                                                        {{ $booking->studio->nama_studio ?? '' }}</p>
+                                                @endif
                                             </div>
                                             <span
                                                 class="text-xs px-2 py-1 rounded-full {{ $statusClass }}">{{ $statusText }}</span>
@@ -188,7 +211,7 @@
                                         </div>
                                         <div class="flex justify-between items-center mt-2">
                                             <span class="text-xs text-gray-500">{{ $booking->no_hp }}</span>
-                                            <a href="{{ route('detailreservasi', ['id' => $booking->id]) }}"
+                                            <a href="{{ route('detailreservasi', ['id' => $booking->id_pemesanan]) }}"
                                                 class="btn btn-xs bg-[#f9d6d6] text-gray-700 border-none btn-hover-effect">Lihat
                                                 Detail</a>
                                         </div>

@@ -35,4 +35,9 @@ class Studio extends Model
 {
     return $this->gambar ? asset('storage/'.$this->gambar) : null;
 }
+
+public function reviews()
+    {
+        return $this->hasMany(Review::class, 'id_studio', 'id_studio');
+    }
 }
