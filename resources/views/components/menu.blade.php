@@ -78,13 +78,11 @@
             <div class="hidden lg:flex items-center">
                 @auth
                     <!-- Search Bar untuk user sudah login -->
-                    <div class="relative w-64">
-                        <input
-                            id="searchInput"
-                            type="text"
-                            placeholder="Cari studio..."
-                            class="w-full px-4 py-2 border rounded shadow-sm focus:outline-none"/>
-                        <ul id="suggestions" class="absolute right-0 mt-1 w-80 bg-white border border-gray-300 rounded-md shadow-lg z-50 hidden max-h-72 overflow-y-auto">
+                    <div class="relative w-52">
+                        <input id="searchInput" type="text" placeholder="Cari studio..."
+                            class="w-full px-4 py-2 border border-pink-500 rounded-full mr-2 shadow-sm focus:outline-none" />
+                        <ul id="suggestions"
+                            class="absolute right-0 mt-1 w-80 bg-white border border-gray-300 rounded-md shadow-lg z-50 hidden max-h-72 overflow-y-auto">
                         </ul>
                     </div>
                     <!-- User Dropdown Menu -->
@@ -128,17 +126,14 @@
                     </a>
 
                     <!-- Search Bar untuk guest -->
-                    <div class="relative w-64">
-  <input
-    id="searchInput"
-    type="text"
-    placeholder="Cari studio..."
-    class="w-full px-4 py-2 border rounded shadow-sm focus:outline-none"
-  />
+                    <div class="relative w-52">
+                        <input id="searchInput" type="text" placeholder="Cari studio..."
+                            class="w-full px-4 py-2 border border-pink-500 rounded-full ml-2 shadow-sm focus:outline-none" />
 
-  <ul id="suggestions" class="absolute right-0 mt-1 w-80 bg-white border border-gray-300 rounded-md shadow-lg z-50 hidden max-h-72 overflow-y-auto">
-</ul>
-</div>
+                        <ul id="suggestions"
+                            class="absolute right-0 mt-1 w-80 bg-white border border-gray-300 rounded-md shadow-lg z-50 hidden max-h-72 overflow-y-auto">
+                        </ul>
+                    </div>
                 @endauth
             </div>
 
@@ -218,63 +213,113 @@
             </div>
         </div>
     </div>
-<!-- copas modal dr homepage -->
+
+    <!-- copas modal dr homepage -->
     <dialog id="detail-modal" class="modal">
-        <div class="modal-box">
-            <h3 class="font-bold text-lg" id="modal-studio-name"></h3>
-            <figure class="mt-4 mb-4">
-                <img id="modal-studio-image" src="" alt="Studio Image"
-                    class="w-full h-auto object-cover rounded-lg" />
-            </figure>
-            <p class="py-2">Jenis: <span id="modal-studio-type"></span></p>
-            <p class="py-2">Harga: <span id="modal-studio-price"></span></p>
-            <p class="py-2">Kapasitas: <span id="modal-studio-description"></span></p>
-            <div class="modal-action">
-                <form method="dialog">
-                    <button class="btn">Tutup</button>
-                </form>
-                <a href="{{ route('pemesanan') }}" class="btn btn-neutral">Pesan Sekarang</a>
+        <div class="modal-box max-w-2xl">
+            <div class="flex justify-between items-start">
+                <div>
+                    <h3 class="font-bold text-xl" id="modal-studio-name"></h3>
+                    <p class="text-gray-500 text-sm mt-1">Jenis: <span id="modal-studio-type"
+                            class="text-gray-700"></span></p>
+                </div>
+                <button onclick="document.getElementById('detail-modal').close()"
+                    class="btn btn-sm btn-circle btn-ghost">
+                    ✕
+                </button>
+            </div>
+
+            <div class="mt-4">
+                <figure>
+                    <img id="modal-studio-image" src="" alt="Studio Image"
+                        class="w-full h-64 object-cover rounded-lg shadow-md" />
+                </figure>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4 mt-4">
+                <div class="bg-gray-50 p-3 rounded-lg">
+                    <p class="text-sm text-gray-500">Harga per Jam</p>
+                    <p class="font-medium" id="modal-studio-price"></p>
+                </div>
+                <div class="bg-gray-50 p-3 rounded-lg">
+                    <p class="text-sm text-gray-500">Kapasitas</p>
+                    <p class="font-medium" id="modal-studio-description"></p>
+                </div>
+            </div>
+
+            <div class="modal-action mt-4">
+                <button onclick="document.getElementById('detail-modal').close()" class="btn">
+                    Tutup
+                </button>
+                <a id="modal-booking-link" href="#" class="btn !bg-[#d94c82] !text-white hover:bg-pink-600">
+                    Pesan Sekarang
+                </a>
             </div>
         </div>
     </dialog>
-<!-- script tulis ulang di chatgpt tadi karna berantakan -->
+
+
     <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        // ========== MOBILE MENU ==========
-        const mobileMenuBtn = document.getElementById("mobile-menu-btn");
-        const mobileMenu = document.getElementById("mobile-menu");
-        const menuIcon = document.getElementById("menu-icon");
-        const closeIcon = document.getElementById("close-icon");
-        const navLinks = document.querySelectorAll(".nav-link");
-        const sections = document.querySelectorAll("section");
+        document.addEventListener("DOMContentLoaded", function() {
+            // Cache DOM elements
+            const domElements = {
+                mobileMenuBtn: document.getElementById("mobile-menu-btn"),
+                mobileMenu: document.getElementById("mobile-menu"),
+                menuIcon: document.getElementById("menu-icon"),
+                closeIcon: document.getElementById("close-icon"),
+                navLinks: document.querySelectorAll(".nav-link"),
+                sections: document.querySelectorAll("section"),
+                searchInput: document.getElementById("searchInput"),
+                suggestions: document.getElementById("suggestions"),
+                detailModal: document.getElementById("detail-modal")
+            };
 
-        mobileMenuBtn.addEventListener("click", function () {
-            mobileMenu.classList.toggle("show");
-            menuIcon.classList.toggle("hidden");
-            closeIcon.classList.toggle("hidden");
-        });
+            // State management
+            let state = {
+                isScrolling: false,
+                userJustClicked: false,
+                lastSearchQuery: ""
+            };
 
-        document.addEventListener("click", function (event) {
-            if (
-                mobileMenu.classList.contains("show") &&
-                !mobileMenu.contains(event.target) &&
-                !mobileMenuBtn.contains(event.target)
-            ) {
-                mobileMenu.classList.remove("show");
-                menuIcon.classList.remove("hidden");
-                closeIcon.classList.add("hidden");
+            // ========== MOBILE MENU HANDLING ==========
+            function setupMobileMenu() {
+                domElements.mobileMenuBtn.addEventListener("click", toggleMobileMenu);
+
+                document.addEventListener("click", function(event) {
+                    if (domElements.mobileMenu.classList.contains("show") &&
+                        !domElements.mobileMenu.contains(event.target) &&
+                        !domElements.mobileMenuBtn.contains(event.target)) {
+                        closeMobileMenu();
+                    }
+                });
             }
-        });
 
-        navLinks.forEach(link => {
-            link.addEventListener("click", function (e) {
+            function toggleMobileMenu() {
+                domElements.mobileMenu.classList.toggle("show");
+                domElements.menuIcon.classList.toggle("hidden");
+                domElements.closeIcon.classList.toggle("hidden");
+            }
+
+            function closeMobileMenu() {
+                domElements.mobileMenu.classList.remove("show");
+                domElements.menuIcon.classList.remove("hidden");
+                domElements.closeIcon.classList.add("hidden");
+            }
+
+            // ========== NAVIGATION HANDLING ==========
+            function setupNavigation() {
+                domElements.navLinks.forEach(link => {
+                    link.addEventListener("click", handleNavLinkClick);
+                });
+            }
+
+            function handleNavLinkClick(e) {
                 e.preventDefault();
                 const targetId = this.getAttribute("href");
                 const targetElement = document.querySelector(targetId);
                 const sectionName = this.getAttribute("data-section");
 
-                navLinks.forEach(navLink => navLink.classList.remove("active"));
-
+                domElements.navLinks.forEach(navLink => navLink.classList.remove("active"));
                 document.querySelectorAll(`.nav-link[data-section="${sectionName}"]`)
                     .forEach(navLink => navLink.classList.add("active"));
 
@@ -285,149 +330,193 @@
                     });
                 }
 
-                mobileMenu.classList.remove("show");
-                menuIcon.classList.remove("hidden");
-                closeIcon.classList.add("hidden");
-            });
-        });
+                closeMobileMenu();
 
-        // ========== ACTIVE SECTION ON SCROLL ==========
-        let isScrolling = false;
-        let userJustClicked = false;
-
-        window.addEventListener("scroll", function () {
-            if (!isScrolling) {
-                isScrolling = true;
-
-                if (!userJustClicked) {
-                    setTimeout(function () {
-                        highlightActiveSection();
-                        isScrolling = false;
-                    }, 100);
-                } else {
-                    isScrolling = false;
-                }
-            }
-        });
-
-        function isInViewport(element, threshold = 0.5) {
-            const rect = element.getBoundingClientRect();
-            const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-            return rect.top <= windowHeight * threshold && rect.bottom >= windowHeight * threshold;
-        }
-
-        function highlightActiveSection() {
-            let activeSection = null;
-
-            sections.forEach(section => {
-                if (isInViewport(section)) {
-                    activeSection = section;
-                }
-            });
-
-            if (activeSection) {
-                const sectionId = activeSection.id;
-
-                navLinks.forEach(link => link.classList.remove("active"));
-                document.querySelectorAll(`.nav-link[data-section="${sectionId}"]`)
-                    .forEach(link => link.classList.add("active"));
-            }
-        }
-
-        highlightActiveSection();
-
-        navLinks.forEach(link => {
-            link.addEventListener("click", function () {
-                userJustClicked = true;
+                state.userJustClicked = true;
                 setTimeout(() => {
-                    userJustClicked = false;
+                    state.userJustClicked = false;
                 }, 1000);
-            });
-        });
-
-        // ========== SEARCH & MODAL ==========
-        const searchInput = document.getElementById("searchInput");
-        const suggestions = document.getElementById("suggestions");
-
-        searchInput.addEventListener("input", function () {
-            const query = this.value.trim();
-
-            if (query.length === 0) {
-                suggestions.classList.add("hidden");
-                suggestions.innerHTML = "";
-                return;
             }
 
-            fetch(`/search-studio?q=${encodeURIComponent(query)}`)
-                .then((res) => res.json())
-                .then((data) => {
-                    suggestions.innerHTML = "";
-                    if (data.length > 0) {
-                        suggestions.classList.remove("hidden");
+            // ========== SCROLL HANDLING ==========
+            function setupScrollHandling() {
+                window.addEventListener("scroll", handleScroll);
+                highlightActiveSection();
+            }
 
-                        const unique = new Map();
-                        data.forEach((item) => {
-                            const li = document.createElement("li");
-                            li.className = "flex items-center gap-4 px-4 py-2 hover:bg-gray-100 cursor-pointer";
+            function handleScroll() {
+                if (!state.isScrolling) {
+                    state.isScrolling = true;
 
-                            const img = document.createElement("img");
-                            img.src = `/gambar/${item.gambar}`;
-                            img.alt = item.nama_studio;
-                            img.className = "w-12 h-12 object-cover rounded";
-
-                            const infoDiv = document.createElement("div");
-                            const name = document.createElement("div");
-                            name.textContent = item.nama_studio;
-                            name.className = "font-medium text-sm";
-
-                            const price = document.createElement("div");
-                            price.textContent = formatRupiah(item.harga);
-                            price.className = "text-xs text-gray-500";
-
-                            infoDiv.appendChild(name);
-                            infoDiv.appendChild(price);
-
-                            li.appendChild(img);
-                            li.appendChild(infoDiv);
-
-                            li.addEventListener("click", () => {
-                                searchInput.value = item.nama_studio;
-                                suggestions.classList.add("hidden");
-                            
-                                document.getElementById("modal-studio-name").textContent = item.nama_studio;
-                                document.getElementById("modal-studio-image").src = `/gambar/${item.gambar}`;
-                                document.getElementById("modal-studio-type").textContent = item.jenis_studio;
-                                document.getElementById("modal-studio-price").textContent = formatRupiah(item.harga);
-                                document.getElementById("modal-studio-description").textContent = item.kapasitas + " orang";
-                            
-                                const modal = document.getElementById("detail-modal");
-                                if (modal) modal.showModal();
-                            });
-                        
-                            suggestions.appendChild(li);
-                        });
-
+                    if (!state.userJustClicked) {
+                        setTimeout(() => {
+                            highlightActiveSection();
+                            state.isScrolling = false;
+                        }, 100);
                     } else {
-                        suggestions.classList.add("hidden");
+                        state.isScrolling = false;
+                    }
+                }
+            }
+
+            function isInViewport(element, threshold = 0.5) {
+                const rect = element.getBoundingClientRect();
+                const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+                return rect.top <= windowHeight * threshold && rect.bottom >= windowHeight * threshold;
+            }
+
+            function highlightActiveSection() {
+                let activeSection = null;
+
+                domElements.sections.forEach(section => {
+                    if (isInViewport(section)) {
+                        activeSection = section;
                     }
                 });
-        });
-        document.addEventListener("click", function (e) {
-            const isClickInsideInput = searchInput.contains(e.target);
-            const isClickInsideSuggestions = suggestions.contains(e.target);
-        
-            if (!isClickInsideInput && !isClickInsideSuggestions) {
-                suggestions.classList.add("hidden");
+
+                if (activeSection) {
+                    const sectionId = activeSection.id;
+                    domElements.navLinks.forEach(link => link.classList.remove("active"));
+                    document.querySelectorAll(`.nav-link[data-section="${sectionId}"]`)
+                        .forEach(link => link.classList.add("active"));
+                }
             }
+
+            // ========== SEARCH & MODAL FUNCTIONALITY ==========
+            function setupSearchAndModal() {
+                domElements.searchInput.addEventListener("input", debounce(handleSearchInput, 300));
+
+                document.addEventListener("click", handleDocumentClick);
+            }
+
+            function debounce(func, wait) {
+                let timeout;
+                return function() {
+                    const context = this;
+                    const args = arguments;
+                    clearTimeout(timeout);
+                    timeout = setTimeout(() => {
+                        func.apply(context, args);
+                    }, wait);
+                };
+            }
+
+            async function handleSearchInput() {
+                const query = this.value.trim();
+                state.lastSearchQuery = query;
+
+                if (query.length === 0) {
+                    domElements.suggestions.classList.add("hidden");
+                    domElements.suggestions.innerHTML = "";
+                    return;
+                }
+
+                try {
+                    const response = await fetch(`/search-studio?q=${encodeURIComponent(query)}`);
+                    if (!response.ok) throw new Error('Network response was not ok');
+
+                    const data = await response.json();
+                    updateSearchSuggestions(data, query);
+                } catch (error) {
+                    console.error('Error fetching search results:', error);
+                }
+            }
+
+            function updateSearchSuggestions(data, query) {
+                domElements.suggestions.innerHTML = "";
+                if (query !== state.lastSearchQuery) return;
+
+                if (data.length > 0) {
+                    domElements.suggestions.classList.remove("hidden");
+
+                    data.forEach((item) => {
+                        const li = document.createElement("li");
+                        li.className = "flex items-center gap-4 px-4 py-2 hover:bg-gray-100 cursor-pointer";
+
+                        li.dataset.studioId = item.id;
+                        li.dataset.studioName = item.nama_studio;
+                        li.dataset.studioImage = `/storage/${item.gambar}`;
+                        li.dataset.studioType = item.jenis_studio;
+                        li.dataset.studioPrice = item.harga;
+                        li.dataset.studioCapacity = item.kapasitas;
+
+                        const img = document.createElement("img");
+                        img.src = `/storage/${item.gambar}`;
+                        img.alt = item.nama_studio;
+                        img.className = "w-12 h-12 object-cover rounded-2xl";
+                        img.loading = "lazy";
+
+                        const infoDiv = document.createElement("div");
+
+                        const name = document.createElement("div");
+                        name.textContent = item.nama_studio;
+                        name.className = "font-medium text-sm";
+
+                        const price = document.createElement("div");
+                        price.textContent = formatRupiah(item.harga);
+                        price.className = "text-xs text-gray-500";
+
+                        infoDiv.appendChild(name);
+                        infoDiv.appendChild(price);
+                        li.appendChild(img);
+                        li.appendChild(infoDiv);
+
+                        li.addEventListener("click", () => showStudioDetails(item));
+
+                        domElements.suggestions.appendChild(li);
+                    });
+                } else {
+                    domElements.suggestions.classList.add("hidden");
+                }
+            }
+
+            function showStudioDetails(item) {
+                domElements.searchInput.value = item.nama_studio;
+                domElements.suggestions.classList.add("hidden");
+
+                document.getElementById("modal-studio-name").textContent = item.nama_studio;
+                document.getElementById("modal-studio-image").src = `/storage/${item.gambar}`;
+                document.getElementById("modal-studio-type").textContent = item.jenis_studio;
+                document.getElementById("modal-studio-price").textContent = formatRupiah(item.harga);
+                document.getElementById("modal-studio-description").textContent = `${item.kapasitas} orang`;
+
+                const bookingLink = document.getElementById("modal-booking-link");
+                if (bookingLink) {
+                    bookingLink.href = `/pemesanan?studio_id=${item.id}`;
+                }
+
+                if (domElements.detailModal) {
+                    domElements.detailModal.showModal();
+                }
+            }
+
+            function handleDocumentClick(e) {
+                const isClickInsideInput = domElements.searchInput.contains(e.target);
+                const isClickInsideSuggestions = domElements.suggestions.contains(e.target);
+
+                if (!isClickInsideInput && !isClickInsideSuggestions) {
+                    domElements.suggestions.classList.add("hidden");
+                }
+            }
+
+            function formatRupiah(angka) {
+                return new Intl.NumberFormat("id-ID", {
+                    style: "currency",
+                    currency: "IDR",
+                    minimumFractionDigits: 0
+                }).format(angka);
+            }
+
+            function init() {
+                setupMobileMenu();
+                setupNavigation();
+                setupScrollHandling();
+                setupSearchAndModal();
+            }
+
+            init();
         });
-        // Fungsi bantu rupiah
-        function formatRupiah(angka) {
-            return new Intl.NumberFormat("id-ID", {
-                style: "currency",
-                currency: "IDR"
-            }).format(angka);
-        }
-    });
-</script>
+    </script>
 </body>
+
 </html>
