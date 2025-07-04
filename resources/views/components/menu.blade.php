@@ -65,7 +65,8 @@
         <div class="navbar-center hidden lg:flex">
             <nav>
                 <ul class="flex space-x-6">
-                    <li><a href="/" class="nav-link active" data-section="home">Beranda</a></li>
+                    <!-- ini tadi error gabisa diklik yg beranda jd aku buat hrefnya #home -->
+                    <li><a href="#home" class="nav-link active" data-section="home">Beranda</a></li>
                     <li><a href="#studio" class="nav-link" data-section="studio">Studio</a></li>
                     <li><a href="#kontak" class="nav-link" data-section="kontak">Kontak</a></li>
                 </ul>
@@ -77,15 +78,15 @@
             <div class="hidden lg:flex items-center">
                 @auth
                     <!-- Search Bar untuk user sudah login -->
-                    <div class="relative w-full max-w-sm mr-4">
-                        <input type="text" placeholder="Cari studio..."
-                            class="input input-bordered w-full !rounded-3xl pl-4 pr-14 focus:outline-none" />
-                        <button
-                            class="absolute right-2 top-1/2 -translate-y-1/2 bg-pink-200 hover:bg-pink-300 text-pink-700 px-3 py-2 rounded-full shadow-sm transition">
-                            <i class="fas fa-search"></i>
-                        </button>
+                    <div class="relative w-64">
+                        <input
+                            id="searchInput"
+                            type="text"
+                            placeholder="Cari studio..."
+                            class="w-full px-4 py-2 border rounded shadow-sm focus:outline-none"/>
+                        <ul id="suggestions" class="absolute right-0 mt-1 w-80 bg-white border border-gray-300 rounded-md shadow-lg z-50 hidden max-h-72 overflow-y-auto">
+                        </ul>
                     </div>
-
                     <!-- User Dropdown Menu -->
                     <div class="dropdown dropdown-end">
                         <label tabindex="0" class="btn btn-ghost btn-circle avatar">
@@ -127,14 +128,17 @@
                     </a>
 
                     <!-- Search Bar untuk guest -->
-                    <div class="relative w-full max-w-sm mr-4 ml-4">
-                        <input type="text" placeholder="Cari studio..."
-                            class="input input-bordered w-full !rounded-3xl pl-4 pr-14 focus:outline-none" />
-                        <button
-                            class="absolute right-2 top-1/2 -translate-y-1/2 bg-pink-200 hover:bg-pink-300 text-pink-700 px-3 py-2 rounded-full shadow-sm transition">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
+                    <div class="relative w-64">
+  <input
+    id="searchInput"
+    type="text"
+    placeholder="Cari studio..."
+    class="w-full px-4 py-2 border rounded shadow-sm focus:outline-none"
+  />
+
+  <ul id="suggestions" class="absolute right-0 mt-1 w-80 bg-white border border-gray-300 rounded-md shadow-lg z-50 hidden max-h-72 overflow-y-auto">
+</ul>
+</div>
                 @endauth
             </div>
 
@@ -159,7 +163,7 @@
             <div class="p-4 space-y-4">
                 <!-- Mobile Navigation Links -->
                 <ul class="menu menu-vertical w-full">
-                    <li><a href="/" class="nav-link active" data-section="home">Beranda</a></li>
+                    <li><a href="#home" class="nav-link active" data-section="home">Beranda</a></li>
                     <li><a href="#studio" class="nav-link" data-section="studio">Studio</a></li>
                     <li><a href="#kontak" class="nav-link" data-section="kontak">Kontak</a></li>
                 </ul>
@@ -214,125 +218,216 @@
             </div>
         </div>
     </div>
-
+<!-- copas modal dr homepage -->
+    <dialog id="detail-modal" class="modal">
+        <div class="modal-box">
+            <h3 class="font-bold text-lg" id="modal-studio-name"></h3>
+            <figure class="mt-4 mb-4">
+                <img id="modal-studio-image" src="" alt="Studio Image"
+                    class="w-full h-auto object-cover rounded-lg" />
+            </figure>
+            <p class="py-2">Jenis: <span id="modal-studio-type"></span></p>
+            <p class="py-2">Harga: <span id="modal-studio-price"></span></p>
+            <p class="py-2">Kapasitas: <span id="modal-studio-description"></span></p>
+            <div class="modal-action">
+                <form method="dialog">
+                    <button class="btn">Tutup</button>
+                </form>
+                <a href="{{ route('pemesanan') }}" class="btn btn-neutral">Pesan Sekarang</a>
+            </div>
+        </div>
+    </dialog>
+<!-- script tulis ulang di chatgpt tadi karna berantakan -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const mobileMenuBtn = document.getElementById("mobile-menu-btn");
-            const mobileMenu = document.getElementById("mobile-menu");
-            const menuIcon = document.getElementById("menu-icon");
-            const closeIcon = document.getElementById("close-icon");
-            const navLinks = document.querySelectorAll(".nav-link");
-            const sections = document.querySelectorAll("section");
+    document.addEventListener("DOMContentLoaded", function () {
+        // ========== MOBILE MENU ==========
+        const mobileMenuBtn = document.getElementById("mobile-menu-btn");
+        const mobileMenu = document.getElementById("mobile-menu");
+        const menuIcon = document.getElementById("menu-icon");
+        const closeIcon = document.getElementById("close-icon");
+        const navLinks = document.querySelectorAll(".nav-link");
+        const sections = document.querySelectorAll("section");
 
-            let lastClickedLink = document.querySelector(".nav-link.active");
+        mobileMenuBtn.addEventListener("click", function () {
+            mobileMenu.classList.toggle("show");
+            menuIcon.classList.toggle("hidden");
+            closeIcon.classList.toggle("hidden");
+        });
 
-            mobileMenuBtn.addEventListener("click", function() {
-                mobileMenu.classList.toggle("show");
-                menuIcon.classList.toggle("hidden");
-                closeIcon.classList.toggle("hidden");
-            });
-
-            document.addEventListener("click", function(event) {
-                const isClickInsideMenu = mobileMenu.contains(event.target);
-                const isClickOnMenuBtn = mobileMenuBtn.contains(event.target);
-
-                if (mobileMenu.classList.contains("show") && !isClickInsideMenu && !isClickOnMenuBtn) {
-                    mobileMenu.classList.remove("show");
-                    menuIcon.classList.remove("hidden");
-                    closeIcon.classList.add("hidden");
-                }
-            });
-
-            navLinks.forEach(link => {
-                link.addEventListener("click", function(e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute("href");
-                    const targetElement = document.querySelector(targetId);
-
-                    const sectionName = this.getAttribute("data-section");
-
-                    navLinks.forEach(navLink => navLink.classList.remove("active"));
-
-                    document.querySelectorAll(`.nav-link[data-section="${sectionName}"]`).forEach(
-                        navLink => {
-                            navLink.classList.add("active");
-                        });
-
-                    lastClickedLink = this;
-
-                    if (targetElement) {
-                        window.scrollTo({
-                            top: targetElement.offsetTop,
-                            behavior: "smooth"
-                        });
-                    }
-
-                    mobileMenu.classList.remove("show");
-                    menuIcon.classList.remove("hidden");
-                    closeIcon.classList.add("hidden");
-                });
-            });
-
-            let isScrolling = false;
-            let userJustClicked = false;
-
-            window.addEventListener("scroll", function() {
-                if (!isScrolling) {
-                    isScrolling = true;
-
-                    if (!userJustClicked) {
-                        setTimeout(function() {
-                            highlightActiveSection();
-                            isScrolling = false;
-                        }, 100);
-                    } else {
-                        isScrolling = false;
-                    }
-                }
-            });
-
-            function isInViewport(element, threshold = 0.5) {
-                const rect = element.getBoundingClientRect();
-                const windowHeight = window.innerHeight || document.documentElement.clientHeight;
-
-                return (
-                    (rect.top <= windowHeight * threshold) &&
-                    (rect.bottom >= windowHeight * threshold)
-                );
+        document.addEventListener("click", function (event) {
+            if (
+                mobileMenu.classList.contains("show") &&
+                !mobileMenu.contains(event.target) &&
+                !mobileMenuBtn.contains(event.target)
+            ) {
+                mobileMenu.classList.remove("show");
+                menuIcon.classList.remove("hidden");
+                closeIcon.classList.add("hidden");
             }
+        });
 
-            function highlightActiveSection() {
-                let activeSection = null;
+        navLinks.forEach(link => {
+            link.addEventListener("click", function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute("href");
+                const targetElement = document.querySelector(targetId);
+                const sectionName = this.getAttribute("data-section");
 
-                sections.forEach(section => {
-                    if (isInViewport(section)) {
-                        activeSection = section;
-                    }
-                });
+                navLinks.forEach(navLink => navLink.classList.remove("active"));
 
-                if (activeSection) {
-                    const sectionId = activeSection.id;
+                document.querySelectorAll(`.nav-link[data-section="${sectionName}"]`)
+                    .forEach(navLink => navLink.classList.add("active"));
 
-                    navLinks.forEach(link => link.classList.remove("active"));
-
-                    document.querySelectorAll(`.nav-link[data-section="${sectionId}"]`).forEach(link => {
-                        link.classList.add("active");
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop,
+                        behavior: "smooth"
                     });
                 }
-            }
 
-            highlightActiveSection();
-
-            navLinks.forEach(link => {
-                link.addEventListener("click", function() {
-                    userJustClicked = true;
-                    setTimeout(() => {
-                        userJustClicked = false;
-                    }, 1000);
-                });
+                mobileMenu.classList.remove("show");
+                menuIcon.classList.remove("hidden");
+                closeIcon.classList.add("hidden");
             });
         });
-    </script>
-</body>
 
+        // ========== ACTIVE SECTION ON SCROLL ==========
+        let isScrolling = false;
+        let userJustClicked = false;
+
+        window.addEventListener("scroll", function () {
+            if (!isScrolling) {
+                isScrolling = true;
+
+                if (!userJustClicked) {
+                    setTimeout(function () {
+                        highlightActiveSection();
+                        isScrolling = false;
+                    }, 100);
+                } else {
+                    isScrolling = false;
+                }
+            }
+        });
+
+        function isInViewport(element, threshold = 0.5) {
+            const rect = element.getBoundingClientRect();
+            const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+            return rect.top <= windowHeight * threshold && rect.bottom >= windowHeight * threshold;
+        }
+
+        function highlightActiveSection() {
+            let activeSection = null;
+
+            sections.forEach(section => {
+                if (isInViewport(section)) {
+                    activeSection = section;
+                }
+            });
+
+            if (activeSection) {
+                const sectionId = activeSection.id;
+
+                navLinks.forEach(link => link.classList.remove("active"));
+                document.querySelectorAll(`.nav-link[data-section="${sectionId}"]`)
+                    .forEach(link => link.classList.add("active"));
+            }
+        }
+
+        highlightActiveSection();
+
+        navLinks.forEach(link => {
+            link.addEventListener("click", function () {
+                userJustClicked = true;
+                setTimeout(() => {
+                    userJustClicked = false;
+                }, 1000);
+            });
+        });
+
+        // ========== SEARCH & MODAL ==========
+        const searchInput = document.getElementById("searchInput");
+        const suggestions = document.getElementById("suggestions");
+
+        searchInput.addEventListener("input", function () {
+            const query = this.value.trim();
+
+            if (query.length === 0) {
+                suggestions.classList.add("hidden");
+                suggestions.innerHTML = "";
+                return;
+            }
+
+            fetch(`/search-studio?q=${encodeURIComponent(query)}`)
+                .then((res) => res.json())
+                .then((data) => {
+                    suggestions.innerHTML = "";
+                    if (data.length > 0) {
+                        suggestions.classList.remove("hidden");
+
+                        const unique = new Map();
+                        data.forEach((item) => {
+                            const li = document.createElement("li");
+                            li.className = "flex items-center gap-4 px-4 py-2 hover:bg-gray-100 cursor-pointer";
+
+                            const img = document.createElement("img");
+                            img.src = `/gambar/${item.gambar}`;
+                            img.alt = item.nama_studio;
+                            img.className = "w-12 h-12 object-cover rounded";
+
+                            const infoDiv = document.createElement("div");
+                            const name = document.createElement("div");
+                            name.textContent = item.nama_studio;
+                            name.className = "font-medium text-sm";
+
+                            const price = document.createElement("div");
+                            price.textContent = formatRupiah(item.harga);
+                            price.className = "text-xs text-gray-500";
+
+                            infoDiv.appendChild(name);
+                            infoDiv.appendChild(price);
+
+                            li.appendChild(img);
+                            li.appendChild(infoDiv);
+
+                            li.addEventListener("click", () => {
+                                searchInput.value = item.nama_studio;
+                                suggestions.classList.add("hidden");
+                            
+                                document.getElementById("modal-studio-name").textContent = item.nama_studio;
+                                document.getElementById("modal-studio-image").src = `/gambar/${item.gambar}`;
+                                document.getElementById("modal-studio-type").textContent = item.jenis_studio;
+                                document.getElementById("modal-studio-price").textContent = formatRupiah(item.harga);
+                                document.getElementById("modal-studio-description").textContent = item.kapasitas + " orang";
+                            
+                                const modal = document.getElementById("detail-modal");
+                                if (modal) modal.showModal();
+                            });
+                        
+                            suggestions.appendChild(li);
+                        });
+
+                    } else {
+                        suggestions.classList.add("hidden");
+                    }
+                });
+        });
+        document.addEventListener("click", function (e) {
+            const isClickInsideInput = searchInput.contains(e.target);
+            const isClickInsideSuggestions = suggestions.contains(e.target);
+        
+            if (!isClickInsideInput && !isClickInsideSuggestions) {
+                suggestions.classList.add("hidden");
+            }
+        });
+        // Fungsi bantu rupiah
+        function formatRupiah(angka) {
+            return new Intl.NumberFormat("id-ID", {
+                style: "currency",
+                currency: "IDR"
+            }).format(angka);
+        }
+    });
+</script>
+</body>
 </html>
