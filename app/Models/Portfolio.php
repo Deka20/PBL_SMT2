@@ -9,9 +9,8 @@ class Portfolio extends Model
 {
     use HasFactory;
 
-     protected $table = 'portofolio'; // Nama tabel yang sesuai
+     protected $table = 'portofolio';
 
-    // Define which attributes are mass assignable
     protected $fillable = [
         'image_path',
     ];

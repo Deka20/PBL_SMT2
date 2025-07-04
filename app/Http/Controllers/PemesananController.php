@@ -87,7 +87,7 @@ class PemesananController extends Controller
     try {
         $studio = Studio::findOrFail($validated['id_studio']);
         $slotDurationMinutes = 15;
-        $totalAmount = 0; // Changed from totalHarga to totalAmount
+        $totalAmount = 0;
         $jamAwal = null;
         $jamAkhir = null;
         $detailSlots = [];
@@ -106,8 +106,6 @@ class PemesananController extends Controller
                 $jamAkhir = $bookingEndTime->format('H:i');
             }
 
-            // Cek overlapping bookings
-            // Ganti query yang mencari pemesanan berdasarkan status
 $overlappingBookings = Pemesanan::where('id_studio', $validated['id_studio'])
     ->where('tanggal', $validated['tanggal'])
     ->whereHas('verifikasiPembayaran', function($query) {
@@ -153,7 +151,6 @@ $overlappingBookings = Pemesanan::where('id_studio', $validated['id_studio'])
         // Hitung durasi total
         $totalDurasi = count($jamSlots) * $slotDurationMinutes;
 
-        // Buat SATU pemesanan dengan total_amount keseluruhan
         $pemesanan = Pemesanan::create([
             'user_id' => Auth::id(),
             'id_studio' => $validated['id_studio'],
@@ -167,7 +164,6 @@ $overlappingBookings = Pemesanan::where('id_studio', $validated['id_studio'])
             'total_amount' => $totalAmount,
         ]);
 
-        // Simpan detail slots terpisah jika diperlukan (opsional)
         $pemesanan->slots_detail = implode(',', array_map('trim', $jamSlots));
         $pemesanan->save();
 

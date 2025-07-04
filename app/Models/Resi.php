@@ -28,25 +28,21 @@ class Resi extends Model
         'updated_at' => 'datetime'
     ];
 
-    // Relasi ke tabel pemesanan
     public function pemesanan()
     {
         return $this->belongsTo(Pemesanan::class, 'id_pemesanan', 'id_pemesanan');
     }
 
-    // Accessor untuk format harga
     public function getFormattedTotalHargaAttribute()
     {
         return 'Rp ' . number_format($this->total_harga, 0, ',', '.');
     }
 
-    // Scope untuk status tertentu
     public function scopeByStatus($query, $status)
     {
         return $query->where('status', $status);
     }
 
-    // Scope untuk tanggal tertentu
     public function scopeByDate($query, $date)
     {
         return $query->whereHas('pemesanan', function($q) use ($date) {
@@ -54,7 +50,6 @@ class Resi extends Model
         });
     }
 
-    // Method untuk update status resi
     public function updateStatus($status)
     {
         $this->status = $status;

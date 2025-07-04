@@ -1,6 +1,4 @@
 <?php
-
-// app/Http/Controllers/ReviewController.php
 namespace App\Http\Controllers;
 
 use App\Models\Review;

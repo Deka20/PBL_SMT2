@@ -53,13 +53,11 @@ class VerifikasiPembayaran extends Model
         ];
     }
 
-    // Relasi ke Pemesanan
     public function pemesanan()
     {
         return $this->belongsTo(Pemesanan::class, 'id_pemesanan', 'id_pemesanan');
     }
 
-    // Relasi ke Pembayaran
     public function pembayaran()
     {
         return $this->belongsTo(Pembayaran::class, 'id_pembayaran', 'id');

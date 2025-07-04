@@ -15,14 +15,13 @@ use App\Http\Controllers\ReservasiController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\ForgotPasswordController;
 use App\Http\Controllers\StatistikPendapatanController;
-use SebastianBergmann\CodeCoverage\Report\Html\Dashboard;
 
 // Halaman Publik
 Route::get('/', [HomeController::class, 'index'])->name('pages.home');
 Route::prefix('api')->middleware('api')->group(function () {
     Route::get('/studio/{id}', [App\Http\Controllers\DashboardController::class, 'show'])->name('api.studio.show');
-    // ... (rute API lainnya)
 });
 
 // Auth Routes
@@ -37,6 +36,13 @@ Route::middleware('guest')->group(function () {
     Route::controller(LoginController::class)->group(function () {
         Route::get('/masuk', 'showLoginForm')->name('login');
         Route::post('/masuk', 'login');
+        // Lupa Password Routes
+        Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+        Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+        Route::get('/verify-otp', [ForgotPasswordController::class, 'showVerifyForm'])->name('password.verify.form');
+        Route::post('/verify-otp', [ForgotPasswordController::class, 'verifyOtp'])->name('password.verify');
+        Route::get('/reset-password', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset.form');
+        Route::post('/reset-password', [ForgotPasswordController::class, 'reset'])->name('password.update');
     });
 });
 
@@ -57,12 +63,9 @@ Route::prefix('admin')->middleware(['auth', AdminMiddleware::class])->group(func
 
    Route::post('/admin/pemesanan/{id}/update-status', [PembayaranController::class, 'updateStatus'])
         ->name('admin.pemesanan.update-status');
-    
-    // Pindahkan routes admin-only ke sini
-     Route::get('/pelanggan', [DashboardController::class, 'pelanggan'])->name('pelanggan');
+    Route::get('/pelanggan', [DashboardController::class, 'pelanggan'])->name('pelanggan');
     Route::get('/pelanggan/{id}', [DashboardController::class, 'showPelanggan'])->name('pelanggan.show');
     Route::put('/pelanggan/{id}', [DashboardController::class, 'updatePelanggan'])->name('pelanggan.update'); // Jika menggunakan POST dengan _method=PUT
-    // Atau Route::put('/pelanggan/{id}', [DashboardController::class, 'updatePelanggan']);
     Route::delete('/pelanggan/{id}', [DashboardController::class, 'deletePelanggan'])->name('pelanggan.destroy');
 
     Route::get('/ulasan', [ReviewController::class, 'index'])->name('ulasan');
@@ -88,15 +91,8 @@ Route::middleware('auth')->group(function () {
         ->name('user.dashboard');
 });
 
-// routes/web.php
-// routes/web.php
 Route::get('/detail-reservasi/{id}', [PemesananController::class, 'detailreservasi'])
     ->name('detailreservasi');
-Route::get('/reservasi', [ReservasiController::class, 'reservasi'])->name('reservasi');
-Route::get('/reservasi-selesai', [ReservasiController::class, 'reservasiselesai'])->name('reservasiselesai');
-Route::get('/reservasi-lunas', [ReservasiController::class, 'reservasilunas'])->name('reservasilunas');
-
-// routes/web.php
 Route::post('/review', [ReviewController::class, 'store'])->name('review.store');
 
 Route::middleware(['auth'])->group(function () {

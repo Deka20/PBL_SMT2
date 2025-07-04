@@ -290,7 +290,6 @@ if ($booking->status === 'menunggu verifikasi') echo 'status-pending';
                     </div>
                 @endif
 
-                <!-- Review Section -->
                 @if ($booking->status === 'selesai')
                     <div class="border-t border-gray-200 pt-6 mt-6">
                         <h3 class="font-bold text-lg flex items-center mb-4">
@@ -411,7 +410,6 @@ if ($booking->status === 'menunggu verifikasi') echo 'status-pending';
 
     <!-- Toast container -->
     <div class="toast toast-end toast-bottom z-50">
-        <!-- Toast messages will be injected here by JavaScript -->
     </div>
 
     <script>

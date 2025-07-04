@@ -21,7 +21,6 @@
         }
     </script>
     <style>
-        /* Custom styles for half-star */
         .half-star {
             position: relative;
             display: inline-block;
@@ -29,23 +28,19 @@
 
         .half-star::before {
             content: "\2605";
-            /* Full star character */
             position: absolute;
             width: 50%;
             overflow: hidden;
             color: #fbbf24;
-            /* Yellow color */
         }
 
         .rating-label {
             cursor: pointer;
             color: #d1d5db;
-            /* Gray for unselected stars */
         }
 
         .rating-label.selected {
             color: #fbbf24;
-            /* Yellow for selected stars */
         }
     </style>
 </head>

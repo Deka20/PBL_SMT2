@@ -21,7 +21,6 @@ class Pembayaran extends Model
     'tgl_pembayaran',
 ];
 
-    // Jika Anda memiliki relasi, definisikan di sini
     public function pemesanan()
     {
         return $this->belongsTo(Pemesanan::class, 'id_pemesanan', 'id_pemesanan');
@@ -32,7 +31,6 @@ class Pembayaran extends Model
         return $this->hasOne(VerifikasiPembayaran::class, 'id_pembayaran', 'id');
     }
 
-    // Accessor untuk status (jika masih diperlukan)
     public function getStatusAttribute()
     {
         return $this->verifikasiPembayaran ? $this->verifikasiPembayaran->status_pembayaran : null;

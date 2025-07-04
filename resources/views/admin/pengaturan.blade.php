@@ -129,7 +129,6 @@
         </div>
     </main>
 
-    {{-- Toast Notification --}}
     <div id="toast" class="alert-toast"></div>
 
 
@@ -142,20 +141,10 @@
         const toast = document.getElementById('toast');
         const noPortfoliosMessage = document.getElementById('noPortfoliosMessage');
 
-
-        /**
-         * Toggles the loading overlay visibility.
-         * @param {boolean} show - True to show, false to hide.
-         */
         function toggleLoading(show) {
             loadingOverlay.classList.toggle('active', show);
         }
 
-        /**
-         * Shows a toast notification.
-         * @param {string} message - The message to display.
-         * @param {'success'|'error'|'info'} type - The type of notification.
-         */
         function showToast(message, type = 'info') {
             toast.innerHTML = `
                 <div class="alert ${type === 'success' ? 'alert-success' : type === 'error' ? 'alert-error' : 'alert-info'} shadow-lg">
@@ -168,21 +157,14 @@
             toast.classList.add('show');
             setTimeout(() => {
                 toast.classList.remove('show');
-            }, 3000); // Hide after 3 seconds
+            }, 3000);
         }
 
-        /**
-         * Clears validation error messages for the image input.
-         */
         function clearImageInputError() {
             imageInputError.textContent = '';
             imageInput.classList.remove('border-red-500');
         }
 
-        /**
-         * Adds a new portfolio item to the gallery.
-         * @param {object} item - Portfolio data: { id, image_path, created_at }
-         */
         function addPortfolioItemToGallery(item) {
             const galleryItem = document.createElement("div");
             galleryItem.className = "bg-gray-100 p-4 text-center rounded-lg shadow-md relative group portfolio-item";
@@ -198,8 +180,7 @@
                 </button>
             `;
 
-            gallery.prepend(galleryItem); // Add to the beginning of the gallery
-            // Check if 'no portfolios' message exists and remove it
+            gallery.prepend(galleryItem);
             if (noPortfoliosMessage && noPortfoliosMessage.parentNode) {
                 noPortfoliosMessage.remove();
             }
@@ -207,10 +188,9 @@
 
         // --- Event Listeners ---
 
-        // Handle image upload form submission
         form.addEventListener("submit", async function(e) {
             e.preventDefault();
-            clearImageInputError(); // Clear previous errors
+            clearImageInputError();
 
             const file = imageInput.files[0];
             if (!file) {
@@ -219,9 +199,8 @@
                 return;
             }
 
-            // Basic client-side validation for file size and type
             const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg', 'image/gif', 'image/svg+xml'];
-            const maxSize = 2 * 1024 * 1024; // 2MB
+            const maxSize = 2 * 1024 * 1024;
 
             if (!allowedTypes.includes(file.type)) {
                 imageInputError.textContent = "Format gambar tidak didukung. Gunakan JPG, PNG, GIF, atau SVG.";
@@ -241,12 +220,11 @@
             toggleLoading(true);
 
             try {
-                // Adjust this URL if your Laravel API route is different (e.g., /api/portfolio)
                 const response = await fetch("{{ route('pengaturan.store') }}", {
                     method: "POST",
                     headers: {
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                        'Accept': 'application/json' // Request JSON response
+                        'Accept': 'application/json'
                     },
                     body: formData,
                 });
@@ -255,11 +233,10 @@
 
                 if (response.ok && data.success) {
                     showToast(data.message, 'success');
-                    addPortfolioItemToGallery(data.data); // Add new item to gallery
-                    form.reset(); // Clear the form
+                    addPortfolioItemToGallery(data.data);
+                    form.reset();
                     clearImageInputError();
                 } else {
-                    // Handle validation errors from server
                     if (response.status === 422 && data.errors && data.errors.image) {
                         imageInputError.textContent = data.errors.image[0];
                         imageInput.classList.add('border-red-500');
@@ -275,7 +252,6 @@
             }
         });
 
-        // Handle delete button clicks using event delegation
         gallery.addEventListener("click", async function(e) {
             const deleteBtn = e.target.closest(".btn-delete-portfolio");
             if (deleteBtn) {
@@ -285,7 +261,6 @@
                 if (confirm("Yakin ingin menghapus portofolio ini?")) {
                     toggleLoading(true);
                     try {
-                        // UPDATED URL for delete: from '/admin/portfolio/${portfolioId}' to '/admin/pengaturan/${portfolioId}'
                         const response = await fetch(`/admin/pengaturan/${portfolioId}`, {
                             method: "DELETE",
                             headers: {

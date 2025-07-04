@@ -88,7 +88,6 @@ class Pemesanan extends Model
         ->select('jam', 'status', 'created_at')
         ->get()
         ->map(function($item) {
-            // Ensure time is in HH:MM format
             $time = explode(':', $item->jam);
             $item->jam = sprintf("%02d:%02d", $time[0], $time[1] ?? 0);
             return $item;

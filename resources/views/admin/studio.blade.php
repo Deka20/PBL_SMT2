@@ -42,7 +42,6 @@
             display: flex;
         }
 
-        /* DaisyUI modal-open class handles fade-in effect */
         .modal.modal-open {
             opacity: 1;
             visibility: visible;
@@ -58,7 +57,6 @@
         </div>
     </div>
 
-    {{-- Assuming x-sidebar is a Blade component --}}
     <x-sidebar></x-sidebar>
 
     <div class="ml-64 p-5 flex-1">
@@ -153,7 +151,6 @@
             <form id="studioForm" enctype="multipart/form-data">
                 @csrf
                 <input type="hidden" id="id_studio" name="id_studio">
-                {{-- This hidden input is crucial for Laravel to interpret PUT/PATCH requests from a POST form --}}
                 <input type="hidden" name="_method" id="formMethod" value="POST">
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">

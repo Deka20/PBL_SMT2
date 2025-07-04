@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Portfolio;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Log; // For logging
+use Illuminate\Support\Facades\Log;
 
 class PortfolioController extends Controller
 {
@@ -33,14 +33,12 @@ class PortfolioController extends Controller
         Log::info('Portfolio upload request received.');
 
         $request->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Max 2MB
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
         try {
             if ($request->hasFile('image')) {
                 $image = $request->file('image');
-                // Store the image in the 'public/portfolios' directory
-                // and get the relative path.
                 $path = $image->store('portfolios', 'public');
 
                 $portfolio = Portfolio::create([
@@ -54,10 +52,10 @@ class PortfolioController extends Controller
                     'message' => 'Gambar portofolio berhasil diunggah!',
                     'data' => [
                         'id' => $portfolio->id,
-                        'image_path' => Storage::url($portfolio->image_path), // Get public URL
+                        'image_path' => Storage::url($portfolio->image_path),
                         'created_at' => $portfolio->created_at->format('d/m/Y'),
                     ]
-                ], 201); // 201 Created
+                ], 201);
             }
 
             Log::warning('No image file provided in the request.');
@@ -79,13 +77,11 @@ class PortfolioController extends Controller
     {
         Log::info('Portfolio delete request received for ID: ' . $portfolio->id);
         try {
-            // Delete the image file from storage
             if (Storage::disk('public')->exists($portfolio->image_path)) {
                 Storage::disk('public')->delete($portfolio->image_path);
                 Log::info('Image file deleted: ' . $portfolio->image_path);
             }
 
-            // Delete the record from the database
             $portfolio->delete();
             Log::info('Portfolio record deleted from DB for ID: ' . $portfolio->id);
 

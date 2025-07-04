@@ -48,15 +48,12 @@
             display: flex;
         }
 
-        /* Compact table styling */
         .custom-table {
             font-size: 0.875rem;
-            /* Smaller font size */
         }
 
         .custom-table th {
             padding: 0.5rem 0.75rem;
-            /* Reduced padding */
             background-color: #f9fafb;
             color: #6b7280;
             font-weight: 600;
@@ -64,12 +61,10 @@
             letter-spacing: 0.025em;
             text-align: left;
             font-size: 0.75rem;
-            /* Even smaller font for headers */
         }
 
         .custom-table td {
             padding: 0.5rem 0.75rem;
-            /* Reduced padding */
             vertical-align: middle;
         }
 
@@ -77,29 +72,22 @@
             border-bottom: 1px solid #e5e7eb;
         }
 
-        /* Compact action buttons */
         .action-buttons {
             min-width: 160px;
-            /* Increased width for horizontal buttons */
         }
 
-        /* Compact date cell */
         .date-cell {
             white-space: nowrap;
             font-size: 0.75rem;
-            /* Smaller font for dates */
         }
 
-        /* Horizontal button styling */
         .btn-edit,
         .btn-delete {
             padding: 0.375rem 0.75rem;
-            /* More horizontal padding */
             border-radius: 0.375rem;
             font-size: 0.75rem;
             transition: all 0.2s;
             min-width: 60px;
-            /* Minimum width for buttons */
             display: inline-flex;
             align-items: center;
             justify-content: center;
@@ -123,25 +111,19 @@
             background-color: #dc2626;
         }
 
-        /* Compact avatar */
         .avatar-compact {
             width: 2rem;
-            /* 32px */
             height: 2rem;
-            /* 32px */
         }
 
-        /* Hide some columns on smaller screens */
         @media (max-width: 768px) {
             .hide-mobile {
                 display: none;
             }
         }
 
-        /* Compact row height */
         .custom-table tbody tr {
             height: 3rem;
-            /* Fixed row height */
         }
     </style>
 </head>
@@ -158,12 +140,12 @@
     <x-sidebar></x-sidebar>
 
     <main class="flex-1 p-4 lg:ml-64">
-        <div class="mx-auto px-4 py-4"> <!-- Reduced padding -->
-            <h1 class="text-2xl font-bold text-gray-800 mb-4">Manajemen Pelanggan</h1> <!-- Smaller heading -->
+        <div class="mx-auto px-4 py-4">
+            <h1 class="text-2xl font-bold text-gray-800 mb-4">Manajemen Pelanggan</h1>
 
             <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                <div class="p-4 border-b border-gray-200 flex justify-between items-center"> <!-- Reduced padding -->
-                    <h3 class="text-lg font-semibold text-gray-800">Daftar Pelanggan</h3> <!-- Smaller heading -->
+                <div class="p-4 border-b border-gray-200 flex justify-between items-center">
+                    <h3 class="text-lg font-semibold text-gray-800">Daftar Pelanggan</h3>
                     <button onclick="openCustomerModal('add')"
                         class="btn btn-sm bg-primary text-white hover:bg-primary/90">
                         <i class="fas fa-plus mr-1"></i> Tambah
@@ -294,9 +276,7 @@
         </div>
     </div>
 
-    <!-- Script -->
     <script>
-        // Global variables and DOM elements
         let currentCustomerId = null;
         const loadingOverlay = document.getElementById('loadingOverlay');
         const customerModal = document.getElementById('customerModal');
@@ -304,8 +284,6 @@
         const confirmDeleteModal = document.getElementById('confirmDeleteModal');
         const customerForm = document.getElementById('customerForm');
         const submitBtn = document.getElementById('submitBtn');
-
-        // --- Utility Functions ---
 
         function toggleLoading(show) {
             loadingOverlay.classList.toggle('active', show);
@@ -334,13 +312,13 @@
             const modalTitleText = document.getElementById('modalTitleText');
             const formMethod = document.getElementById('formMethod');
 
-            modalTitleText.textContent = 'Ubah Pelanggan'; // Hanya mode edit untuk pelanggan
-            formMethod.value = 'PUT'; // Metode HTTP untuk update
+            modalTitleText.textContent = 'Ubah Pelanggan';
+            formMethod.value = 'PUT';
 
-            clearValidationErrors(); // Bersihkan error validasi sebelumnya
+            clearValidationErrors();
 
             if (customerData) {
-                customerForm.action = `/admin/pelanggan/${customerData.id}`; // URL untuk update
+                customerForm.action = `/admin/pelanggan/${customerData.id}`;
                 document.getElementById('customer_id').value = customerData.id;
                 document.getElementById('nama_lengkap').value = customerData.nama_lengkap || '';
                 document.getElementById('nama_pengguna').value = customerData.nama_pengguna || '';
@@ -462,7 +440,7 @@
                 }
 
                 if (data.success) {
-                    window.location.reload(); // Refresh halaman setelah sukses
+                    window.location.reload();
                 } else {
                     showError(data.message || 'Terjadi kesalahan saat menghapus pelanggan.');
                 }
@@ -477,7 +455,6 @@
 
         // --- Event Listeners ---
         document.addEventListener('DOMContentLoaded', function() {
-            // Edit Customer Buttons (using event delegation)
             document.getElementById('customerTableBody').addEventListener('click', function(e) {
                 if (e.target.closest('.edit-customer-btn')) {
                     const customerId = e.target.closest('.edit-customer-btn').dataset.id;
@@ -509,11 +486,10 @@
 
                 try {
                     const formData = new FormData(this);
-                    // Laravel expects _method for PUT/PATCH requests
                     formData.append('_method', document.getElementById('formMethod').value);
 
                     const response = await fetch(this.action, {
-                        method: 'POST', // Always POST for FormData with _method
+                        method: 'POST',
                         body: formData,
                         headers: {
                             'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]')

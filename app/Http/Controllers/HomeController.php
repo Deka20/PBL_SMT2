@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Review;
 use App\Models\Portfolio;
 use Illuminate\Http\Request;
-use App\Models\Studio; // Pastikan model Studio diimpor
+use App\Models\Studio;
 
 class HomeController extends Controller
 {
@@ -21,8 +21,7 @@ class HomeController extends Controller
         $portfolios = Portfolio::latest()->get();
 
         $reviews = Review::with(['user', 'studio'])->get();
-    
-    // Calculate average rating and rating distribution
+
     $averageRating = $reviews->avg('rating');
     $ratingCount = $reviews->count();
     $ratingDistribution = [
@@ -33,7 +32,7 @@ class HomeController extends Controller
         1 => $reviews->where('rating', 1)->count(),
     ];
 
-     return view('pages.home', [ // Make sure 'your.view.name' matches your actual blade path, e.g., 'home' or 'welcome'
+     return view('pages.home', [
             'studios' => $studios,
             'portfolios' => $portfolios,
             'reviews' => $reviews,

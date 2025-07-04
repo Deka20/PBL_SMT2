@@ -67,7 +67,7 @@ class PembayaranController extends Controller
         VerifikasiPembayaran::updateOrCreate(
             ['id_pemesanan' => $pemesanan->id_pemesanan],
             [
-                'status_pembayaran' => 'menunggu verifikasi', // Tetap 'pending'
+                'status_pembayaran' => 'menunggu verifikasi',
             ]
         );
 
@@ -90,19 +90,13 @@ class PembayaranController extends Controller
         try {
             DB::beginTransaction();
 
-            // Find the booking with its related verification and payment data
             $pemesanan = Pemesanan::with(['verifikasiPembayaran', 'pembayaran'])->findOrFail($id_pemesanan);
-
-            // If a verification record already exists, update it.
             if ($pemesanan->verifikasiPembayaran) {
                 $pemesanan->verifikasiPembayaran->update([
                     'status_pembayaran' => $validated['status_pembayaran'],
                     'updated_at' => now()
                 ]);
             } else {
-                // If no verification record exists, create one.
-                // It's crucial that a 'pembayaran' record exists for this 'pemesanan'
-                // before a 'verifikasiPembayaran' can be created.
                 if (!$pemesanan->pembayaran) {
                     throw new \Exception('Data pembayaran tidak ditemukan untuk pemesanan ini. Tidak dapat membuat verifikasi pembayaran.');
                 }

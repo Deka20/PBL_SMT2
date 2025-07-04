@@ -37,12 +37,9 @@
 </head>
 
 <body class="bg-[#fefbfa] font-['Inter']">
-    <!-- Sidebar -->
     <x-sidebar></x-sidebar>
 
-    <!-- Main Content -->
     <main class="ml-64 p-8 max-w-screen-xl mx-auto">
-        <!-- Profile Icon -->
         <div class="flex justify-end mb-4">
             <div class="w-9 h-9 rounded-full bg-gray-300 flex items-center justify-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 fill-gray-600" viewBox="0 0 24 24">
@@ -55,11 +52,9 @@
         <h1 class="text-xl font-bold mb-1">Statistik Pendapatan</h1>
         <div class="text-sm mb-6 text-gray-600">{{ $monthName }} {{ $currentYear }}</div>
 
-        <!-- Filter Section -->
         <div class="bg-white p-4 rounded-xl shadow-sm mb-6">
             <form method="GET" action="{{ route('statistikpendapatan') }}"
                 class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                <!-- Month Selector -->
                 <div>
                     <label for="bulan" class="block text-sm font-medium text-gray-700 mb-1">Bulan</label>
                     <select id="bulan" name="bulan"
@@ -74,7 +69,6 @@
                     </select>
                 </div>
 
-                <!-- Year Selector -->
                 <div>
                     <label for="tahun" class="block text-sm font-medium text-gray-700 mb-1">Tahun</label>
                     <select id="tahun" name="tahun"
@@ -89,7 +83,6 @@
                     </select>
                 </div>
 
-                <!-- Submit Button -->
                 <div class="flex items-end">
                     <button type="submit"
                         class="w-full md:w-auto px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark transition-colors">
@@ -99,7 +92,6 @@
             </form>
         </div>
 
-        <!-- Stats Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             <div class="bg-white p-4 rounded-xl shadow-sm">
                 <h3 class="text-sm mb-2 flex items-center gap-2 text-gray-700 font-semibold">
@@ -121,7 +113,6 @@
             </div>
         </div>
 
-        <!-- Charts -->
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="bg-white p-4 rounded-xl shadow-sm">
                 <h3 class="text-sm mb-2 font-semibold text-gray-700">📊 Tren Pendapatan Bulanan</h3>
@@ -154,9 +145,7 @@
         </div>
     </main>
 
-    <!-- Chart.js Scripts -->
     <script>
-        // Tren Pendapatan Bulanan
         new Chart(document.getElementById('chartTren'), {
             type: 'line',
             data: {
@@ -191,7 +180,6 @@
             }
         });
 
-        // Pendapatan per Studio
         new Chart(document.getElementById('chartStudio'), {
             type: 'bar',
             data: {
@@ -228,7 +216,6 @@
             }
         });
 
-        // Distribusi Pendapatan
         new Chart(document.getElementById('chartDonut'), {
             type: 'doughnut',
             data: {
@@ -254,7 +241,6 @@
             }
         });
 
-        // Pencapaian Target
         new Chart(document.getElementById('chartProgress'), {
             type: 'bar',
             data: {

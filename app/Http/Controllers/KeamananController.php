@@ -11,7 +11,7 @@ class KeamananController extends Controller
 {
     public function keamanan()
     {
-        return view('profil.keamanan'); // Pastikan path view benar
+        return view('profil.keamanan');
     }
 
     public function ubahPassword(Request $request)

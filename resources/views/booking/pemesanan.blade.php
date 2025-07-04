@@ -9,12 +9,10 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <style>
-        /* General button transitions for hover effects */
         button {
             transition: all 0.2s ease;
         }
 
-        /* Custom scrollbar for time dropdown */
         .custom-scrollbar::-webkit-scrollbar {
             width: 6px;
         }
@@ -33,7 +31,6 @@
             background: #555;
         }
 
-        /* Payment modal styles */
         .modal {
             display: none;
             position: fixed;
@@ -58,7 +55,6 @@
             position: relative;
         }
 
-        /* Style for booked time slots */
         .booked-slot {
             background-color: #f3f4f6 !important;
             color: #9ca3af !important;
@@ -67,7 +63,6 @@
             border: 1px solid #e5e7eb !important;
         }
 
-        /* Style for processing payment slots */
         .processing-slot {
             background-color: #fff3cd !important;
             color: #856404 !important;
@@ -76,7 +71,6 @@
             border: 1px solid #ffeeba !important;
         }
 
-        /* Loading spinner animation */
         @keyframes spin {
             to {
                 transform: rotate(360deg);
@@ -95,13 +89,11 @@
             pointer-events: none !important;
         }
 
-        /* Style for selected time slots */
         .time-slot.selected {
             background-color: #fce4ec;
             border: 1px solid #d94c82;
         }
 
-        /* Style for selected time slots display */
         .selected-slots-container {
             display: flex;
             flex-wrap: wrap;
@@ -125,7 +117,6 @@
             color: #d94c82;
         }
 
-        /* Summary card styles */
         .summary-card {
             background: white;
             border-radius: 10px;
@@ -157,7 +148,6 @@
             color: #111827;
         }
 
-        /* Form styling */
         .form-container {
             background: white;
             border-radius: 10px;
@@ -647,11 +637,9 @@
         });
 
         function updateSummary() {
-            // Update name and phone
             summaryNama.textContent = document.getElementById('nama').value;
             summaryNoHp.textContent = document.getElementById('no_hp').value;
 
-            // Update studio
             const selectedStudioOption = studioSelect.options[studioSelect.selectedIndex];
             if (selectedStudioOption && selectedStudioOption.value !== "") {
                 const studioNameMatch = selectedStudioOption.textContent.match(/ - ([^-]+) - Rp/);
@@ -661,20 +649,16 @@
                 summaryStudio.textContent = '-';
             }
 
-            // Update date
             summaryTanggal.textContent = tanggalInput.value || '-';
 
-            // Update time slots
             if (selectedTimeSlots.length > 0) {
                 summaryJam.textContent = selectedTimeSlots.map(slot => slot.displayText).join(', ');
             } else {
                 summaryJam.textContent = '-';
             }
 
-            // Update number of people
             summaryJumlahOrang.textContent = jumlahOrangInput.value;
 
-            // Update total price
             summaryTotalHarga.textContent = document.getElementById('totalHarga').textContent;
         }
 
@@ -874,8 +858,6 @@
                 decreaseBtn.classList.remove('btn-inactive');
             }
 
-            // Tombol +
-            // Only activate if a studio is selected and current value is less than capacity
             if (kapasitasStudio > 0 && currentValue < kapasitasStudio) {
                 increaseBtn.classList.add('btn-active');
                 increaseBtn.classList.remove('btn-inactive');

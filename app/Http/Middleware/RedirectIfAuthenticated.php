@@ -22,7 +22,7 @@ public function handle($request, Closure $next, ...$guards)
 
     foreach ($guards as $guard) {
         if (Auth::guard($guard)->check()) {
-            return redirect('/'); // Atau route yang diinginkan
+            return redirect('/');
         }
     }
 

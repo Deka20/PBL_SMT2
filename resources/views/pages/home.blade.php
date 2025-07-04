@@ -20,8 +20,6 @@
                     <div class="card-body">
                         <h2 class="card-title">{{ $studio->nama_studio }}</h2>
                         <p>Jenis: {{ $studio->jenis_studio }}</p>
-                        {{-- You might want to add a more detailed description from the database if available --}}
-                        {{-- <p>{{ $studio->deskripsi }}</p> --}}
                         <p>Rp {{ number_format($studio->harga, 0, ',', '.') }}/15 menit</p>
                         <div class="card-actions justify-end">
                             <button class="btn btn-neutral w-full show-detail-btn" data-name="{{ $studio->nama_studio }}"
@@ -196,7 +194,7 @@
                     @endif
                 </div>
 
-                <!-- Edit Form (Hidden by default) -->
+                <!-- Edit Form -->
                 <div id="edit-form-{{ $review->id }}" class="hidden mt-4">
                     <form class="update-review-form" data-review-id="{{ $review->id }}">
                         @csrf
@@ -253,11 +251,9 @@
                         Apakah Anda yakin ingin menghapus ulasan ini? Tindakan ini tidak dapat dibatalkan.
                     </p>
 
-                    <!-- Preview of review to be deleted -->
                     <div class="bg-gray-50 rounded-lg p-4 mb-4" id="reviewPreview">
                         <div class="flex items-center mb-2">
                             <div class="rating rating-sm" id="previewRating">
-                                <!-- Stars will be populated by JavaScript -->
                             </div>
                         </div>
                         <p class="text-gray-600 text-sm" id="previewText">
@@ -277,7 +273,6 @@
                 </div>
             </div>
 
-            <!-- Modal backdrop -->
             <form method="dialog" class="modal-backdrop">
                 <button type="button" onclick="closeDeleteModal()">close</button>
             </form>
@@ -293,14 +288,12 @@
 
             showDetailButtons.forEach(button => {
                 button.addEventListener('click', function() {
-                    // Get data from the clicked button's data attributes
                     const name = this.getAttribute('data-name');
                     const type = this.getAttribute('data-type');
                     const price = this.getAttribute('data-price');
                     const image = this.getAttribute('data-image');
                     const description = this.getAttribute('data-description');
 
-                    // Populate the modal content
                     document.getElementById('modal-studio-name').textContent = name;
                     document.getElementById('modal-studio-type').textContent = type;
                     document.getElementById('modal-studio-price').textContent = price;
@@ -308,7 +301,6 @@
                     document.getElementById('modal-studio-image').alt = name + " image";
                     document.getElementById('modal-studio-description').textContent = description;
 
-                    // Show the modal
                     detailModal.showModal();
                 });
             });
@@ -320,7 +312,6 @@
             let currentDeleteAction = null;
             let currentReviewId = null;
 
-            // Edit review button click handler
             document.querySelectorAll('.edit-review-btn').forEach(button => {
                 button.addEventListener('click', function() {
                     const reviewId = this.getAttribute('data-review-id');
@@ -334,7 +325,6 @@
                 });
             });
 
-            // Cancel edit button click handler
             document.querySelectorAll('.cancel-edit-btn').forEach(button => {
                 button.addEventListener('click', function() {
                     const reviewId = this.getAttribute('data-review-id');
@@ -348,7 +338,6 @@
                 });
             });
 
-            // Delete review button click handler - Open modal
             document.querySelectorAll('.delete-review-btn').forEach(button => {
                 button.addEventListener('click', function() {
                     const reviewId = this.getAttribute('data-review-id');
@@ -356,26 +345,21 @@
                     const reviewRating = parseInt(this.getAttribute('data-review-rating'));
                     const actionUrl = this.getAttribute('data-action-url');
 
-                    // Store current action
                     currentDeleteAction = actionUrl;
                     currentReviewId = reviewId;
 
-                    // Populate modal preview
                     populateModalPreview(reviewText, reviewRating);
 
-                    // Show modal
                     openDeleteModal();
                 });
             });
 
-            // Confirm delete button in modal
             document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
                 if (currentDeleteAction && currentReviewId) {
                     performDelete(currentDeleteAction, currentReviewId);
                 }
             });
 
-            // Update review form submission
             document.querySelectorAll('.update-review-form').forEach(form => {
                 form.addEventListener('submit', function(e) {
                     e.preventDefault();
@@ -384,19 +368,16 @@
                     const submitBtn = document.getElementById(`update-btn-${reviewId}`);
                     const originalBtnText = submitBtn.innerHTML;
 
-                    // Validate rating
                     const ratingChecked = formData.get('rating');
                     if (!ratingChecked) {
                         showToast('error', 'Rating harus dipilih!');
                         return;
                     }
 
-                    // Show loading state
                     submitBtn.disabled = true;
                     submitBtn.innerHTML =
                         '<i class="fas fa-spinner fa-spin mr-1"></i> Menyimpan...';
 
-                    // Create request body
                     const requestBody = new URLSearchParams();
                     requestBody.append('rating', formData.get('rating'));
                     requestBody.append('review', formData.get('review') || '');
@@ -423,10 +404,8 @@
                         })
                         .then(data => {
                             if (data.success) {
-                                // Update the displayed review
                                 updateDisplayedReview(reviewId, data.review);
 
-                                // Hide edit form and show content
                                 const editForm = document.getElementById(
                                     `edit-form-${reviewId}`);
                                 const reviewContent = document.getElementById(
@@ -453,28 +432,24 @@
                 });
             });
 
-            // Modal functions
             function openDeleteModal() {
                 const modal = document.getElementById('deleteReviewModal');
                 modal.classList.add('modal-open');
-                document.body.style.overflow = 'hidden'; // Prevent background scroll
+                document.body.style.overflow = 'hidden';
             }
 
             function closeDeleteModal() {
                 const modal = document.getElementById('deleteReviewModal');
                 modal.classList.remove('modal-open');
-                document.body.style.overflow = ''; // Restore scroll
+                document.body.style.overflow = '';
 
-                // Reset state
                 currentDeleteAction = null;
                 currentReviewId = null;
             }
 
-            // Make closeDeleteModal globally accessible
             window.closeDeleteModal = closeDeleteModal;
 
             function populateModalPreview(reviewText, rating) {
-                // Update rating stars
                 const previewRating = document.getElementById('previewRating');
                 previewRating.innerHTML = '';
 
@@ -488,7 +463,6 @@
                     previewRating.appendChild(input);
                 }
 
-                // Update review text
                 const previewText = document.getElementById('previewText');
                 previewText.textContent = reviewText || 'Tidak ada teks ulasan';
             }
@@ -497,11 +471,9 @@
                 const confirmBtn = document.getElementById('confirmDeleteBtn');
                 const originalBtnText = confirmBtn.innerHTML;
 
-                // Show loading state
                 confirmBtn.disabled = true;
                 confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i> Menghapus...';
 
-                // Create form data
                 const formData = new FormData();
                 formData.append('_token', document.querySelector('meta[name="csrf-token"]').content);
                 formData.append('_method', 'DELETE');
@@ -523,10 +495,8 @@
                     })
                     .then(data => {
                         if (data.success) {
-                            // Close modal
                             closeDeleteModal();
 
-                            // Remove review element
                             const reviewElement = document.getElementById(`review-${reviewId}`);
                             if (reviewElement) {
                                 reviewElement.remove();
@@ -534,10 +504,8 @@
 
                             showToast('success', 'Ulasan berhasil dihapus!');
 
-                            // Check if no reviews left
                             const remainingReviews = document.querySelectorAll('[id^="review-"]');
                             if (remainingReviews.length === 0) {
-                                // Show empty state or reload page
                                 setTimeout(() => {
                                     location.reload();
                                 }, 1500);
@@ -556,23 +524,19 @@
                     });
             }
 
-            // Close modal when clicking backdrop
             document.addEventListener('click', function(e) {
                 if (e.target.classList.contains('modal-backdrop')) {
                     closeDeleteModal();
                 }
             });
 
-            // Close modal with Escape key
             document.addEventListener('keydown', function(e) {
                 if (e.key === 'Escape') {
                     closeDeleteModal();
                 }
             });
 
-            // Function to update displayed review
             function updateDisplayedReview(reviewId, reviewData) {
-                // Update rating display
                 const ratingContainer = document.getElementById(`rating-display-${reviewId}`);
                 if (ratingContainer) {
                     ratingContainer.innerHTML = '';
@@ -587,16 +551,13 @@
                     }
                 }
 
-                // Update review text
                 const reviewText = document.getElementById(`review-text-${reviewId}`);
                 if (reviewText) {
                     reviewText.textContent = reviewData.review || '';
                 }
             }
 
-            // Toast notification function
             function showToast(type, message) {
-                // Create toast element
                 const toast = document.createElement('div');
                 toast.className =
                     `alert ${type === 'success' ? 'alert-success' : 'alert-error'} fixed top-4 right-4 z-50 max-w-sm`;
@@ -610,7 +571,6 @@
 
                 document.body.appendChild(toast);
 
-                // Auto remove after 3 seconds
                 setTimeout(() => {
                     if (toast.parentNode) {
                         toast.parentNode.removeChild(toast);
@@ -636,7 +596,6 @@
         display: inline-block;
     }
 
-    /* Pause animation on hover */
     .relative:hover .animate-auto-scroll {
         animation-play-state: paused;
     }
