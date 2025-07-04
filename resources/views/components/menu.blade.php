@@ -127,10 +127,11 @@
                     </a>
 
                     <!-- Search Bar untuk guest -->
-                    <div class="join ml-5">
+                    <div class="relative w-full max-w-sm mr-4 ml-4">
                         <input type="text" placeholder="Cari studio..."
-                            class="input input-bordered join-item bg-white focus:outline-none w-40 md:w-52" />
-                        <button class="btn join-item !bg-pink-200 hover:bg-pink-600 text-white">
+                            class="input input-bordered w-full !rounded-3xl pl-4 pr-14 focus:outline-none" />
+                        <button
+                            class="absolute right-2 top-1/2 -translate-y-1/2 bg-pink-200 hover:bg-pink-300 text-pink-700 px-3 py-2 rounded-full shadow-sm transition">
                             <i class="fas fa-search"></i>
                         </button>
                     </div>

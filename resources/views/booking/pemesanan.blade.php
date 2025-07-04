@@ -248,11 +248,14 @@
             </button>
             <div id="dropdownMenu"
                 class="hidden absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded shadow-md z-10">
-                <button onclick="window.location.href='keluar'"
-                    class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#d94c82]"
-                    type="button">
-                    Keluar
-                </button>
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button onclick="event.preventDefault(); this.closest('form').submit();"
+                        class="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-[#d94c82]"
+                        type="button">
+                        Keluar
+                    </button>
+                </form>
             </div>
         </div>
     </header>
@@ -479,7 +482,7 @@
 
             <div class="mb-4 bg-gray-50 p-3 rounded-lg">
                 <p class="text-sm font-medium text-gray-700 mb-2">Transfer ke Rekening:</p>
-                <p class="font-medium">BNI a.n. ShutterSpace - 1234567890</p>
+                <p class="font-medium">BNI a.n. Potretine - 1234567890</p>
             </div>
 
             <div class="mb-4">
@@ -504,7 +507,6 @@
     </div>
 
     <script>
-        // --- DOM Elements ---
         const profileBtn = document.getElementById('profileBtn');
         const dropdownMenu = document.getElementById('dropdownMenu');
         const tanggalInput = document.getElementById('tanggal');
@@ -526,7 +528,6 @@
         const selectedSlotsDisplay = document.getElementById('selectedSlotsDisplay');
         const selectedSlotsList = document.getElementById('selectedSlotsList');
 
-        // Summary elements
         const summaryNama = document.getElementById('summaryNama');
         const summaryNoHp = document.getElementById('summaryNoHp');
         const summaryStudio = document.getElementById('summaryStudio');
@@ -535,72 +536,56 @@
         const summaryJumlahOrang = document.getElementById('summaryJumlahOrang');
         const summaryTotalHarga = document.getElementById('summaryTotalHarga');
 
-        // Initialize kapasitasStudio to a reasonable default or 0, it will be updated when a studio is selected.
         let kapasitasStudio = 0;
-        let selectedTimeSlots = []; // Array to store selected time slots
-        let allTimeSlots = []; // Array to store all available time slots
+        let selectedTimeSlots = [];
+        let allTimeSlots = [];
 
         // --- Event Listeners ---
         document.addEventListener('DOMContentLoaded', function() {
-            // Set min date to today
             const today = new Date().toISOString().split('T')[0];
             tanggalInput.setAttribute('min', today);
-
-            // Set initial button states
             updateKapasitasInfo();
         });
 
-        // Profile dropdown toggle
         profileBtn.addEventListener('click', function() {
             dropdownMenu.classList.toggle('hidden');
         });
 
-        // Close dropdown when clicking outside
         document.addEventListener('click', function(event) {
-            // Check if the click is outside the profile button and the dropdown menu
             if (!profileBtn.contains(event.target) && !dropdownMenu.contains(event.target)) {
                 dropdownMenu.classList.add('hidden');
             }
         });
 
-        // Date change handler
         tanggalInput.addEventListener('change', function() {
-            // Clear selected time slots when date changes
             selectedTimeSlots = [];
             updateSelectedSlotsDisplay();
-            generateTimeSlots(); // Regenerate time slots for the new date
+            generateTimeSlots();
             calculateTotal();
             updateSummary();
         });
 
-        // Studio change handler
         studioSelect.addEventListener('change', function() {
-            // Clear selected time slots when studio changes
             selectedTimeSlots = [];
             updateSelectedSlotsDisplay();
-            updateKapasitasInfo(); // Update capacity info when studio changes
-            generateTimeSlots(); // Regenerate time slots for the new studio
+            updateKapasitasInfo();
+            generateTimeSlots();
             updateSummary();
         });
 
-        // Toggle time slots dropdown
         jamDropdownBtn.addEventListener('click', function() {
             jamDropdown.classList.toggle('hidden');
-            // Only generate time slots if the dropdown is becoming visible
             if (!jamDropdown.classList.contains('hidden')) {
                 generateTimeSlots();
             }
         });
 
-        // Close time slots dropdown when clicking outside
         document.addEventListener('click', function(e) {
-            // Check if the click is outside the dropdown container and the button that triggers it
             if (!e.target.closest('#jamDropdown') && !e.target.closest('#jamDropdownBtn')) {
                 jamDropdown.classList.add('hidden');
             }
         });
 
-        // Decrease number of people
         decreaseBtn.addEventListener('click', () => {
             let currentValue = parseInt(jumlahOrangInput.value);
             if (currentValue > 1) {
@@ -611,10 +596,8 @@
             }
         });
 
-        // Increase number of people
         increaseBtn.addEventListener('click', () => {
             let currentValue = parseInt(jumlahOrangInput.value);
-            // Only allow increment if current value is less than studio capacity
             if (currentValue < kapasitasStudio) {
                 jumlahOrangInput.value = currentValue + 1;
                 calculateTotal();
@@ -623,7 +606,6 @@
             }
         });
 
-        // Select all time slots
         selectAllBtn.addEventListener('click', function() {
             const checkboxes = document.querySelectorAll('.time-slot-checkbox:not(:disabled)');
             const allSelected = Array.from(checkboxes).every(checkbox => checkbox.checked);
@@ -639,9 +621,7 @@
             });
         });
 
-        // Confirm selection button
         confirmSelectionBtn.addEventListener('click', function() {
-            // Get all checked checkboxes
             const checkboxes = document.querySelectorAll('.time-slot-checkbox:checked');
             selectedTimeSlots = Array.from(checkboxes).map(checkbox => {
                 return {
@@ -656,25 +636,18 @@
             updateSummary();
         });
 
-        // Close modal button
         closeModalBtn.addEventListener('click', function() {
             modal.style.display = 'none';
         });
 
-        // Close modal when clicking outside of the modal content
         window.addEventListener('click', function(event) {
             if (event.target == modal) {
                 modal.style.display = 'none';
             }
         });
 
-        // --- Functions ---
-
-        /**
-         * Updates the summary card with current form values
-         */
         function updateSummary() {
-            // Update name and phone (these shouldn't change)
+            // Update name and phone
             summaryNama.textContent = document.getElementById('nama').value;
             summaryNoHp.textContent = document.getElementById('no_hp').value;
 
@@ -705,9 +678,6 @@
             summaryTotalHarga.textContent = document.getElementById('totalHarga').textContent;
         }
 
-        /**
-         * Updates the display of selected time slots
-         */
         function updateSelectedSlotsDisplay() {
             if (selectedTimeSlots.length === 0) {
                 selectedSlotsDisplay.classList.add('hidden');
@@ -719,10 +689,8 @@
             selectedSlotsDisplay.classList.remove('hidden');
             document.getElementById('selectedJamText').textContent = `${selectedTimeSlots.length} slot dipilih`;
 
-            // Update the hidden input with comma-separated time values
             document.getElementById('selectedJam').value = selectedTimeSlots.map(slot => slot.value).join(',');
 
-            // Update the display of selected slots
             selectedSlotsList.innerHTML = '';
             selectedTimeSlots.forEach((slot, index) => {
                 const slotTag = document.createElement('div');
@@ -736,7 +704,6 @@
                 selectedSlotsList.appendChild(slotTag);
             });
 
-            // Add event listeners to remove buttons
             document.querySelectorAll('.remove-slot-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const index = parseInt(this.dataset.index);
@@ -745,7 +712,6 @@
                     calculateTotal();
                     updateSummary();
 
-                    // Also uncheck the corresponding checkbox in the dropdown
                     const checkboxes = document.querySelectorAll('.time-slot-checkbox');
                     checkboxes.forEach(checkbox => {
                         if (checkbox.value === selectedTimeSlots[index]?.value) {
@@ -757,14 +723,10 @@
             });
         }
 
-        /**
-         * Generates time slots and marks booked slots as unavailable
-         */
         async function generateTimeSlots() {
             const selectedDate = tanggalInput.value;
             const selectedStudio = studioSelect.value;
 
-            // Validasi input
             if (!selectedDate || !selectedStudio) {
                 timeSlotsContainer.innerHTML = `
                 <div class="col-span-2 p-2 text-center text-gray-500">
@@ -774,7 +736,6 @@
                 return;
             }
 
-            // Tampilkan loading
             timeSlotsContainer.innerHTML = `
             <div class="col-span-2 p-2 text-center">
                 <span class="loading-spinner"></span> Memuat slot waktu...
@@ -801,16 +762,14 @@
                     throw new Error(data.message || 'Gagal memuat data');
                 }
 
-                // Ensure we have both booked and processing slots
                 const bookedSlots = Array.isArray(data.booked) ? data.booked : [];
                 const processingSlots = Array.isArray(data.processing) ? data.processing : [];
 
-                // Generate time slots dari jam 10:00 sampai 21:00 dengan interval 15 menit
                 const startHour = 10;
                 const endHour = 21;
                 const interval = 15;
                 let slotsHTML = '';
-                allTimeSlots = []; // Reset all time slots
+                allTimeSlots = [];
 
                 for (let currentMinute = startHour * 60; currentMinute < endHour * 60; currentMinute += interval) {
                     const hourStart = Math.floor(currentMinute / 60);
@@ -882,7 +841,6 @@
 
                 timeSlotsContainer.innerHTML = slotsHTML;
 
-                // Add event listeners to checkboxes
                 document.querySelectorAll('.time-slot-checkbox:not(:disabled)').forEach(checkbox => {
                     checkbox.addEventListener('change', function() {
                         const slotElement = this.closest('.time-slot');
@@ -927,15 +885,11 @@
             }
         }
 
-        /**
-         * Calculates the total price based on the number of people and selected studio.
-         */
         function calculateTotal() {
             const jumlahOrang = parseInt(jumlahOrangInput.value) || 1;
             const selectedOption = studioSelect.options[studioSelect.selectedIndex];
             const selectedSlotsCount = selectedTimeSlots.length || 0;
 
-            // If no studio is selected, set a default capacity (e.g., 1 or 0)
             if (!selectedOption || selectedOption.value === "") {
                 kapasitasStudio = 0;
                 document.getElementById('totalHarga').textContent = `Rp 0`;
@@ -943,10 +897,8 @@
                 return;
             }
 
-            // Extract capacity from the selected studio option
             kapasitasStudio = parseInt(selectedOption.getAttribute('data-kapasitas')) || 0;
 
-            // Ensure jumlahOrang does not exceed the current studio's capacity
             if (jumlahOrang > kapasitasStudio) {
                 jumlahOrangInput.value = kapasitasStudio > 0 ? kapasitasStudio : 1;
             }
@@ -954,45 +906,35 @@
                 jumlahOrangInput.value = 1;
             }
 
-            // Extract price from the option's data attribute
             const hargaPerSlot = parseInt(selectedOption.getAttribute('data-harga')) || 0;
 
-            // Define additional cost per person (after the first person)
             const biayaTambahanPerOrang = 5000;
 
-            // Calculate total: (base price * number of slots) + (number of additional people * cost per additional person * number of slots)
             const total = (hargaPerSlot * selectedSlotsCount) +
                 (Math.max(0, jumlahOrangInput.value - 1) * biayaTambahanPerOrang * selectedSlotsCount);
 
-            // Display the formatted total price
             const formattedTotal = total.toLocaleString('id-ID');
             document.getElementById('totalHarga').textContent = `Rp ${formattedTotal}`;
             updateButtonStates();
         }
 
-        // --- Payment Modal Functionality ---
-
         submitBtn.addEventListener('click', async function(e) {
-            e.preventDefault(); // Prevent default form submission
+            e.preventDefault();
 
-            // Validate that at least one time slot is selected
             if (selectedTimeSlots.length === 0) {
                 formErrorDisplay.classList.remove('hidden');
                 formErrorDisplay.innerHTML = '<p>Silakan pilih setidaknya satu slot waktu</p>';
                 return;
             }
 
-            // Client-side form validation using HTML5 built-in validation
             if (!bookingForm.checkValidity()) {
-                bookingForm.reportValidity(); // Show native browser validation messages
-                return; // Stop execution if form is not valid
+                bookingForm.reportValidity();
+                return;
             }
 
-            // Hide any previous server-side validation errors
             formErrorDisplay.classList.add('hidden');
             formErrorDisplay.innerHTML = '';
 
-            // Show loading state for the button
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
 
@@ -1002,15 +944,14 @@
                     method: 'POST',
                     body: formData,
                     headers: {
-                        'Accept': 'application/json', // Expect JSON response
+                        'Accept': 'application/json',
                         'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
                     }
                 });
 
-                const data = await response.json(); // Parse response body as JSON
+                const data = await response.json();
 
                 if (!response.ok) {
-                    // Handle server-side validation errors (status 422)
                     if (response.status === 422 && data.errors) {
                         let errorMessages = '';
                         for (const key in data.errors) {
@@ -1018,22 +959,17 @@
                                 errorMessages += `<p>${data.errors[key].join('<br>')}</p>`;
                             }
                         }
-                        // Throw an error with collected messages to be caught by the catch block
                         throw new Error(errorMessages || 'Validasi gagal.');
                     }
-                    // Handle other HTTP errors (e.g., 500 server error)
                     throw new Error(data.message || 'Terjadi kesalahan saat memproses pemesanan');
                 }
 
-                // If booking is successful:
                 document.getElementById('modal_pemesanan_id').value = data
-                    .id_pemesanan; // Set booking ID for payment form
+                    .id_pemesanan;
 
-                // Populate modal details from form data
                 document.getElementById('modalNama').textContent = formData.get('nama');
                 document.getElementById('modalNoHp').textContent = formData.get('no_hp');
 
-                // Extract studio name for the modal display
                 const selectedStudioOption = studioSelect.options[studioSelect.selectedIndex];
                 const studioNameMatch = selectedStudioOption.textContent.match(/ - ([^-]+) - Rp/);
                 document.getElementById('modalStudio').textContent = studioNameMatch ?
@@ -1041,7 +977,6 @@
 
                 document.getElementById('modalTanggal').textContent = formData.get('tanggal');
 
-                // Display selected time slots in modal
                 const selectedTimesDisplay = selectedTimeSlots.map(slot => slot.displayText).join(', ');
                 document.getElementById('modalJam').textContent = selectedTimesDisplay;
 
@@ -1049,52 +984,42 @@
                 document.getElementById('modalTotalHarga').textContent = document.getElementById('totalHarga')
                     .textContent;
 
-                // Show the payment modal
                 modal.style.display = 'flex';
 
             } catch (error) {
                 console.error('Error:', error);
-                // Display error message in the form's error display area
                 formErrorDisplay.classList.remove('hidden');
                 formErrorDisplay.innerHTML =
                     `<p>${error.message || 'Terjadi kesalahan tidak dikenal.'}</p>`;
             } finally {
-                // Always reset button state after request completes
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Lanjutkan ke Pembayaran';
             }
         });
 
-        // --- New Functions ---
         function updateKapasitasInfo() {
             const selectedOption = studioSelect.options[studioSelect.selectedIndex];
 
-            // Only update kapasitasStudio if a valid studio is selected
             if (selectedOption && selectedOption.value !== "") {
                 kapasitasStudio = parseInt(selectedOption.getAttribute('data-kapasitas')) || 0;
             } else {
-                kapasitasStudio = 0; // Reset to 0 if no studio or "Pilih Studio" is selected
+                kapasitasStudio = 0;
             }
 
             document.getElementById('kapasitasValue').textContent = kapasitasStudio;
             jumlahOrangInput.setAttribute('max', kapasitasStudio);
 
-            // Adjust jumlahOrang if it exceeds the new capacity, but do not alert on load
-            // or when a studio is changed, just cap the value.
             if (parseInt(jumlahOrangInput.value) > kapasitasStudio && kapasitasStudio > 0) {
                 jumlahOrangInput.value = kapasitasStudio;
             } else if (kapasitasStudio === 0) {
-                // If no studio is selected (capacity 0), default to 1 person if not already 0.
-                // This prevents issues with calculation, but the user still needs to pick a studio.
-                // Maybe set to 1, or keep it at 1 if it was already 1.
-                if (parseInt(jumlahOrangInput.value) > 1) { // Only reset if it was something else, and capacity is 0
+                if (parseInt(jumlahOrangInput.value) > 1) {
                     jumlahOrangInput.value = 1;
                 }
             }
 
-            updateButtonStates(); // Update tombol +/-
-            calculateTotal(); // Recalculate total as capacity changes might influence it.
-            updateSummary(); // Update the summary card
+            updateButtonStates();
+            calculateTotal();
+            updateSummary();
         }
     </script>
 </body>

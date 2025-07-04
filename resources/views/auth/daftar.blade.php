@@ -69,7 +69,7 @@
         .date-input-container input:not(:placeholder-shown)~.custom-placeholder,
         .date-input-container input.has-value~.custom-placeholder {
             transform: translateY(-1.25rem) scale(0.9);
-            color: #ff3aef;
+            color: #fc26ea;
             background: white;
             padding: 0 0.25rem;
             left: 3rem;
@@ -127,7 +127,7 @@
             <!-- Tanggal Lahir -->
             <div class="input-container date-input-container relative">
                 <input type="date" id="tgl_lahir" name="tgl_lahir"
-                    class="input input-bordered w-full rounded-3xl focus:outline-none focus:ring-2 focus:ring-pink-400 pl-12"
+                    class="input input-bordered w-full rounded-3xl focus:outline-none focus:ring-2 focus:ring-pink-600 pl-12"
                     value="{{ old('tgl_lahir') }}" required onfocus="this.showPicker()"
                     onchange="this.classList.add('has-value')">
 
