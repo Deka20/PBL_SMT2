@@ -85,6 +85,9 @@ Route::prefix('admin')->middleware(['auth', AdminMiddleware::class])->group(func
 
 });
 
+//Route Search diluar auth biar bisa search juga sblm login
+Route::get('/search-studio', [HomeController::class, 'searchStudio']);
+
 // User Authenticated Routes
 Route::middleware('auth')->group(function () {
     Route::get('/dashboard', [LoginController::class, 'index'])
