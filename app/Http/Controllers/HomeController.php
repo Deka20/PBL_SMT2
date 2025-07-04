@@ -42,4 +42,19 @@ class HomeController extends Controller
             'ratingDistribution' => $ratingDistribution,
         ]);
     }
+    // Buat Search
+    public function searchStudio(Request $request)
+    {
+        $query = $request->get('q');
+
+        $studios = Studio::select('id_studio', 'nama_studio', 'jenis_studio', 'harga', 'gambar', 'kapasitas')
+            ->where('nama_studio', 'like', "%$query%")
+            ->orWhere('jenis_studio', 'like', "%$query%")
+            ->orWhere('harga', 'like', "%$query%")
+            ->get()
+            ->unique('id_studio') // <-- ini penting!
+            ->values(); // reset indeks
+
+        return response()->json($studios);
+    }
 }
