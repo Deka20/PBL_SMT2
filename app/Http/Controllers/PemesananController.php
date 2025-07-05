@@ -161,7 +161,7 @@ $overlappingBookings = Pemesanan::where('id_studio', $validated['id_studio'])
             'jam_akhir' => $jamAkhir,
             'durasi' => $totalDurasi,
             'jumlah_orang' => $validated['jumlah_orang'],
-            'total_amount' => $totalAmount,
+            'total_harga' => $totalAmount,
         ]);
 
         $pemesanan->slots_detail = implode(',', array_map('trim', $jamSlots));
@@ -252,7 +252,7 @@ $overlappingBookings = Pemesanan::where('id_studio', $validated['id_studio'])
             'id_pemesanan' => $pemesanan->id_pemesanan,
             'redirect_url' => route('detailreservasi', $pemesanan->id_pemesanan),
             'message' => 'Pemesanan berhasil dibuat. Silakan selesaikan pembayaran dalam 1x24 jam.',
-            'total_amount' => $totalAmount,
+            'total_harga' => $totalAmount,
             'jumlah_slot' => count($jamSlots)
         ]);
 
@@ -288,8 +288,8 @@ $overlappingBookings = Pemesanan::where('id_studio', $validated['id_studio'])
             })
             ->selectRaw('
                 COUNT(*) as total_transaksi,
-                SUM(total_amount) as total_penghasilan,
-                AVG(total_amount) as rata_rata_harga
+                SUM(total_harga) as total_penghasilan,
+                AVG(total_harga) as rata_rata_harga
             ')
             ->first();
 

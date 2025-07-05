@@ -19,7 +19,7 @@ class Pemesanan extends Model
         'nama',
         'id_studio',
         'harga',
-        'total_amount',
+        'total_harga',
         'jam',
         'jam_akhir',
         'durasi',

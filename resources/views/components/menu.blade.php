@@ -214,50 +214,6 @@
         </div>
     </div>
 
-    <!-- copas modal dr homepage -->
-    <dialog id="detail-modal" class="modal">
-        <div class="modal-box max-w-2xl">
-            <div class="flex justify-between items-start">
-                <div>
-                    <h3 class="font-bold text-xl" id="modal-studio-name"></h3>
-                    <p class="text-gray-500 text-sm mt-1">Jenis: <span id="modal-studio-type"
-                            class="text-gray-700"></span></p>
-                </div>
-                <button onclick="document.getElementById('detail-modal').close()"
-                    class="btn btn-sm btn-circle btn-ghost">
-                    ✕
-                </button>
-            </div>
-
-            <div class="mt-4">
-                <figure>
-                    <img id="modal-studio-image" src="" alt="Studio Image"
-                        class="w-full h-64 object-cover rounded-lg shadow-md" />
-                </figure>
-            </div>
-
-            <div class="grid grid-cols-2 gap-4 mt-4">
-                <div class="bg-gray-50 p-3 rounded-lg">
-                    <p class="text-sm text-gray-500">Harga per Jam</p>
-                    <p class="font-medium" id="modal-studio-price"></p>
-                </div>
-                <div class="bg-gray-50 p-3 rounded-lg">
-                    <p class="text-sm text-gray-500">Kapasitas</p>
-                    <p class="font-medium" id="modal-studio-description"></p>
-                </div>
-            </div>
-
-            <div class="modal-action mt-4">
-                <button onclick="document.getElementById('detail-modal').close()" class="btn">
-                    Tutup
-                </button>
-                <a id="modal-booking-link" href="#" class="btn !bg-[#d94c82] !text-white hover:bg-pink-600">
-                    Pesan Sekarang
-                </a>
-            </div>
-        </div>
-    </dialog>
-
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {

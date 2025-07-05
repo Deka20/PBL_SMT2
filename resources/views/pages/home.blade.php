@@ -50,7 +50,9 @@
                 <form method="dialog">
                     <button class="btn">Tutup</button>
                 </form>
-                <a href="{{ route('pemesanan') }}" class="btn btn-neutral">Pesan Sekarang</a>
+                <a href="{{ route('pemesanan') }}" class="btn btn-neutral" id="modal-booking-btn">
+                    Pesan Sekarang
+                </a>
             </div>
         </div>
     </dialog>
@@ -156,7 +158,8 @@
                                 </div>
                             </div>
                             <div class="ml-3">
-                                <h3 class="font-bold">{{ $review->user->nama_pengguna ?? 'Pengguna Tidak Ditemukan' }}</h3>
+                                <h3 class="font-bold">{{ $review->user->nama_pengguna ?? 'Pengguna Tidak Ditemukan' }}
+                                </h3>
                                 <p class="text-gray-600 text-sm">
                                     @if ($review->studio)
                                         {{ $review->studio->nama_studio }}
@@ -293,6 +296,8 @@
                     const price = this.getAttribute('data-price');
                     const image = this.getAttribute('data-image');
                     const description = this.getAttribute('data-description');
+                    const studioId = this.getAttribute(
+                        'data-id'); // Tambahkan atribut data-id di button
 
                     document.getElementById('modal-studio-name').textContent = name;
                     document.getElementById('modal-studio-type').textContent = type;
@@ -301,8 +306,21 @@
                     document.getElementById('modal-studio-image').alt = name + " image";
                     document.getElementById('modal-studio-description').textContent = description;
 
+                    // Update link pesan sekarang dengan ID studio
+                    const bookingBtn = document.getElementById('modal-booking-btn');
+                    if (bookingBtn) {
+                        bookingBtn.href = `/pemesanan?studio_id=${studioId}`;
+                    }
+
                     detailModal.showModal();
                 });
+            });
+
+            // Tutup modal ketika klik di luar
+            detailModal.addEventListener('click', function(e) {
+                if (e.target === detailModal) {
+                    detailModal.close();
+                }
             });
         });
     </script>
