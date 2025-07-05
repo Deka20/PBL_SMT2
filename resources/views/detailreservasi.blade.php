@@ -266,7 +266,7 @@ if ($booking->status === 'menunggu verifikasi') echo 'status-pending';
                     @endif
                     <div class="flex justify-between items-center pt-3 font-bold text-lg">
                         <span>Total Pembayaran</span>
-                        <span>Rp {{ number_format($booking->total_amount ?? 0, 0, ',', '.') }}</span>
+                        <span>Rp {{ number_format($booking->total_harga ?? 0, 0, ',', '.') }}</span>
                     </div>
                 </div>
 
