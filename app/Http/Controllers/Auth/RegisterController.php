@@ -26,6 +26,7 @@ class RegisterController extends Controller
             'telepon'          => 'required|string|max:15',
             'password'         => 'required|string|min:8|confirmed',
             'tgl_lahir'        => 'required|string|max:15',
+            'foto'             => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
     
         if ($validator->fails()) {
@@ -43,6 +44,7 @@ class RegisterController extends Controller
             'password'       => Hash::make($request->password),
             'role'           => 'pelanggan',
             'tgl_lahir'      => $request->tgl_lahir,
+            'foto'           => null,
         ]);
     
 

@@ -141,8 +141,12 @@
 
         @forelse($reviews as $review)
             <div class="bg-[#fef6f6] rounded-box p-6" id="review-{{ $review->id }}">
-                <div class="flex justify-between items-start" id="review-content-{{ $review->id }}">
-                    <div>
+                {{-- The main flex container. Keep justify-between items-start --}}
+                <div class="flex justify-between items-start gap-4" id="review-content-{{ $review->id }}">
+                    {{-- Content area: Avatar, Name, Rating, Review Text --}}
+                    {{-- Use flex-grow to allow it to take available space.
+                 Also add min-w-0 to prevent it from overflowing if content is unbreakable. --}}
+                    <div class="flex-grow min-w-0">
                         <div class="flex items-center mb-2">
                             <div class="avatar">
                                 <div class="w-10 rounded-full bg-gray-400 flex items-center justify-center">
@@ -178,11 +182,14 @@
                             @endfor
                         </div>
 
-                        <p class="text-gray-700" id="review-text-{{ $review->id }}">{{ $review->review }}</p>
+                        {{-- The text element. `break-words` is key for long unbroken strings. --}}
+                        <p class="text-gray-700 break-words" id="review-text-{{ $review->id }}">{{ $review->review }}
+                        </p>
                     </div>
 
+                    {{-- Action buttons: Make sure they don't grow and maintain their size --}}
                     @if (auth()->check() && auth()->id() === $review->user_id)
-                        <div class="flex space-x-2" id="review-actions-{{ $review->id }}">
+                        <div class="flex flex-col space-y-2 flex-shrink-0" id="review-actions-{{ $review->id }}">
                             <button class="btn btn-sm edit-review-btn" data-review-id="{{ $review->id }}">
                                 <i class="fas fa-edit mr-1"></i> Ubah
                             </button>
@@ -195,6 +202,7 @@
                             </button>
                         </div>
                     @endif
+
                 </div>
 
                 <!-- Edit Form -->

@@ -239,7 +239,7 @@
                                     <td class="text-center">
                                         {{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}</td>
                                     <td class="text-center">{{ $item->no_hp }}</td>
-                                    <td class="text-center">Rp{{ number_format($item->total_amount, 0, ',', '.') }}
+                                    <td class="text-center">Rp{{ number_format($item->total_harga, 0, ',', '.') }}
                                     </td>
                                     <td class="text-center">
                                         @if ($item->pembayaran && $item->pembayaran->bukti_pembayaran)

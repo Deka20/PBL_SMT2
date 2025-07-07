@@ -56,7 +56,7 @@ class DashboardController extends Controller
                 ->with('studio')
                 ->get()
                 ->sum(function($booking) {
-                    return ($booking->total_amount ?? 0) + ($booking->jumlah_orang * 5000);
+                    return ($booking->total_harga ?? 0) + ($booking->jumlah_orang * 5000);
                 })
         ];
 
