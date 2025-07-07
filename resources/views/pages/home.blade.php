@@ -187,7 +187,7 @@
                                 <i class="fas fa-edit mr-1"></i> Ubah
                             </button>
                             <button type="button"
-                                class="btn btn-sm bg-red-500 text-white hover:bg-red-600 delete-review-btn"
+                                class="btn btn-sm !bg-[#d94c82] !text-white hover:bg-red-600 delete-review-btn"
                                 data-review-id="{{ $review->id }}" data-review-text="{{ $review->review }}"
                                 data-review-rating="{{ $review->rating }}"
                                 data-action-url="{{ route('reviews.destroy', $review->id) }}">
@@ -269,7 +269,7 @@
                         <i class="fas fa-times mr-1"></i>
                         Batal
                     </button>
-                    <button type="button" class="btn btn-error text-white" id="confirmDeleteBtn">
+                    <button type="button" class="btn !bg-[#d94c82] !text-white" id="confirmDeleteBtn">
                         <i class="fas fa-trash mr-1"></i>
                         Ya, Hapus Ulasan
                     </button>
