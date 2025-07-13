@@ -424,11 +424,6 @@
                         <div class="summary-label">Jumlah Orang</div>
                         <div id="summaryJumlahOrang" class="summary-value">1</div>
                     </div>
-
-                    <div class="summary-item mt-4 pt-4 border-t border-gray-200">
-                        <div class="summary-label font-bold text-[#d94c82]">Total Pembayaran</div>
-                        <div id="summaryTotalHarga" class="summary-value text-xl text-[#d94c82] font-bold">Rp 0</div>
-                    </div>
                 </div>
             </div>
         </div>
