@@ -1,4 +1,4 @@
-<h1 align="center">Seatify – Aplikasi Reservasi dan Pemesanan Photo Studio Berbasis Web </h1>
+<h1 align="center">Potretine – Aplikasi Reservasi dan Pemesanan Photo Studio Berbasis Web </h1>
 
 <h2 align="center">Aplikasi web Laravel untuk sistem reservasi dan pemesanan photo studio oleh pelanggan dan staf studio.</h2>
 
@@ -118,10 +118,10 @@ REDIS_PORT=6379
 MAIL_MAILER=smtp
 MAIL_HOST=smtp.gmail.com
 MAIL_PORT=587
-MAIL_USERNAME=tifannyardila8@gmail.com
-MAIL_PASSWORD="yvij fqve reat dyae"
-MAIL_ENCRYPTION=tls
-MAIL_FROM_ADDRESS=tifannyardila8@gmail.com
+MAIL_USERNAME=gantidenganemailanda
+MAIL_PASSWORD=""
+MAIL_ENCRYPTION=
+MAIL_FROM_ADDRESS=gantidenganemailanda
 MAIL_FROM_NAME="${APP_NAME}"
 
 AWS_ACCESS_KEY_ID=
@@ -142,7 +142,7 @@ Setelah file `.env` terbuat, ubah informasi sensitif berikut:
     - `MAIL_FROM_ADDRESS=email@gmail.com` -> Ganti dengan email Gmail Anda
 
 2. Konfigurasi database (opsional):
-    - `DB_DATABASE=dbreservasirestoran` -> Nama database bisa disesuaikan
+    - `DB_DATABASE=pbl_smt2` -> Nama database bisa disesuaikan
     - `DB_USERNAME=root` -> Username database bisa disesuaikan
     - `DB_PASSWORD=` -> Password database jika ada
 
